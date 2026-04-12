@@ -236,17 +236,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="chip-section">
       <div class="sec-label">What do you enjoy? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
       <div class="chip-wrap" id="likeChips">
-        <div class="chip" data-val="pasta"   onclick="toggleChip(this)">Pasta</div>
-        <div class="chip" data-val="soup"    onclick="toggleChip(this)">Soup</div>
-        <div class="chip" data-val="rice"    onclick="toggleChip(this)">Rice</div>
-        <div class="chip" data-val="pizza"   onclick="toggleChip(this)">Pizza</div>
-        <div class="chip" data-val="wraps"   onclick="toggleChip(this)">Wraps</div>
-        <div class="chip" data-val="stir"    onclick="toggleChip(this)">Stir-fry</div>
-        <div class="chip" data-val="curry"   onclick="toggleChip(this)">Curry</div>
-        <div class="chip" data-val="veggie"  onclick="toggleChip(this)">Vegetarian</div>
-        <div class="chip" data-val="quick"   onclick="toggleChip(this)">Quick meals</div>
-        <div class="chip" data-val="healthy" onclick="toggleChip(this)">Healthy</div>
-        <div class="chip" data-val="kids"    onclick="toggleChip(this)">Kid-friendly</div>
+        <div class="chip" data-val="pasta"         onclick="toggleChip(this)">Pasta</div>
+        <div class="chip" data-val="soup"          onclick="toggleChip(this)">Soup</div>
+        <div class="chip" data-val="rice"          onclick="toggleChip(this)">Rice dishes</div>
+        <div class="chip" data-val="pizza"         onclick="toggleChip(this)">Pizza</div>
+        <div class="chip" data-val="wraps"         onclick="toggleChip(this)">Wraps & tacos</div>
+        <div class="chip" data-val="stir"          onclick="toggleChip(this)">Stir-fry</div>
+        <div class="chip" data-val="curry"         onclick="toggleChip(this)">Curry</div>
+        <div class="chip" data-val="noodles"       onclick="toggleChip(this)">Noodles</div>
+        <div class="chip" data-val="seafood"       onclick="toggleChip(this)">Seafood</div>
+        <div class="chip" data-val="veggie"        onclick="toggleChip(this)">Vegetarian</div>
+        <div class="chip" data-val="quick"         onclick="toggleChip(this)">Quick meals</div>
+        <div class="chip" data-val="healthy"       onclick="toggleChip(this)">Healthy</div>
+        <div class="chip" data-val="kids"          onclick="toggleChip(this)">Kid-friendly</div>
+        <div class="chip" data-val="mediterranean" onclick="toggleChip(this)">Mediterranean</div>
       </div>
     </div>
 
@@ -254,13 +257,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="sec-label">Anything you'd rather avoid? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
       <div class="chip-wrap" id="dislikeChips">
         <div class="chip" data-val="fish"       onclick="toggleVeto(this)">Fish</div>
+        <div class="chip" data-val="shellfish"  onclick="toggleVeto(this)">Shellfish</div>
         <div class="chip" data-val="mushroom"   onclick="toggleVeto(this)">Mushrooms</div>
         <div class="chip" data-val="spicy"      onclick="toggleVeto(this)">Spicy</div>
-        <div class="chip" data-val="veggie"     onclick="toggleVeto(this)">Vegetarian</div>
+        <div class="chip" data-val="onion"      onclick="toggleVeto(this)">Onions</div>
+        <div class="chip" data-val="garlic"     onclick="toggleVeto(this)">Garlic</div>
+        <div class="chip" data-val="veggie"     onclick="toggleVeto(this)">Vegetarian only</div>
         <div class="chip" data-val="gluten"     onclick="toggleVeto(this)">Gluten</div>
         <div class="chip" data-val="nuts"       onclick="toggleVeto(this)">Nuts</div>
         <div class="chip" data-val="lactose"    onclick="toggleVeto(this)">Lactose</div>
         <div class="chip" data-val="pork"       onclick="toggleVeto(this)">Pork</div>
+        <div class="chip" data-val="beef"       onclick="toggleVeto(this)">Beef</div>
+        <div class="chip" data-val="eggs"       onclick="toggleVeto(this)">Eggs</div>
       </div>
     </div>
 
@@ -270,11 +278,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
     <div id="out"></div>
 
-    <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;">
-      <p style="font-size:12px;color:var(--text3);line-height:1.7;">Built this over a weekend — feedback welcome 🙏<br>
-      <a href="https://www.reddit.com/user/dinr_online" target="_blank" style="color:var(--green);font-weight:500;">Share your thoughts on Reddit</a></p>
-    </div>
-
   </main>
 </div>
 
@@ -282,36 +285,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const POOL = [
-  { dish: 'Creamy spaghetti bolognese with fresh herbs',     emoji: '🍝', tags: ['pasta', 'kids'] },
-  { dish: 'Chicken satay with rice and cucumber salad',      emoji: '🍗', tags: ['rice', 'quick', 'kids'] },
-  { dish: 'Vegetable soup with crusty bread',                emoji: '🥣', tags: ['soup', 'healthy', 'veggie'] },
-  { dish: 'Oven-baked salmon with lemon potatoes',           emoji: '🐟', tags: ['fish', 'healthy'] },
-  { dish: 'Grilled chicken wraps with garlic sauce',         emoji: '🌯', tags: ['wraps', 'quick'] },
-  { dish: 'Coconut chicken curry with jasmine rice',         emoji: '🍛', tags: ['curry', 'rice', 'healthy'] },
-  { dish: 'Pancakes with bacon and maple syrup',             emoji: '🥞', tags: ['kids', 'quick'] },
-  { dish: 'Mashed potato stew with smoked sausage',          emoji: '🥔', tags: ['kids'] },
-  { dish: 'Lasagne with beef and béchamel sauce',            emoji: '🫕', tags: ['pasta', 'kids'] },
-  { dish: 'Nasi goreng with chicken and fried egg',          emoji: '🍚', tags: ['rice', 'quick'] },
-  { dish: 'Tofu stir-fry with pak choi and sesame',          emoji: '🥢', tags: ['stir', 'quick', 'veggie'] },
-  { dish: 'Mushroom risotto with parmesan',                  emoji: '🍄', tags: ['rice', 'veggie', 'mushroom'] },
-  { dish: 'Pesto pasta with cherry tomatoes and mozzarella', emoji: '🍝', tags: ['pasta', 'quick', 'veggie'] },
-  { dish: 'Honey-glazed chicken thighs with roasted veg',    emoji: '🍗', tags: ['healthy'] },
-  { dish: 'Tomato lentil soup with sourdough',               emoji: '🥣', tags: ['soup', 'healthy', 'veggie'] },
-  { dish: 'Fish tacos with avocado and lime slaw',           emoji: '🌮', tags: ['fish', 'wraps', 'quick'] },
-  { dish: 'Greek chicken with tzatziki and pita',            emoji: '🫓', tags: ['healthy', 'quick'] },
-  { dish: 'Beef stir-fry with broccoli and oyster sauce',    emoji: '🥦', tags: ['stir', 'quick'] },
-  { dish: 'Spinach and ricotta stuffed pasta shells',        emoji: '🍝', tags: ['pasta', 'veggie'] },
-  { dish: 'Teriyaki salmon with steamed edamame',            emoji: '🐟', tags: ['fish', 'healthy', 'quick'] },
-  { dish: 'Homemade pizza margherita with fresh basil',      emoji: '🍕', tags: ['pizza', 'kids', 'veggie'] },
-  { dish: 'Chorizo pasta with roasted peppers',              emoji: '🍝', tags: ['pasta', 'quick', 'pork'] },
-  { dish: 'Thai green curry with vegetables and rice',       emoji: '🍛', tags: ['curry', 'rice', 'veggie', 'spicy'] },
-  { dish: 'Baked cod with herb crust and mashed potato',     emoji: '🐟', tags: ['fish', 'healthy'] },
-  { dish: 'Falafel bowl with hummus and flatbread',          emoji: '🧆', tags: ['veggie', 'healthy'] },
-  { dish: 'BBQ pulled chicken with coleslaw and buns',       emoji: '🍔', tags: ['kids', 'quick'] },
-  { dish: 'Creamy mushroom tagliatelle',                     emoji: '🍝', tags: ['pasta', 'quick', 'veggie', 'mushroom'] },
-  { dish: 'Spiced lamb meatballs with couscous',             emoji: '🍖', tags: ['healthy', 'spicy'] },
-  { dish: 'Vietnamese noodle soup with chicken',             emoji: '🍜', tags: ['soup', 'healthy', 'quick'] },
-  { dish: 'Shakshuka with crusty bread',                     emoji: '🍳', tags: ['quick', 'veggie', 'spicy'] },
+  { dish: 'Creamy spaghetti bolognese with fresh herbs',       emoji: '🍝', tags: ['pasta', 'kids'] },
+  { dish: 'Chicken satay with rice and cucumber salad',        emoji: '🍗', tags: ['rice', 'quick', 'kids'] },
+  { dish: 'Vegetable soup with crusty bread',                  emoji: '🥣', tags: ['soup', 'healthy', 'veggie'] },
+  { dish: 'Oven-baked salmon with lemon potatoes',             emoji: '🐟', tags: ['fish', 'healthy', 'seafood'] },
+  { dish: 'Grilled chicken wraps with garlic sauce',           emoji: '🌯', tags: ['wraps', 'quick'] },
+  { dish: 'Coconut chicken curry with jasmine rice',           emoji: '🍛', tags: ['curry', 'rice', 'healthy'] },
+  { dish: 'Pancakes with bacon and maple syrup',               emoji: '🥞', tags: ['kids', 'quick'] },
+  { dish: 'Mashed potato stew with smoked sausage',            emoji: '🥔', tags: ['kids'] },
+  { dish: 'Lasagne with beef and béchamel sauce',              emoji: '🫕', tags: ['pasta', 'kids', 'beef'] },
+  { dish: 'Nasi goreng with chicken and fried egg',            emoji: '🍚', tags: ['rice', 'quick', 'eggs'] },
+  { dish: 'Tofu stir-fry with pak choi and sesame',            emoji: '🥢', tags: ['stir', 'quick', 'veggie'] },
+  { dish: 'Mushroom risotto with parmesan',                    emoji: '🍄', tags: ['rice', 'veggie', 'mushroom'] },
+  { dish: 'Pesto pasta with cherry tomatoes and mozzarella',   emoji: '🍝', tags: ['pasta', 'quick', 'veggie'] },
+  { dish: 'Honey-glazed chicken thighs with roasted veg',      emoji: '🍗', tags: ['healthy'] },
+  { dish: 'Tomato lentil soup with sourdough',                 emoji: '🥣', tags: ['soup', 'healthy', 'veggie'] },
+  { dish: 'Fish tacos with avocado and lime slaw',             emoji: '🌮', tags: ['fish', 'wraps', 'quick', 'seafood'] },
+  { dish: 'Greek chicken with tzatziki and pita',              emoji: '🫓', tags: ['healthy', 'quick', 'mediterranean'] },
+  { dish: 'Beef stir-fry with broccoli and oyster sauce',      emoji: '🥦', tags: ['stir', 'quick', 'beef'] },
+  { dish: 'Spinach and ricotta stuffed pasta shells',          emoji: '🍝', tags: ['pasta', 'veggie'] },
+  { dish: 'Teriyaki salmon with steamed edamame',              emoji: '🐟', tags: ['fish', 'healthy', 'quick', 'seafood'] },
+  { dish: 'Homemade pizza margherita with fresh basil',        emoji: '🍕', tags: ['pizza', 'kids', 'veggie'] },
+  { dish: 'Chorizo pasta with roasted peppers',                emoji: '🍝', tags: ['pasta', 'quick', 'pork'] },
+  { dish: 'Thai green curry with vegetables and rice',         emoji: '🍛', tags: ['curry', 'rice', 'veggie', 'spicy'] },
+  { dish: 'Baked cod with herb crust and mashed potato',       emoji: '🐟', tags: ['fish', 'healthy', 'seafood'] },
+  { dish: 'Falafel bowl with hummus and flatbread',            emoji: '🧆', tags: ['veggie', 'healthy', 'mediterranean'] },
+  { dish: 'BBQ pulled chicken with coleslaw and buns',         emoji: '🍔', tags: ['kids', 'quick'] },
+  { dish: 'Creamy mushroom tagliatelle',                       emoji: '🍝', tags: ['pasta', 'quick', 'veggie', 'mushroom'] },
+  { dish: 'Spiced lamb meatballs with couscous',               emoji: '🍖', tags: ['healthy', 'spicy', 'mediterranean'] },
+  { dish: 'Vietnamese noodle soup with chicken',               emoji: '🍜', tags: ['soup', 'noodles', 'healthy', 'quick'] },
+  { dish: 'Shakshuka with crusty bread',                       emoji: '🍳', tags: ['quick', 'veggie', 'spicy', 'mediterranean', 'eggs'] },
+  { dish: 'Prawn stir-fry with noodles and ginger',            emoji: '🍤', tags: ['stir', 'noodles', 'quick', 'seafood'] },
+  { dish: 'Mediterranean baked chicken with olives and feta',  emoji: '🍗', tags: ['healthy', 'mediterranean'] },
+  { dish: 'Beef tacos with salsa and sour cream',              emoji: '🌮', tags: ['wraps', 'quick', 'kids', 'beef'] },
+  { dish: 'Garlic butter shrimp with linguine',                emoji: '🍝', tags: ['pasta', 'quick', 'seafood'] },
+  { dish: 'Ramen with soft-boiled egg and spring onion',       emoji: '🍜', tags: ['noodles', 'soup', 'eggs'] },
 ];
 
 const LABEL_META = {
