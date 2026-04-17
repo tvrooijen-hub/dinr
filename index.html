@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dinr — Dinner decided in 10 seconds</title>
-<meta name="description" content="Stop thinking about dinner. Pick a mood, get a dish. Done.">
-<meta property="og:title" content="Dinr — Dinner decided in 10 seconds">
-<meta property="og:description" content="Stop thinking about dinner. Pick a mood, get a dish. Done.">
-<meta property="og:url" content="https://dinr.online">
-<meta property="og:type" content="website">
+<title>Meal Planner with Shopping List | dinr</title>
+<meta name="description" content="Plan your meals and get a shopping list in seconds. No account needed. Pick dinner ideas, select your ingredients, export your grocery list.">
+<meta property="og:title" content="Meal Planner with Shopping List | dinr">
+<meta property="og:description" content="Pick meals, get your grocery list in 30 seconds. No sign-up. No stress.">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232D5A3D'/><text y='46' x='10' font-size='44'>🍽</text></svg>">
 <style>
@@ -18,1284 +16,1518 @@
   --green:#2D5A3D; --green-l:#EAF2EC; --green-d:#1B3D28;
   --orange:#C4571A; --orange-l:#FDF0E8;
   --border:rgba(26,24,20,0.1); --border2:rgba(26,24,20,0.18);
-  --r:16px; --r-sm:8px;
+  --r:14px; --r-sm:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;}
 
-/* ─── VIEWS ─── */
-#landing{display:block;}
-#app{display:none;}
-#shopview{display:none;}
+/* ─── SCREENS ─── */
+.screen{display:none;}
+.screen.active{display:block;}
 
-/* ════════════════ LANDING ════════════════ */
+/* ─── LANDING ─── */
+.lp-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem;position:relative;overflow:hidden;background:var(--green);}
+.lp-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(168,213,181,0.18) 0%,transparent 70%);}
+.lp-logo{font-family:'Fraunces',serif;font-size:17px;color:rgba(255,255,255,0.55);font-style:italic;letter-spacing:-0.01em;margin-bottom:4rem;animation:fadeUp 0.6s ease both;}
+.lp-logo em{color:#A8D5B5;}
+.lp-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#A8D5B5;margin-bottom:1.25rem;animation:fadeUp 0.6s 0.1s ease both;}
+.lp-h1{font-family:'Fraunces',serif;font-size:clamp(2.5rem,7vw,5rem);line-height:1.05;letter-spacing:-0.03em;color:#fff;max-width:700px;margin-bottom:1.25rem;animation:fadeUp 0.6s 0.15s ease both;}
+.lp-h1 em{font-style:italic;color:#A8D5B5;}
+.lp-sub{font-size:1.0625rem;color:rgba(255,255,255,0.65);max-width:400px;line-height:1.65;margin-bottom:2.5rem;animation:fadeUp 0.6s 0.22s ease both;}
+.lp-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:#fff;color:var(--green);border-radius:999px;font-size:15px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 24px rgba(0,0,0,0.18);animation:fadeUp 0.6s 0.3s ease both;}
+.lp-cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25);}
+.lp-cta span{font-size:19px;}
+.lp-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:0.06em;text-transform:uppercase;animation:fadeUp 0.6s 0.6s ease both,bob 2.5s 1.5s ease-in-out infinite;}
+.lp-problem{padding:5rem 1.5rem;max-width:780px;margin:0 auto;text-align:center;}
+.lp-problem-q{font-family:'Fraunces',serif;font-size:clamp(1.5rem,4vw,2.5rem);line-height:1.25;letter-spacing:-0.02em;margin-bottom:1rem;}
+.lp-problem-q em{color:var(--orange);font-style:italic;}
+.lp-problem-body{font-size:1rem;color:var(--text2);max-width:440px;margin:0 auto;line-height:1.7;}
+.lp-how{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 1.5rem;}
+.lp-how-inner{max-width:820px;margin:0 auto;}
+.lp-section-label{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;text-align:center;}
+.lp-section-title{font-family:'Fraunces',serif;font-size:clamp(1.75rem,4vw,2.75rem);letter-spacing:-0.02em;text-align:center;margin-bottom:3.5rem;line-height:1.15;}
+.lp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.lp-step{text-align:center;}
+.lp-step-num{width:48px;height:48px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;margin:0 auto 1rem;}
+.lp-step-title{font-weight:500;font-size:15px;margin-bottom:5px;}
+.lp-step-body{font-size:13px;color:var(--text2);line-height:1.6;}
+.lp-benefits{padding:5rem 1.5rem;max-width:780px;margin:0 auto;}
+.lp-benefit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3rem;}
+.lp-benefit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.lp-benefit-icon{font-size:28px;margin-bottom:0.75rem;}
+.lp-benefit-title{font-weight:500;font-size:15px;margin-bottom:4px;}
+.lp-benefit-body{font-size:13px;color:var(--text2);line-height:1.6;}
+.lp-bottom-cta{background:var(--green);padding:5rem 1.5rem;text-align:center;}
+.lp-bottom-cta h2{font-family:'Fraunces',serif;font-size:clamp(1.75rem,5vw,3rem);color:#fff;letter-spacing:-0.02em;margin-bottom:1rem;line-height:1.15;}
+.lp-bottom-cta p{color:rgba(255,255,255,0.65);margin-bottom:2rem;font-size:15px;}
 
-/* HERO — full screen, mood picker IS the hero */
-.hero{min-height:100vh;display:flex;flex-direction:column;background:var(--green);position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 70% at 50% -10%,rgba(168,213,181,0.2) 0%,transparent 65%);pointer-events:none;}
-
-.hero-nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;position:relative;z-index:2;}
-.hero-logo{font-family:'Fraunces',serif;font-size:20px;color:#fff;font-style:italic;letter-spacing:-0.02em;}
-.hero-logo em{color:#A8D5B5;}
-.hero-nav-links{display:flex;gap:1.5rem;align-items:center;}
-.hero-nav-link{font-size:13px;color:rgba(255,255,255,0.55);cursor:pointer;text-decoration:none;transition:color 0.12s;}
-.hero-nav-link:hover{color:#fff;}
-.hero-nav-link.cta-link{color:#A8D5B5;font-weight:500;}
-
-.hero-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem 4rem;position:relative;z-index:2;}
-
-.hero-kicker{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:rgba(168,213,181,0.8);margin-bottom:1.5rem;animation:fadeUp 0.5s ease both;}
-.hero-h1{font-family:'Fraunces',serif;font-size:clamp(2.2rem,6vw,4.5rem);line-height:1.05;letter-spacing:-0.03em;color:#fff;text-align:center;max-width:640px;margin-bottom:0.75rem;animation:fadeUp 0.5s 0.08s ease both;}
-.hero-h1 em{font-style:italic;color:#A8D5B5;}
-.hero-sub{font-size:1rem;color:rgba(255,255,255,0.55);text-align:center;margin-bottom:3rem;animation:fadeUp 0.5s 0.14s ease both;}
-
-/* MOOD PICKER — the actual CTA */
-.mood-label{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1rem;text-align:center;animation:fadeUp 0.5s 0.2s ease both;}
-.mood-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:380px;width:100%;animation:fadeUp 0.5s 0.25s ease both;}
-.mood-btn{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.15);border-radius:var(--r);cursor:pointer;transition:all 0.18s;text-align:left;}
-.mood-btn:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.35);transform:translateY(-2px);}
-.mood-emoji{font-size:28px;line-height:1;flex-shrink:0;}
-.mood-text{display:flex;flex-direction:column;}
-.mood-name{font-size:15px;font-weight:500;color:#fff;line-height:1.2;}
-.mood-desc{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
-
-/* "Or just decide for me" */
-.hero-or{display:flex;align-items:center;gap:12px;max-width:380px;width:100%;margin-top:1rem;animation:fadeUp 0.5s 0.32s ease both;}
-.hero-or-line{flex:1;height:1px;background:rgba(255,255,255,0.12);}
-.hero-or-text{font-size:12px;color:rgba(255,255,255,0.3);}
-.btn-surprise{width:100%;margin-top:0.75rem;padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);border-radius:999px;color:rgba(255,255,255,0.65);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.18s;animation:fadeUp 0.5s 0.38s ease both;}
-.btn-surprise:hover{background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.4);}
-
-.hero-trust{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:2.5rem;animation:fadeUp 0.5s 0.44s ease both;}
-.trust-item{font-size:11px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:5px;}
-
-/* ─── WHY ─── */
-.why{padding:5rem 1.5rem;max-width:720px;margin:0 auto;text-align:center;}
-.why-h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:-0.025em;line-height:1.2;margin-bottom:1rem;}
-.why-h2 em{font-style:italic;color:var(--orange);}
-.why-body{font-size:1rem;color:var(--text2);max-width:460px;margin:0 auto 3.5rem;line-height:1.7;}
-.why-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-.why-step{text-align:center;}
-.why-step-icon{font-size:32px;margin-bottom:0.75rem;}
-.why-step-title{font-weight:500;font-size:14px;margin-bottom:4px;}
-.why-step-body{font-size:13px;color:var(--text2);line-height:1.55;}
-
-/* ─── SOCIAL PROOF ─── */
-.proof{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 1.5rem;}
-.proof-inner{max-width:720px;margin:0 auto;}
-.proof-title{font-family:'Fraunces',serif;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-0.02em;text-align:center;margin-bottom:2.5rem;}
-.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-.proof-card{background:var(--bg);border-radius:var(--r);padding:1.25rem;}
-.proof-stars{color:#F59E0B;font-size:13px;margin-bottom:0.5rem;}
-.proof-quote{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;font-style:italic;}
-.proof-who{font-size:12px;font-weight:500;color:var(--text3);}
-
-/* ─── LANDING AVOID ROW ─── */
-.lp-avoid-row{max-width:380px;width:100%;margin-top:1rem;animation:fadeUp 0.5s 0.3s ease both;}
-.lp-avoid-label{font-size:11px;color:rgba(255,255,255,0.4);display:block;margin-bottom:0.5rem;text-align:center;}
-.lp-avoid-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
-.lp-avoid-chip{padding:5px 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,0.2);font-size:12px;cursor:pointer;color:rgba(255,255,255,0.65);background:transparent;transition:all 0.15s;user-select:none;}
-.lp-avoid-chip:hover{border-color:rgba(255,255,255,0.5);color:#fff;}
-.lp-avoid-chip.on{background:rgba(196,87,26,0.35);border-color:rgba(196,87,26,0.7);color:#FCA571;}
-
-/* ─── PRICING ─── */
-.pricing{padding:5rem 1.5rem;max-width:640px;margin:0 auto;}
-.pricing-label{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem;text-align:center;}
-.pricing-title{font-family:'Fraunces',serif;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:-0.025em;text-align:center;margin-bottom:3rem;line-height:1.2;}
-.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
-.plan{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;position:relative;}
-.plan.featured{border:2px solid var(--green);background:var(--green-l);}
-.plan-tag{font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:0.75rem;}
-.plan-tier{font-size:13px;font-weight:500;color:var(--text3);margin-bottom:0.4rem;}
-.plan-price{font-family:'Fraunces',serif;font-size:36px;font-weight:600;letter-spacing:-0.03em;color:var(--text);line-height:1;}
-.plan-cadence{font-size:12px;color:var(--text3);margin-top:3px;}
-.plan-alt{font-size:12px;color:var(--green);font-weight:500;margin-top:4px;}
-.plan-features{list-style:none;margin:1.25rem 0 1.5rem;display:flex;flex-direction:column;gap:7px;}
-.plan-features li{font-size:13px;color:var(--text2);}
-.plan-features li.off{color:var(--text3);}
-.plan-btn{width:100%;padding:11px;border-radius:999px;background:var(--green);color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-.plan-btn:hover{background:var(--green-d);}
-.plan-btn.outline{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);}
-.plan-btn.outline:hover{border-color:var(--green);color:var(--green);}
-
-/* ─── FOOTER CTA ─── */
-.footer-cta{background:var(--green);padding:5rem 1.5rem;text-align:center;}
-.footer-cta h2{font-family:'Fraunces',serif;font-size:clamp(1.75rem,5vw,3rem);color:#fff;letter-spacing:-0.02em;margin-bottom:0.75rem;line-height:1.1;}
-.footer-cta p{color:rgba(255,255,255,0.55);margin-bottom:2rem;font-size:14px;}
-.btn-hero-cta{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#fff;color:var(--green);border-radius:999px;font-size:16px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
-.btn-hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* ════════════════ APP ════════════════ */
-.app-header{background:var(--green);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:sticky;top:0;z-index:100;}
-.app-logo{font-family:'Fraunces',serif;font-size:18px;color:#fff;font-style:italic;letter-spacing:-0.02em;cursor:pointer;}
+/* ─── APP SHARED HEADER ─── */
+.app-header{background:var(--green);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;}
+.app-logo{font-family:'Fraunces',serif;font-size:19px;color:#fff;font-style:italic;letter-spacing:-0.02em;cursor:pointer;}
 .app-logo em{color:#A8D5B5;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.gen-counter{font-size:12px;color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.1);border-radius:999px;padding:3px 10px;display:none;}
-.gen-counter.visible{display:block;}
-.gen-counter.warn{color:#FCD34D;}
-.back-btn{font-size:13px;color:rgba(255,255,255,0.6);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.12s;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.back-btn{font-size:13px;color:rgba(255,255,255,0.65);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.12s;}
 .back-btn:hover{color:#fff;}
+.sl-badge-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.sl-badge-btn:hover{background:rgba(255,255,255,0.25);}
+.sl-badge-count{background:#fff;color:var(--green);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;}
 
-/* ── PHASE 1: Tonight ── */
-.app-main{max-width:480px;margin:0 auto;padding:0 1.25rem 5rem;}
-
-/* tonight header area */
-.tonight-header{padding:1.75rem 0 1.25rem;}
-.tonight-mood-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--green-l);border-radius:999px;font-size:12px;color:var(--green-d);font-weight:500;margin-bottom:0.75rem;cursor:pointer;}
-.tonight-mood-pill:hover{background:#d6eadb;}
-.tonight-title{font-family:'Fraunces',serif;font-size:26px;letter-spacing:-0.025em;line-height:1.15;color:var(--text);}
-.tonight-title em{font-style:italic;color:var(--green);}
-
-/* ── DISH CARD (big, swipeable) ── */
-.dish-stage{position:relative;min-height:260px;margin-bottom:1rem;}
-.dish-card{background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(26,24,20,0.08);animation:cardIn 0.3s ease both;position:relative;}
-@keyframes cardIn{from{opacity:0;transform:translateY(12px) scale(0.98)}to{opacity:1;transform:none}}
-@keyframes cardOut{to{opacity:0;transform:translateX(-60px) scale(0.95)}}
-@keyframes cardOutRight{to{opacity:0;transform:translateX(60px) scale(0.95)}}
-.dish-card-top{background:var(--green);padding:2rem 1.5rem 1.5rem;position:relative;}
-.dish-card-emoji{font-size:56px;line-height:1;display:block;margin-bottom:0.75rem;}
-.dish-card-name{font-family:'Fraunces',serif;font-size:22px;color:#fff;letter-spacing:-0.02em;line-height:1.2;}
-.dish-card-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:0.6rem;}
-.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:500;}
-.badge-quick{background:rgba(196,87,26,0.25);color:#FCA571;}
-.badge-healthy{background:rgba(168,213,181,0.25);color:#A8D5B5;}
-.badge-kids{background:rgba(251,191,36,0.2);color:#FCD34D;}
-.badge-veggie{background:rgba(168,213,181,0.2);color:#A8D5B5;}
-.badge-budget{background:rgba(168,213,181,0.2);color:#A8D5B5;}
-.badge-midrange{background:rgba(251,191,36,0.15);color:#FCD34D;}
-.badge-premium{background:rgba(252,100,100,0.2);color:#FCA5A5;}
-.dish-card-body{padding:1.25rem 1.5rem;}
-.dish-card-time{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);margin-bottom:0.75rem;}
-.dish-card-desc{font-size:13px;color:var(--text2);line-height:1.6;}
-
-/* action buttons under dish card */
-.dish-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
-.btn-skip{padding:16px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-.btn-skip:hover,.btn-skip:active{border-color:var(--orange);color:var(--orange);}
-.btn-pick{padding:16px;border-radius:999px;background:var(--green);color:#fff;border:none;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 14px rgba(45,90,61,0.22);-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-.btn-pick:hover,.btn-pick:active{background:var(--green-d);}
-
-/* ── REFINEMENT (appears after first pick) ── */
-.refine-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;margin-bottom:1.25rem;animation:fadeUp 0.3s ease both;}
-.refine-title{font-size:12px;font-weight:500;color:var(--text3);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.07em;}
-.refine-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.75rem;}
-.refine-row:last-child{margin-bottom:0;}
-.chip{padding:5px 13px;border-radius:999px;border:1.5px solid var(--border2);font-size:12px;cursor:pointer;color:var(--text2);background:var(--surface);transition:all 0.12s;user-select:none;font-family:'DM Sans',sans-serif;}
+/* ─── MENU SCREEN ─── */
+.app-main{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.sec-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;}
+.chip-section{margin-bottom:1.75rem;}
+.chip-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:6px 14px;border-radius:999px;border:1.5px solid var(--border2);font-size:13px;cursor:pointer;color:var(--text2);background:var(--surface);transition:all 0.12s;user-select:none;font-family:'DM Sans',sans-serif;}
 .chip:hover{border-color:var(--green);color:var(--green);}
 .chip.on{background:var(--green);border-color:var(--green);color:#fff;}
 .chip.veto{background:var(--orange-l);border-color:var(--orange);color:var(--orange);}
+.gen-wrap{display:flex;justify-content:center;padding-top:0.5rem;}
+.btn-gen{padding:15px 40px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:16px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;box-shadow:0 4px 20px rgba(45,90,61,0.25);display:flex;align-items:center;gap:10px;}
+.btn-gen:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 6px 28px rgba(45,90,61,0.3);}
+.btn-gen:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
 
-/* persons mini */
-.persons-mini{display:flex;flex-direction:column;gap:8px;}
-.persons-mini-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.person-group{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:var(--r-sm);padding:8px 12px;}
-.person-label{font-size:13px;color:var(--text2);font-weight:500;}
-.stepper{display:flex;align-items:center;gap:2px;}
-.step-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;}
-.step-btn:hover{border-color:var(--green);color:var(--green);}
-.step-val{width:34px;text-align:center;font-size:16px;font-weight:600;}
+/* ─── MENU CARDS ─── */
+.result-wrap{margin-top:2.5rem;animation:fadeUp 0.3s ease both;}
+.result-title{font-family:'Fraunces',serif;font-size:20px;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.result-sub{font-size:12px;color:var(--text3);margin-bottom:1rem;}
+.menu-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
 
-/* ── SELECTED / WEEK ── */
-.week-section{margin-top:0.5rem;}
-.week-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
-.week-title{font-family:'Fraunces',serif;font-size:17px;letter-spacing:-0.02em;}
-.btn-add-more{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;}
-.picked-list{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem;}
-.picked-card{background:var(--surface);border:2px solid var(--green);border-radius:var(--r);padding:0.85rem 1rem;display:flex;align-items:center;gap:0.75rem;animation:fadeUp 0.2s ease both;}
-.picked-emoji{font-size:22px;flex-shrink:0;}
-.picked-right{flex:1;min-width:0;}
-.picked-day{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;}
-.picked-dish{font-family:'Fraunces',serif;font-size:14px;color:var(--text);line-height:1.3;}
-.btn-remove{background:none;border:none;font-size:18px;color:var(--text3);cursor:pointer;flex-shrink:0;line-height:1;padding:0 2px;transition:color 0.12s;}
-.btn-remove:hover{color:var(--orange);}
+.menu-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;transition:box-shadow 0.15s,border-color 0.15s;}
+.menu-card:hover{box-shadow:0 3px 14px rgba(0,0,0,0.07);}
 
-/* detail expand on picked card (pro) */
-.btn-detail-small{background:none;border:none;font-size:12px;color:var(--text3);cursor:pointer;padding:0;margin-top:2px;font-family:'DM Sans',sans-serif;transition:color 0.12s;}
-.btn-detail-small:hover{color:var(--green);}
-.btn-detail-small.locked{cursor:default;opacity:0.5;}
-
-/* fill week CTA */
-.fill-week-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;}
-.btn-fill-week{padding:10px 20px;border-radius:999px;border:1.5px solid var(--border2);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);transition:all 0.12s;}
-.btn-fill-week:hover{border-color:var(--green);color:var(--green);}
-.btn-to-shop{padding:11px 22px;border-radius:999px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(45,90,61,0.18);}
-.btn-to-shop:hover{background:var(--green-d);}
-.btn-to-shop.locked{background:var(--surface2);color:var(--text3);box-shadow:none;cursor:default;}
-.btn-to-shop.locked:hover{background:var(--surface2);}
-
-/* pro/free demo toggle */
-.pro-toggle{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;border:1.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-.pro-toggle:hover{background:rgba(255,255,255,0.2);color:#fff;}
-.pro-toggle.is-pro{background:#A8D5B5;border-color:#A8D5B5;color:var(--green-d);}
-
-/* swipe hint */
-.swipe-hint{display:flex;align-items:center;justify-content:center;gap:1.5rem;font-size:11px;color:var(--text3);margin-bottom:0.4rem;}
-
-/* swipe indicators on card */
-.swipe-yes,.swipe-nope{position:absolute;top:1rem;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.08s;pointer-events:none;z-index:10;letter-spacing:0.05em;}
-.swipe-yes{right:0.75rem;background:#EAF2EC;color:var(--green);border:2px solid var(--green);}
-.swipe-nope{left:0.75rem;background:var(--orange-l);color:var(--orange);border:2px solid var(--orange);}
-
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(26,24,20,0.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:backdropIn 0.2s ease;}
-@keyframes backdropIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding:0 0 2rem;animation:slideUp 0.25s ease;}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0;}
-.modal-header{padding:1.25rem 1.5rem 0;}
-.modal-emoji{font-size:40px;display:block;margin-bottom:0.75rem;}
-.modal-dish-name{font-family:'Fraunces',serif;font-size:21px;letter-spacing:-0.02em;line-height:1.2;margin-bottom:0.75rem;}
-.modal-badges{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.25rem;}
+/* Clickable left area (emoji + title → ingredient detail) */
+.mc-clickable{display:flex;align-items:center;gap:0.85rem;flex:1;cursor:pointer;min-width:0;}
+.mc-emoji{font-size:26px;flex-shrink:0;line-height:1;}
+.mc-right{flex:1;min-width:0;}
+.mc-day{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
+.mc-dish{font-family:'Fraunces',serif;font-size:15px;line-height:1.3;color:var(--text);}
+.mc-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .lbl{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;}
 .lbl-snel{background:var(--orange-l);color:var(--orange);}
 .lbl-gezond{background:var(--green-l);color:var(--green-d);}
 .lbl-kids{background:#FEF3C7;color:#92400E;}
 .lbl-vega{background:#ECFDF5;color:#065F46;}
-.lbl-goedkoop{background:#F0FDF4;color:#166534;}
-.lbl-gemiddeld{background:#FEF9C3;color:#854D0E;}
-.lbl-duur{background:#FFF1F2;color:#9F1239;}
-.modal-section{padding:0 1.5rem;margin-top:1.25rem;}
-.modal-section-title{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem;}
-.ingredient-list{display:flex;flex-direction:column;}
-.ingredient-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);}
-.ingredient-row:last-child{border-bottom:none;}
-.ingr-name{color:var(--text);}
-.ingr-amount{color:var(--text3);font-size:12px;}
-.price-estimate{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:var(--r-sm);padding:0.85rem 1rem;}
-.price-tag{font-family:'Fraunces',serif;font-size:22px;color:var(--green);font-weight:600;flex-shrink:0;}
-.price-note{font-size:12px;color:var(--text3);line-height:1.4;}
-.modal-footer{padding:1.25rem 1.5rem 0;display:flex;gap:8px;}
-.btn-modal-pick{flex:1;padding:12px 20px;border-radius:999px;background:var(--green);color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
-.btn-modal-pick:hover{background:var(--green-d);}
-.btn-modal-pick.remove{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);}
-.btn-modal-close{padding:12px 20px;border-radius:999px;background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-/* ── UPGRADE MODAL ── */
-.upgrade-modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:460px;padding:2rem 1.5rem 2.5rem;animation:slideUp 0.25s ease;text-align:center;}
-.upgrade-emoji-big{font-size:44px;display:block;margin-bottom:1rem;}
-.upgrade-title{font-family:'Fraunces',serif;font-size:22px;letter-spacing:-0.02em;margin-bottom:0.5rem;}
-.upgrade-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1.5rem;max-width:300px;margin-left:auto;margin-right:auto;}
-.upgrade-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem;}
-.upgrade-plan{border:2px solid var(--border);border-radius:var(--r);padding:1rem;text-align:center;cursor:pointer;transition:all 0.15s;}
-.upgrade-plan:hover,.upgrade-plan.best{border-color:var(--green);background:var(--green-l);}
-.upgrade-plan-badge{font-size:9px;font-weight:500;background:var(--green);color:#fff;border-radius:3px;padding:2px 6px;margin-bottom:0.4rem;display:inline-block;text-transform:uppercase;letter-spacing:0.06em;}
-.upgrade-plan-price{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--text);}
-.upgrade-plan-per{font-size:11px;color:var(--text3);}
-.upgrade-plan-save{font-size:11px;color:var(--green);font-weight:500;}
-.upgrade-feats{text-align:left;background:var(--bg);border-radius:var(--r-sm);padding:0.85rem 1rem;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:6px;}
-.upgrade-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);}
-.btn-upgrade{width:100%;padding:14px;border-radius:999px;background:var(--green);color:#fff;border:none;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 18px rgba(45,90,61,0.22);margin-bottom:0.75rem;transition:all 0.15s;}
-.btn-upgrade:hover{background:var(--green-d);}
-.upgrade-dismiss{font-size:12px;color:var(--text3);cursor:pointer;}
-.upgrade-dismiss:hover{color:var(--text2);}
+/* ADD button right side — icon only cart */
+.mc-add-btn{flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface);color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.mc-add-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-l);}
+.mc-add-btn.added{background:var(--green);border-color:var(--green);color:#fff;}
+.mc-add-btn svg{display:block;}
 
-/* ── SHOPPING LIST ── */
-.shop-header{background:var(--green);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:sticky;top:0;z-index:100;}
-.shop-main{max-width:500px;margin:0 auto;padding:2rem 1.25rem 5rem;}
-.shop-hero{background:var(--green);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;color:#fff;}
-.shop-hero-title{font-family:'Fraunces',serif;font-size:22px;letter-spacing:-0.02em;margin-bottom:0.25rem;}
-.shop-hero-meta{font-size:13px;color:rgba(255,255,255,0.65);}
-.shop-hero-meals{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
-.shop-meal-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.15);font-size:12px;font-weight:500;}
-.shop-export-row{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
-.btn-export{padding:8px 16px;border-radius:999px;border:1.5px solid var(--border2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);display:flex;align-items:center;gap:6px;transition:all 0.12s;}
-.btn-export:hover{border-color:var(--green);color:var(--green);}
-.shop-progress{margin-bottom:1.75rem;}
-.shop-progress-bar{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-.shop-progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.3s ease;}
-.shop-progress-label{font-size:11px;color:var(--text3);margin-top:5px;}
-.shop-category{margin-bottom:1.75rem;}
-.shop-cat-header{display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:2px solid var(--green-l);}
-.shop-cat-icon{font-size:14px;}
-.shop-cat-title{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);flex:1;}
-.shop-cat-count{font-size:11px;color:var(--text3);}
-.shop-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);transition:opacity 0.2s;}
-.shop-item:last-child{border-bottom:none;}
-.shop-item.done{opacity:0.4;}
-.shop-check{width:20px;height:20px;min-width:20px;border-radius:5px;border:1.5px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:var(--surface);font-size:11px;color:transparent;margin-top:1px;}
-.shop-check:hover{border-color:var(--green);}
-.shop-check.checked{background:var(--green);border-color:var(--green);color:#fff;}
-.shop-item-body{flex:1;min-width:0;}
-.shop-item-name{font-size:14px;color:var(--text);}
-.shop-item.done .shop-item-name{text-decoration:line-through;color:var(--text3);}
-.shop-item-dishes{font-size:11px;color:var(--text3);margin-top:1px;}
-.shop-item-amount{font-size:13px;color:var(--text2);font-weight:500;flex-shrink:0;padding-top:1px;}
+.result-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-sec{padding:8px 18px;border-radius:999px;border:1.5px solid var(--border2);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);transition:all 0.12s;}
+.btn-sec:hover{border-color:var(--green);color:var(--green);}
 
-/* ── FREE LIMIT BANNER ── */
-.limit-banner{background:var(--orange-l);border:1px solid rgba(196,87,26,0.2);border-radius:var(--r-sm);padding:0.85rem 1rem;font-size:13px;color:var(--orange);display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;}
-.limit-banner strong{font-weight:500;}
-.btn-banner-upgrade{margin-left:auto;padding:5px 14px;border-radius:999px;background:var(--orange);color:#fff;border:none;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+/* SKELETON */
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;}
+.sk-dot{width:36px;height:36px;background:var(--surface2);border-radius:50%;flex-shrink:0;animation:pulse 1.2s ease-in-out infinite;}
+.sk-line{height:13px;background:var(--surface2);border-radius:4px;animation:pulse 1.2s ease-in-out infinite;}
 
-/* print */
-@media print{
-  #landing,#app,#shopview .shop-header,#shopview .shop-export-row,#shopview .shop-progress,.btn-export{display:none!important;}
-  #shopview{display:block!important;}
-  .shop-main{padding:1rem;max-width:100%;}
-  body{background:#fff;font-size:12px;}
-  .shop-category{break-inside:avoid;}
-  .shop-hero{background:#2D5A3D!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+/* ─── INGREDIENT DETAIL SCREEN ─── */
+.detail-main{max-width:600px;margin:0 auto;padding:2rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.detail-hero{display:flex;align-items:flex-start;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.detail-emoji{font-size:52px;line-height:1;flex-shrink:0;}
+.detail-meta{}
+.detail-day{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+.detail-dish{font-family:'Fraunces',serif;font-size:clamp(1.25rem,4vw,1.75rem);letter-spacing:-0.02em;line-height:1.2;margin-bottom:0.5rem;}
+.detail-labels{display:flex;flex-wrap:wrap;gap:5px;}
+
+.detail-section-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;}
+.detail-select-all{font-size:12px;color:var(--green);cursor:pointer;font-weight:500;text-decoration:underline;}
+.detail-ing-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+
+.ing-list{display:flex;flex-direction:column;gap:6px;margin-bottom:2rem;}
+.ing-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all 0.12s;user-select:none;}
+.ing-item:hover{border-color:var(--border2);}
+.ing-item.checked{border-color:var(--green);background:var(--green-l);}
+.ing-item.unchecked{opacity:0.45;background:var(--surface2);border-color:var(--border);}
+.ing-cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--border2);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;}
+.ing-item.checked .ing-cb{background:var(--green);border-color:var(--green);}
+.ing-cb-icon{display:none;color:#fff;font-size:11px;font-weight:700;}
+.ing-item.checked .ing-cb-icon{display:block;}
+.ing-name{font-size:14px;color:var(--text);flex:1;}
+.ing-item.unchecked .ing-name{text-decoration:line-through;color:var(--text3);}
+
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-primary{padding:12px 24px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:7px;}
+.btn-primary:hover{background:var(--green-d);}
+.btn-ghost{padding:12px 20px;background:transparent;border:1.5px solid var(--border2);color:var(--text2);border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.12s;}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+
+/* ─── SHOPPING LIST SCREEN ─── */
+.sl-main{max-width:640px;margin:0 auto;padding:2rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.sl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.sl-heading{font-family:'Fraunces',serif;font-size:22px;letter-spacing:-0.02em;}
+.sl-export-row{display:flex;gap:8px;}
+.sl-export-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.sl-export-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* Filter tabs */
+.sl-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.sl-filter-tab{padding:5px 13px;border-radius:999px;border:1.5px solid var(--border2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);transition:all 0.12s;display:flex;align-items:center;gap:5px;}
+.sl-filter-tab:hover{border-color:var(--border2);color:var(--text);}
+.sl-filter-tab.active{background:var(--green);border-color:var(--green);color:#fff;}
+.sl-filter-emoji{font-size:13px;}
+
+/* Mode toggle */
+.sl-mode-toggle{display:flex;background:var(--surface2);border-radius:999px;padding:3px;margin-bottom:1.5rem;width:fit-content;}
+.sl-mode-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;}
+.sl-mode-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+
+/* Per-dish view */
+.sl-dish-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.sl-dish-hdr{padding:0.85rem 1.1rem;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+.sl-dish-hdr:hover{background:var(--surface2);}
+.sl-dish-emoji{font-size:20px;flex-shrink:0;}
+.sl-dish-name{font-family:'Fraunces',serif;font-size:14px;flex:1;}
+.sl-dish-ingcount{font-size:11px;color:var(--text3);background:var(--surface2);border-radius:999px;padding:2px 8px;}
+.sl-chevron{font-size:10px;color:var(--text3);transition:transform 0.2s;margin-left:4px;}
+.sl-dish-block.open .sl-chevron{transform:rotate(180deg);}
+.sl-dish-ings{display:none;padding:0 1.1rem 0.85rem;border-top:1px solid var(--border);}
+.sl-dish-block.open .sl-dish-ings{display:block;}
+.sl-dish-ing-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;transition:opacity 0.15s;}
+.sl-dish-ing-item:last-child{border-bottom:none;}
+.sl-dish-ing-item:hover{opacity:0.75;}
+.sl-dish-ing-item.done{opacity:0.45;}
+.sl-dish-ing-item.done .sl-ing-label{text-decoration:line-through;color:var(--text3);}
+.sl-ing-check{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border2);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;}
+.sl-dish-ing-item.done .sl-ing-check{background:var(--green);border-color:var(--green);}
+.sl-ing-check-icon{display:none;color:#fff;font-size:10px;font-weight:700;}
+.sl-dish-ing-item.done .sl-ing-check-icon{display:block;}
+.sl-ing-label{flex:1;}
+
+/* Smart/category view */
+.sl-category-block{margin-bottom:1.5rem;}
+.sl-cat-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem;display:flex;align-items:center;gap:7px;}
+.sl-cat-icon{font-size:14px;}
+.sl-cat-items{display:flex;flex-direction:column;gap:4px;}
+.sl-cat-item{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;color:var(--text);cursor:pointer;user-select:none;transition:opacity 0.15s;}
+.sl-cat-item:hover{opacity:0.75;}
+.sl-cat-item.done{opacity:0.45;}
+.sl-cat-item.done .sl-cat-ing-label{text-decoration:line-through;color:var(--text3);}
+.sl-cat-item .sl-ing-check{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border2);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;}
+.sl-cat-item.done .sl-ing-check{background:var(--green);border-color:var(--green);}
+.sl-cat-ing-label{flex:1;}
+.sl-cat-source{font-size:11px;color:var(--text3);margin-left:auto;}
+
+.sl-progress-wrap{margin-bottom:1.25rem;}
+.sl-progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:5px;}
+.sl-progress-bar{height:6px;background:var(--surface2);border-radius:999px;overflow:hidden;}
+.sl-progress-fill{height:100%;background:var(--green);border-radius:999px;transition:width 0.3s ease;}
+
+.sl-empty{text-align:center;padding:3rem 1rem;color:var(--text3);}
+.sl-empty-icon{font-size:36px;margin-bottom:0.75rem;}
+.sl-empty-text{font-family:'Fraunces',serif;font-size:17px;margin-bottom:0.4rem;color:var(--text2);}
+.sl-empty-sub{font-size:13px;}
+
+/* trust signal */
+.lp-trust{margin-top:1.5rem;font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:0.03em;animation:fadeUp 0.6s 0.45s ease both;}
+.lp-trust::before{content:'👨‍👩‍👧 ';}
+
+/* ─── PRO BADGE IN HEADER ─── */
+.pro-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;background:linear-gradient(135deg,#A8D5B5,#7BC99A);color:#1B3D28;letter-spacing:0.02em;}
+.upgrade-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.upgrade-btn:hover{background:rgba(255,255,255,0.22);}
+.upgrade-btn .spark{font-size:10px;}
+
+/* ─── DEV TOGGLE ─── */
+.dev-toggle{position:fixed;bottom:1.25rem;right:1.25rem;z-index:300;display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--green-d);color:#fff;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.dev-toggle:hover{background:#0f2a1a;transform:translateY(-1px);}
+.dev-toggle-dot{width:7px;height:7px;border-radius:50%;background:#A8D5B5;}
+
+/* ─── PRO GATE LOCK OVERLAY on feature ─── */
+.pro-gate{position:relative;}
+.pro-gate-overlay{position:absolute;inset:0;background:rgba(246,243,238,0.85);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;z-index:10;}
+.pro-gate-overlay:hover{background:rgba(246,243,238,0.75);}
+.pro-gate-icon{font-size:22px;}
+.pro-gate-text{font-size:13px;font-weight:500;color:var(--green-d);}
+.pro-gate-sub{font-size:11px;color:var(--text3);}
+
+/* ─── PRICING SCREEN ─── */
+.pricing-main{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.pricing-hero{text-align:center;margin-bottom:2.5rem;}
+.pricing-hero h1{font-family:'Fraunces',serif;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.pricing-hero p{font-size:14px;color:var(--text2);}
+
+.billing-toggle{display:flex;background:var(--surface2);border-radius:999px;padding:3px;width:fit-content;margin:0 auto 2rem;}
+.billing-btn{padding:7px 20px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;display:flex;align-items:center;gap:7px;}
+.billing-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.save-pill{font-size:10px;font-weight:500;background:#EAF2EC;color:#1B3D28;padding:2px 7px;border-radius:999px;}
+
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem;}
+.plan-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem;position:relative;}
+.plan-card.featured{border-color:var(--green);border-width:2px;}
+.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:500;padding:3px 12px;border-radius:999px;white-space:nowrap;}
+.plan-name{font-size:13px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;}
+.plan-price{font-family:'Fraunces',serif;font-size:2.2rem;letter-spacing:-0.03em;line-height:1;margin-bottom:0.25rem;}
+.plan-price sup{font-size:1rem;vertical-align:top;margin-top:0.4rem;display:inline-block;}
+.plan-period{font-size:12px;color:var(--text3);margin-bottom:1.25rem;}
+.plan-period em{color:var(--green);font-style:normal;font-weight:500;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.5rem;}
+.plan-features li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:7px;line-height:1.4;}
+.plan-features li .fi{flex-shrink:0;margin-top:1px;}
+.fi-yes{color:var(--green);font-weight:700;}
+.fi-no{color:#E24B4A;font-weight:700;}
+.plan-cta{width:100%;padding:11px;border-radius:999px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);transition:all 0.15s;}
+.plan-cta:hover{border-color:var(--green);color:var(--green);}
+.plan-cta.primary{background:var(--green);border-color:var(--green);color:#fff;}
+.plan-cta.primary:hover{background:var(--green-d);}
+.plan-cta.active-plan{background:var(--green-l);border-color:var(--green);color:var(--green-d);cursor:default;}
+
+.pricing-footer{text-align:center;font-size:12px;color:var(--text3);line-height:1.7;}
+.pricing-footer a{color:var(--green);text-decoration:none;}
+
+/* ─── UPGRADE MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;}
+.upgrade-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:1.75rem 1.75rem 2.5rem;animation:slideUp 0.28s ease;max-height:90vh;overflow-y:auto;}
+.sheet-drag{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1.5rem;}
+
+.upgrade-step{display:none;}
+.upgrade-step.active{display:block;animation:fadeUp 0.2s ease both;}
+
+.step-badge{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.09em;color:var(--text3);margin-bottom:0.5rem;}
+.sheet-title{font-family:'Fraunces',serif;font-size:1.5rem;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.sheet-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;}
+
+.plan-select-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem;}
+.plan-select-card{border:1.5px solid var(--border2);border-radius:var(--r);padding:1rem;cursor:pointer;transition:all 0.15s;}
+.plan-select-card:hover{border-color:var(--green);}
+.plan-select-card.chosen{border-color:var(--green);background:var(--green-l);}
+.psc-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;}
+.psc-price{font-family:'Fraunces',serif;font-size:1.5rem;letter-spacing:-0.02em;color:var(--text);}
+.psc-price.chosen{color:var(--green-d);}
+.psc-period{font-size:11px;color:var(--text3);margin-top:2px;}
+.psc-save{display:inline-block;font-size:10px;background:#EAF2EC;color:#1B3D28;padding:2px 7px;border-radius:999px;margin-top:4px;}
+
+.perks-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;}
+.perk-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);}
+.perk-icon{width:28px;height:28px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+
+.payment-form{margin-bottom:1.5rem;}
+.form-row{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px;}
+.mock-field{height:42px;border:1.5px solid var(--border2);border-radius:var(--r-sm);background:var(--surface2);display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--text3);gap:8px;}
+.mock-field.focus{border-color:var(--green);}
+.mock-field-icon{font-size:14px;opacity:0.5;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+.contact-box{background:var(--surface2);border-radius:var(--r);padding:1.25rem;text-align:center;}
+.contact-box p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:0.75rem;}
+.contact-box a{color:var(--green);font-weight:500;text-decoration:none;}
+.contact-box a:hover{text-decoration:underline;}
+.contact-note{font-size:11px;color:var(--text3);margin-top:0.5rem;line-height:1.5;}
+
+.sheet-btn{width:100%;padding:13px;border-radius:999px;font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:var(--green);color:#fff;transition:all 0.15s;margin-bottom:8px;}
+.sheet-btn:hover{background:var(--green-d);}
+.sheet-btn.outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2);}
+.sheet-btn.outline:hover{border-color:var(--green);color:var(--green);}
+
+.success-wrap{text-align:center;padding:1.5rem 0;}
+.success-icon{font-size:52px;margin-bottom:1rem;}
+.success-title{font-family:'Fraunces',serif;font-size:1.75rem;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.success-sub{font-size:14px;color:var(--text2);line-height:1.65;max-width:320px;margin:0 auto 1.75rem;}
+.success-perks{display:flex;flex-direction:column;gap:8px;margin-bottom:1.75rem;text-align:left;}
+
+.trust-row{display:flex;align-items:center;justify-content:center;gap:1rem;font-size:11px;color:var(--text3);margin-top:10px;}
+.trust-item{display:flex;align-items:center;gap:4px;}
+
+@media(max-width:480px){
+  .plan-grid{grid-template-columns:1fr;}
+  .plan-select-row{grid-template-columns:1fr;}
 }
 
-@media(max-width:560px){
-  .why-steps,.proof-grid{grid-template-columns:1fr;}
-  .plan-grid{grid-template-columns:1fr;}
-  .mood-grid{grid-template-columns:1fr 1fr;}
+/* SEO section */
+.lp-seo{padding:4rem 1.5rem;background:var(--surface2);}
+.lp-seo-inner{max-width:680px;margin:0 auto;text-align:center;}
+.lp-seo-body{font-size:14px;color:var(--text2);line-height:1.75;max-width:560px;margin:0 auto 1.5rem;}
+.lp-seo-kws{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+.lp-seo-kws span{font-size:11px;font-weight:500;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);}
+
+/* post-generation select+CTA bar */
+.select-cta-bar{background:var(--green);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1rem;flex-wrap:wrap;}
+.select-cta-text{color:#fff;font-size:14px;font-weight:500;}
+.select-cta-text span{display:block;font-size:11px;font-weight:400;opacity:0.7;margin-top:2px;}
+.select-cta-count{background:rgba(255,255,255,0.2);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap;}
+.btn-create-list{padding:10px 22px;background:#fff;color:var(--green);border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.btn-create-list:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.15);}
+.btn-create-list:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+
+/* ─── REVIEWS ─── */
+.lp-reviews{padding:4rem 1.5rem;background:var(--surface);}
+.lp-reviews-inner{max-width:820px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.review-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem 1.25rem;}
+.review-stars{font-size:15px;color:#F59E0B;margin-bottom:0.6rem;letter-spacing:0.05em;}
+.review-text{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:0.75rem;font-style:italic;}
+.review-author{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+@media(max-width:640px){.lp-reviews-inner{grid-template-columns:1fr;}}
+
+.site-footer{background:var(--green-d);padding:2.5rem 1.5rem;text-align:center;}
+.footer-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-style:italic;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.footer-logo em{color:#A8D5B5;}
+.footer-tagline{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;letter-spacing:0.02em;}
+.footer-links{display:flex;justify-content:center;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:12px;}
+.footer-links a{color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.12s;padding:4px 6px;}
+.footer-links a:hover{color:#fff;}
+.footer-sep{color:rgba(255,255,255,0.2);font-size:10px;}
+.footer-copy{margin-top:1.25rem;font-size:11px;color:rgba(255,255,255,0.25);}
+
+@media(max-width:600px){
+  .lp-steps{grid-template-columns:1fr;gap:2rem;}
+  .lp-benefit-grid{grid-template-columns:1fr;}
+  .app-main,.detail-main,.sl-main{padding:1.5rem 1rem 4rem;}
+  .detail-actions{flex-direction:column;}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════════ LANDING ════════════════ -->
-<div id="landing">
-
-  <!-- HERO: the mood picker IS the above-the-fold CTA -->
-  <section class="hero">
-    <nav class="hero-nav">
-      <div class="hero-logo"><em>dinr</em></div>
-      <div class="hero-nav-links">
-        <a class="hero-nav-link" href="#pricing" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'});return false;">Pricing</a>
-        <a class="hero-nav-link cta-link" href="#" onclick="goToApp('surprise');return false;">Try free →</a>
-      </div>
-    </nav>
-
-    <div class="hero-body">
-      <div class="hero-kicker">Dinner. Decided. Done.</div>
-      <h1 class="hero-h1">Stop the daily<br><em>"what do we eat?"</em></h1>
-      <p class="hero-sub">Pick a mood. Get a dish. Zero family debate as you wish.</p>
-
-      <div class="mood-label">What are you feeling tonight?</div>
-      <div class="mood-grid">
-        <button class="mood-btn" onclick="goToApp('comfort')">
-          <span class="mood-emoji">🫕</span>
-          <span class="mood-text"><span class="mood-name">Comfort</span><span class="mood-desc">Hearty & satisfying</span></span>
-        </button>
-        <button class="mood-btn" onclick="goToApp('healthy')">
-          <span class="mood-emoji">🥗</span>
-          <span class="mood-text"><span class="mood-name">Healthy</span><span class="mood-desc">Light & nutritious</span></span>
-        </button>
-        <button class="mood-btn" onclick="goToApp('quick')">
-          <span class="mood-emoji">⚡</span>
-          <span class="mood-text"><span class="mood-name">Quick</span><span class="mood-desc">On the table fast</span></span>
-        </button>
-        <button class="mood-btn" onclick="goToApp('adventure')">
-          <span class="mood-emoji">🌍</span>
-          <span class="mood-text"><span class="mood-name">Something new</span><span class="mood-desc">Surprise me</span></span>
-        </button>
-      </div>
-
-      <div class="hero-or" style="max-width:380px;width:100%;margin-top:1rem;">
-        <div class="hero-or-line"></div>
-        <span class="hero-or-text">or</span>
-        <div class="hero-or-line"></div>
-      </div>
-      <button class="btn-surprise" style="max-width:380px;" onclick="goToApp('surprise')">🎲 Just decide for me</button>
-
-      <div class="hero-trust">
-        <span class="trust-item">✓ No sign-up</span>
-        <span class="trust-item">✓ Free to try</span>
-        <span class="trust-item">✓ 10 seconds</span>
-      </div>    </div>
+<!-- ══════════════ SCREEN: LANDING ══════════════ -->
+<div id="screen-landing" class="screen active">
+  <section class="lp-hero">
+    <div class="lp-logo"><em>dinr</em></div>
+    <div class="lp-eyebrow">Meal planner + grocery list generator</div>
+    <h1 class="lp-h1">Stop thinking about dinner.<br><em>Pick meals → get your<br>shopping list in 30 seconds.</em></h1>
+    <p class="lp-sub">No accounts. No stress. Just food on the table.</p>
+    <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinners</button>
+    <div class="lp-trust">Used by busy families who hate deciding dinner</div>
+    <div class="lp-scroll-hint">↓ more</div>
+  </section>
+  <section class="lp-problem">
+    <h2 class="lp-problem-q">Dinner without the stress.</h2>
+    <p class="lp-problem-body">From idea → shopping list in seconds.</p>
   </section>
 
-  <!-- WHY -->
-  <section class="why">
-    <h2 class="why-h2">"Ugh, what do we eat <em>tonight</em>?"</h2>
-    <p class="why-body">You're tired, everyone's hungry, and the last thing you need is a 20-minute family summit about pasta. Again. Dinr makes the decision in 10 seconds — so you can save your energy for actually eating.</p>
-    <div class="why-steps">
-      <div class="why-step">
-        <div class="why-step-icon">🎯</div>
-        <div class="why-step-title">Pick your mood</div>
-        <p class="why-step-body">Comfort, quick, healthy, or surprise. One tap is all it takes.</p>
+  <section class="lp-reviews">
+    <div class="lp-reviews-inner">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Finally something that just works. I pick 3 meals on Sunday, list is ready in under a minute. Game changer for our family."</p>
+        <div class="review-author">— Sarah K., mother of two</div>
       </div>
-      <div class="why-step">
-        <div class="why-step-icon">✅</div>
-        <div class="why-step-title">Pick or skip</div>
-        <p class="why-step-body">Love it? Pick it. Not tonight? Skip. New suggestion in a second.</p>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I used to spend 20 minutes every week figuring out what to eat. Now it takes 30 seconds. Genuinely love this."</p>
+        <div class="review-author">— Martijn V., Amsterdam</div>
       </div>
-      <div class="why-step">
-        <div class="why-step-icon">🛒</div>
-        <div class="why-step-title">Plan the week</div>
-        <p class="why-step-body">Add more nights and get a sorted shopping list — when you're ready.</p>
+      <div class="review-card">
+        <div class="review-stars">★★★★<span style="opacity:0.3;">★</span></div>
+        <p class="review-text">"Really useful and dead simple. Would give 5 stars if it could automatically order the groceries online — maybe next version? 😄"</p>
+        <div class="review-author">— Emma R., London</div>
+      </div>
+    </div>
+  </section>
+  <section class="lp-how">
+    <div class="lp-how-inner">
+      <div class="lp-section-label">How it works</div>
+      <h2 class="lp-section-title">Plan your meals and get<br>a shopping list in seconds.</h2>
+      <div class="lp-steps">
+        <div class="lp-step"><div class="lp-step-num">1</div><div class="lp-step-title">Pick your preferences</div><p class="lp-step-body">Tap what you're into — pasta, curry, quick meals. Skip what you hate. No forms.</p></div>
+        <div class="lp-step"><div class="lp-step-num">2</div><div class="lp-step-title">Get your dinner ideas</div><p class="lp-step-body">We suggest a handful of dinners. Take 2, take 5 — no pressure to plan a full week.</p></div>
+        <div class="lp-step"><div class="lp-step-num">3</div><div class="lp-step-title">Create your shopping list</div><p class="lp-step-body">Tick off what's already in your cupboard. Export or print — straight into the supermarket.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="lp-benefits">
+    <div class="lp-section-label" style="text-align:center;">Why people use dinr</div>
+    <h2 class="lp-section-title">Good food.<br>Without the faff.</h2>
+    <div class="lp-benefit-grid">
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">⚡</div><div class="lp-benefit-title">Takes 30 seconds</div><p class="lp-benefit-body">No account. No sign-up. Open, tap, done. Faster than scrolling for recipes.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">🎯</div><div class="lp-benefit-title">Your pace, your plan</div><p class="lp-benefit-body">Planning 2 nights or 5 — your call. Dinr doesn't force a full week on you.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">🛒</div><div class="lp-benefit-title">Smart grocery list</div><p class="lp-benefit-body">Ingredients grouped by category. Tick off what's home. Export or print in one tap.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">👨‍👩‍👧</div><div class="lp-benefit-title">Works for families</div><p class="lp-benefit-body">Kids who hate fish? Partner loves spicy? Set your preferences once, get dinners everyone eats.</p></div>
+    </div>
+  </section>
+
+  <!-- SEO section -->
+  <section class="lp-seo">
+    <div class="lp-seo-inner">
+      <div class="lp-section-label" style="text-align:center;">The meal planner that actually works</div>
+      <h2 class="lp-section-title" style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:1.5rem;">Dinner ideas + grocery list generator,<br>all in one place</h2>
+      <p class="lp-seo-body">Dinr is a free weekly meal planner designed for busy people. Pick dinner ideas from a curated list, build your grocery list in seconds, and remove what you already have at home. Whether you're planning 3 family meals or a full week — Dinr handles the thinking so you don't have to.</p>
+      <div class="lp-seo-kws">
+        <span>meal planner</span><span>weekly meal planner</span><span>grocery list generator</span><span>dinner ideas</span><span>family meals</span><span>shopping list</span>
       </div>
     </div>
   </section>
 
-  <!-- SOCIAL PROOF -->
-  <section class="proof">
-    <div class="proof-inner">
-      <h2 class="proof-title">People actually use this</h2>
-      <div class="proof-grid">
-        <div class="proof-card">
-          <div class="proof-stars">★★★★★</div>
-          <p class="proof-quote">"Used to spend 20 minutes every evening going 'idk, what do you want?' Now I open Dinr in the car home and it's done. Game changer."</p>
-          <div class="proof-who">— Roos, 2 kids, Den Haag</div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-stars" style="color:#F59E0B;">★★★★<span style="color:#D1D5DB;">★</span></div>
-          <p class="proof-quote">"It's not perfect but it's the first app that actually solved our dinner problem without making me fill in a 10-minute questionnaire first."</p>
-          <div class="proof-who">— Bas, Amsterdam</div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-stars">★★★★★</div>
-          <p class="proof-quote">"The shopping list alone is worth €2.50/month. No more 'did you get the garlic?' conversations."</p>
-          <div class="proof-who">— Lisa, Rotterdam</div>
-        </div>
-      </div>
+  <section class="lp-bottom-cta">
+    <h2>Dinner sorted.<br>List ready. Let's go.</h2>
+    <p>Free. No account needed.</p>
+    <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinners</button>
+    <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.15);">
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Want more? Save preferences, AI-powered suggestions &amp; more.</p>
+      <button onclick="show('pricing')" style="background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.75);padding:8px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.7)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.35)';this.style.color='rgba(255,255,255,0.75)'">✦ View Pro plans</button>
     </div>
   </section>
-
-  <!-- PRICING -->
-  <section class="pricing" id="pricing">
-    <div class="pricing-label">Pricing</div>
-    <h2 class="pricing-title">Start free.<br>Upgrade when ready.</h2>
-    <div class="plan-grid">
-      <div class="plan">
-        <div class="plan-tier">Free</div>
-        <div class="plan-price">€0</div>
-        <div class="plan-cadence">forever</div>
-        <ul class="plan-features" style="margin-top:1.25rem;">
-          <li>✓ 3 dinner suggestions</li>
-          <li>✓ Mood-based picks</li>
-          <li>✓ Skip &amp; regenerate (3×)</li>
-          <li class="off">✗ Meal details &amp; ingredients</li>
-          <li class="off">✗ Shopping list</li>
-          <li class="off">✗ Plan the full week</li>
-        </ul>
-        <button class="plan-btn outline" onclick="goToApp('surprise')">Try free</button>
-      </div>
-      <div class="plan featured">
-        <div class="plan-tag">Most popular</div>
-        <div class="plan-tier">Pro</div>
-        <div class="plan-price">€2.50</div>
-        <div class="plan-cadence">per month</div>
-        <div class="plan-alt">or €25/year — save 17%</div>
-        <ul class="plan-features" style="margin-top:1rem;">
-          <li>✓ Unlimited suggestions</li>
-          <li>✓ Full ingredient lists</li>
-          <li>✓ Plan the whole week</li>
-          <li>✓ Smart shopping list</li>
-          <li>✓ Export CSV &amp; PDF</li>
-          <li>✓ Portions by household</li>
-        </ul>
-        <button class="plan-btn" onclick="showUpgrade('lp')">Get Pro</button>
-      </div>
+  <footer class="site-footer">
+    <div class="footer-logo"><em>dinr</em></div>
+    <div class="footer-tagline">Meal planner + grocery list in 30 seconds</div>
+    <div class="footer-links">
+      <a href="#" onclick="showModal('privacy');return false;">Privacy Policy</a>
+      <span class="footer-sep">·</span>
+      <a href="#" onclick="showModal('terms');return false;">Terms &amp; Conditions</a>
+      <span class="footer-sep">·</span>
+      <a href="mailto:hello@dinr.online">hello@dinr.online</a>
     </div>
-  </section>
+    <div class="footer-copy">© 2026 Dinr. All rights reserved.</div>
+  </footer>
+</div>
 
-  <!-- FOOTER CTA -->
-  <section class="footer-cta">
-    <h2>Dinner decided.<br><em style="font-style:italic;color:#A8D5B5;">Tonight.</em></h2>
-    <p>No account. No setup. No more standing in front of the fridge going "meh".</p>
-    <button class="btn-hero-cta" onclick="goToApp('surprise')"><span>🍽️</span> Just decide for me</button>
-  </section>
-
-</div><!-- /landing -->
-
-<!-- ════════════════ APP ════════════════ -->
-<div id="app">
+<!-- ══════════════ SCREEN: MENU ══════════════ -->
+<div id="screen-menu" class="screen">
   <header class="app-header">
-    <div class="app-logo" onclick="goToLanding()"><em>dinr</em></div>
-    <div class="header-right">
-      <span class="gen-counter" id="genCounter"></span>
-      <button class="pro-toggle" id="proToggle" onclick="toggleProMode()" title="Toggle Free/Pro for demo">⭐ Free</button>
-      <button class="back-btn" onclick="goToLanding()">← Back</button>
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <button class="sl-badge-btn" id="slBadgeBtn" onclick="show('shoppinglist')" style="display:none;">
+        🛒 Shopping list <span class="sl-badge-count" id="slBadgeCount">0</span>
+      </button>
+      <span id="hdrProBadge" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button id="hdrUpgradeBtn" class="upgrade-btn" onclick="show('pricing')"><span class="spark">✦</span> Upgrade</button>
+      <button class="back-btn" onclick="show('landing')">← Back</button>
     </div>
   </header>
-
   <main class="app-main">
-    <!-- Tonight section: mood pill + current dish card -->
-    <div class="tonight-header">
-      <div class="tonight-mood-pill" id="moodPill" onclick="changeMood()">🫕 Comfort <span style="opacity:0.6;font-size:10px;margin-left:2px;">change</span></div>
-      <div class="tonight-title">What's for<br><em>tonight?</em></div>
-    </div>
-
-    <!-- dish card swipe area -->
-    <div class="dish-stage" id="dishStage"></div>
-
-    <div class="dish-actions" id="dishActions">
-      <button class="btn-skip" onclick="skipDish()">✕ Not tonight</button>
-      <button class="btn-pick" onclick="pickDish()">✓ This one!</button>
-    </div>
-
-    <!-- preferences — hidden until after first pick -->
-    <div class="refine-section" id="refineSection" style="display:none;">
-      <div class="refine-title">Preferences</div>
-      <div class="refine-row" id="avoidChips">
-        <div class="chip" data-val="vegan"   onclick="toggleVeto(this)">🌱 Vegan</div>
-        <div class="chip" data-val="veggie"  onclick="toggleVeto(this)">🌿 Vegetarian</div>
-        <div class="chip" data-val="gluten"  onclick="toggleVeto(this)">🌾 Gluten-free</div>
-        <div class="chip" data-val="lactose" onclick="toggleVeto(this)">🥛 Lactose-free</div>
-        <div class="chip" data-val="nuts"    onclick="toggleVeto(this)">🥜 No nuts</div>
-        <div class="chip" data-val="pork"    onclick="toggleVeto(this)">🐷 No pork</div>
-      </div>
-      <div class="persons-mini" style="margin-top:0.75rem;">
-        <div class="persons-mini-row">
-          <div class="person-group">
-            <div class="person-label">🧑 Adults</div>
-            <div class="stepper">
-              <button class="step-btn" onclick="adjustPersons('adults',-1)">−</button>
-              <div class="step-val" id="val-adults">2</div>
-              <button class="step-btn" onclick="adjustPersons('adults',1)">+</button>
-            </div>
-          </div>
-          <div class="person-group">
-            <div class="person-label">👧 Kids</div>
-            <div class="stepper">
-              <button class="step-btn" onclick="adjustPersons('kids',-1)">−</button>
-              <div class="step-val" id="val-kids">0</div>
-              <button class="step-btn" onclick="adjustPersons('kids',1)">+</button>
-            </div>
-          </div>
-        </div>
+    <div class="chip-section">
+      <div class="sec-label">What do you enjoy? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+      <div class="chip-wrap" id="likeChips">
+        <div class="chip" data-val="pasta"         onclick="toggleChip(this)">Pasta</div>
+        <div class="chip" data-val="soup"          onclick="toggleChip(this)">Soup</div>
+        <div class="chip" data-val="rice"          onclick="toggleChip(this)">Rice dishes</div>
+        <div class="chip" data-val="pizza"         onclick="toggleChip(this)">Pizza</div>
+        <div class="chip" data-val="wraps"         onclick="toggleChip(this)">Wraps & tacos</div>
+        <div class="chip" data-val="stir"          onclick="toggleChip(this)">Stir-fry</div>
+        <div class="chip" data-val="curry"         onclick="toggleChip(this)">Curry</div>
+        <div class="chip" data-val="noodles"       onclick="toggleChip(this)">Noodles</div>
+        <div class="chip" data-val="seafood"       onclick="toggleChip(this)">Seafood</div>
+        <div class="chip" data-val="veggie"        onclick="toggleChip(this)">Vegetarian</div>
+        <div class="chip" data-val="quick"         onclick="toggleChip(this)">Quick meals</div>
+        <div class="chip" data-val="healthy"       onclick="toggleChip(this)">Healthy</div>
+        <div class="chip" data-val="kids"          onclick="toggleChip(this)">Kid-friendly</div>
+        <div class="chip" data-val="mediterranean" onclick="toggleChip(this)">Mediterranean</div>
       </div>
     </div>
-
-    <!-- selected meals accumulate here -->
-    <div class="week-section" id="weekSection" style="display:none;"></div>
-
-    <div id="limitBanner"></div>
+    <div class="chip-section">
+      <div class="sec-label">Anything you'd rather avoid? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+      <div class="chip-wrap" id="dislikeChips">
+        <div class="chip" data-val="fish"       onclick="toggleVeto(this)">Fish</div>
+        <div class="chip" data-val="shellfish"  onclick="toggleVeto(this)">Shellfish</div>
+        <div class="chip" data-val="mushroom"   onclick="toggleVeto(this)">Mushrooms</div>
+        <div class="chip" data-val="spicy"      onclick="toggleVeto(this)">Spicy</div>
+        <div class="chip" data-val="onion"      onclick="toggleVeto(this)">Onions</div>
+        <div class="chip" data-val="garlic"     onclick="toggleVeto(this)">Garlic</div>
+        <div class="chip" data-val="veggie"     onclick="toggleVeto(this)">Vegetarian only</div>
+        <div class="chip" data-val="gluten"     onclick="toggleVeto(this)">Gluten</div>
+        <div class="chip" data-val="nuts"       onclick="toggleVeto(this)">Nuts</div>
+        <div class="chip" data-val="lactose"    onclick="toggleVeto(this)">Lactose</div>
+        <div class="chip" data-val="pork"       onclick="toggleVeto(this)">Pork</div>
+        <div class="chip" data-val="beef"       onclick="toggleVeto(this)">Beef</div>
+        <div class="chip" data-val="eggs"       onclick="toggleVeto(this)">Eggs</div>
+      </div>
+    </div>
+    <div class="gen-wrap">
+      <button class="btn-gen" id="genBtn" onclick="generate()">✦ Get my dinners</button>
+    </div>
+    <div id="out"></div>
   </main>
 </div>
 
-<!-- ════════════════ SHOPPING LIST ════════════════ -->
-<div id="shopview">
-  <header class="shop-header">
-    <div class="app-logo" onclick="goToApp()"><em>dinr</em></div>
-    <button class="back-btn" onclick="goToApp()">← Back</button>
+<!-- ══════════════ SCREEN: INGREDIENT DETAIL ══════════════ -->
+<div id="screen-detail" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <button class="sl-badge-btn" id="slBadgeBtnDetail" onclick="show('shoppinglist')" style="display:none;">
+        🛒 <span class="sl-badge-count" id="slBadgeCountDetail">0</span>
+      </button>
+      <span id="hdrProBadgeDetail" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button class="back-btn" onclick="show('menu')">← Back to menu</button>
+    </div>
   </header>
-  <main class="shop-main" id="shopContent"></main>
+  <div class="detail-main" id="detailContent"></div>
 </div>
 
-<!-- DETAIL MODAL -->
-<div id="modalOverlay" style="display:none;" onclick="closeModalBackdrop(event)">
-  <div class="modal-overlay">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div id="modalInner"></div>
+<!-- ══════════════ SCREEN: SHOPPING LIST ══════════════ -->
+<div id="screen-shoppinglist" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <span id="hdrProBadgeSL" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button class="back-btn" onclick="show('menu')">← Back to menu</button>
+    </div>
+  </header>
+  <div class="sl-main" id="slContent"></div>
+</div>
+
+<!-- ══════════════ SCREEN: PRICING ══════════════ -->
+<div id="screen-pricing" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <span id="hdrProBadgePricing" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button class="back-btn" onclick="history.go(-1)||show('menu')">← Back</button>
+    </div>
+  </header>
+  <div class="pricing-main">
+    <div class="pricing-hero">
+      <h1>Simple.<br>Honestly priced.</h1>
+      <p>Start free. Upgrade whenever you want more.</p>
+    </div>
+    <div class="billing-toggle">
+      <button class="billing-btn active" id="billMonthBtn" onclick="setBilling('month')">Monthly</button>
+      <button class="billing-btn" id="billYearBtn" onclick="setBilling('year')">Yearly <span class="save-pill">save 16%</span></button>
+    </div>
+    <div class="plan-grid">
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><sup>€</sup>0</div>
+        <div class="plan-period"></div>
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Generate dinner ideas</li>
+          <li><span class="fi fi-yes">✓</span> ~70 curated dishes</li>
+          <li><span class="fi fi-yes">✓</span> Shopping list</li>
+          <li><span class="fi fi-yes">✓</span> Tick off in-store</li>
+          <li><span class="fi fi-yes">✓</span> CSV / print export</li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Save your profile</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">AI-powered suggestions</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Smart shopping list</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Favourites &amp; blocked dishes</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Share with family</span></li>
+        </ul>
+        <button class="plan-cta" id="freePlanCta" onclick="handleFreeCta()">Current plan</button>
+      </div>
+      <!-- PRO -->
+      <div class="plan-card featured">
+        <div class="plan-badge">Recommended</div>
+        <div class="plan-name">Pro ✦</div>
+        <div class="plan-price" id="proPrice"><sup>€</sup>2,99</div>
+        <div class="plan-period" id="proPeriod">per maand · <em id="proSaveLine"></em></div>
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Everything in Free</li>
+          <li><span class="fi fi-yes">✓</span> <strong>Save your profile</strong></li>
+          <li><span class="fi fi-yes">✓</span> <strong>AI suggestions</strong> via Claude</li>
+          <li><span class="fi fi-yes">✓</span> <strong>Smart shopping list</strong></li>
+          <li><span class="fi fi-yes">✓</span> Seasonal menus</li>
+          <li><span class="fi fi-yes">✓</span> Favourites &amp; blocked dishes</li>
+          <li><span class="fi fi-yes">✓</span> Share with family <em style="font-size:10px;color:var(--text3);font-style:normal;">(coming soon)</em></li>
+          <li><span class="fi fi-yes">✓</span> "What's in my pantry?" <em style="font-size:10px;color:var(--text3);font-style:normal;">(coming soon)</em></li>
+        </ul>
+        <button class="plan-cta primary" id="proPlanCta" onclick="handleProCta()">Start Pro →</button>
+      </div>
+    </div>
+    <div class="pricing-footer">
+      <p>No hidden costs. Cancel anytime.</p>
+      <p style="margin-top:6px;">Questions? <a href="mailto:hello@dinr.online">hello@dinr.online</a></p>
     </div>
   </div>
 </div>
 
-<!-- UPGRADE MODAL -->
-<div id="upgradeOverlay" style="display:none;" onclick="closeUpgradeBackdrop(event)">
-  <div class="modal-overlay">
-    <div class="upgrade-modal">
-      <span class="upgrade-emoji-big" id="upgradeEmoji">✨</span>
-      <div class="upgrade-title" id="upgradeTitle">Unlock the full experience</div>
-      <div class="upgrade-sub" id="upgradeSub">Less than a coffee a month.</div>
-      <div class="upgrade-plans">
-        <div class="upgrade-plan" onclick="selectPlan('monthly')">
-          <div class="upgrade-plan-price">€2.50</div>
-          <div class="upgrade-plan-per">per month</div>
+<!-- ══════════════ UPGRADE MODAL ══════════════ -->
+<div id="upgradeModal" style="display:none;">
+  <div class="modal-overlay" onclick="closeUpgradeModal(event)">
+    <div class="upgrade-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-drag"></div>
+
+      <!-- STEP 1: Plan kiezen -->
+      <div class="upgrade-step active" id="upgradeStep1">
+        <div class="step-badge">Step 1 of 2</div>
+        <div class="sheet-title">Choose your plan</div>
+        <div class="sheet-sub">Cancel anytime. No hassle.</div>
+        <div class="plan-select-row">
+          <div class="plan-select-card" id="pscMonth" onclick="selectPlan('month')">
+            <div class="psc-label">Monthly</div>
+            <div class="psc-price" id="pscMonthPrice">€2.99</div>
+            <div class="psc-period">per month</div>
+          </div>
+          <div class="plan-select-card chosen" id="pscYear" onclick="selectPlan('year')">
+            <div class="psc-label">Yearly</div>
+            <div class="psc-price chosen" id="pscYearPrice">€29.99</div>
+            <div class="psc-period">per year</div>
+            <span class="psc-save">save 16%</span>
+          </div>
         </div>
-        <div class="upgrade-plan best" onclick="selectPlan('yearly')">
-          <div class="upgrade-plan-badge">Best value</div>
-          <div class="upgrade-plan-price">€25</div>
-          <div class="upgrade-plan-per">per year</div>
-          <div class="upgrade-plan-save">Save 17%</div>
+        <div class="perks-list">
+          <div class="perk-item"><div class="perk-icon">🧠</div> Profiel opslaan — nooit meer opnieuw instellen</div>
+          <div class="perk-item"><div class="perk-icon">✨</div> AI-powered suggestions via Claude</div>
+          <div class="perk-item"><div class="perk-icon">❤️</div> Favorieten & geblokkeerde gerechten</div>
+          <div class="perk-item"><div class="perk-icon">🔒</div> Cancel anytime</div>
+        </div>
+        <button class="sheet-btn" onclick="goUpgradeStep(2)">Continue to payment →</button>
+        <button class="sheet-btn outline" onclick="closeUpgradeModal()">Maybe later</button>
+      </div>
+
+      <!-- STEP 2: Betaling -->
+      <div class="upgrade-step" id="upgradeStep2">
+        <div class="step-badge">Step 2 of 2</div>
+        <div class="sheet-title">Betaling</div>
+        <div class="sheet-sub" id="paymentSubline">Yearly plan · €29.99/year</div>
+
+        <div class="contact-box">
+          <p>Payment is coming soon.<br>Want to be one of our first Pro users?</p>
+          <a href="mailto:hello@dinr.online?subject=Dinr%20Pro%20interest&body=Hi%2C%20I%27m%20interested%20in%20Dinr%20Pro!">📩 Get in touch via hello@dinr.online</a>
+          <div class="contact-note">We'll activate your account manually and notify you<br>when payment goes live. First 7 days free.</div>
+        </div>
+
+        <div style="height:1rem;"></div>
+        <button class="sheet-btn" onclick="activateProDemo()">✦ Activeer Pro (demo)</button>
+        <button class="sheet-btn outline" onclick="goUpgradeStep(1)">← Back</button>
+        <div class="trust-row">
+          <span class="trust-item">🔒 Secure payment</span>
+          <span class="trust-item">✓ Cancel anytime</span>
+          <span class="trust-item">🇳🇱 EU company</span>
         </div>
       </div>
-      <div class="upgrade-feats">
-        <div class="upgrade-feat"><span>♾️</span> Unlimited suggestions</div>
-        <div class="upgrade-feat"><span>📋</span> Ingredient lists &amp; details</div>
-        <div class="upgrade-feat"><span>🛒</span> Smart shopping list</div>
-        <div class="upgrade-feat"><span>📄</span> Export CSV &amp; PDF</div>
-        <div class="upgrade-feat"><span>👨‍👩‍👧</span> Portions by household</div>
+
+      <!-- STEP 3: Succes -->
+      <div class="upgrade-step" id="upgradeStep3">
+        <div class="success-wrap">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Welcome to Pro!</div>
+          <div class="success-sub">You now have access to all Pro features. Enjoy!</div>
+          <div class="success-perks">
+            <div class="perk-item"><div class="perk-icon">🧠</div> Your profile is saved going forward</div>
+            <div class="perk-item"><div class="perk-icon">✨</div> AI suggestions are now active</div>
+            <div class="perk-item"><div class="perk-icon">❤️</div> Favorieten & blokkeren beschikbaar</div>
+          </div>
+          <button class="sheet-btn" onclick="closeUpgradeModal();show('menu');">Get started →</button>
+        </div>
       </div>
-      <button class="btn-upgrade" id="upgradeBtn" onclick="handleUpgradeClick()">Get Pro — €25/year</button>
-      <div class="upgrade-dismiss" onclick="closeUpgrade()">Maybe later</div>
+
     </div>
   </div>
 </div>
 
-<!-- MOOD PICKER MODAL (change mood mid-session) -->
-<div id="moodOverlay" style="display:none;" onclick="closeMoodBackdrop(event)">
-  <div class="modal-overlay">
-    <div class="upgrade-modal" style="text-align:left;">
-      <div class="modal-handle" style="margin-bottom:1rem;"></div>
-      <div class="upgrade-title" style="margin-bottom:1.25rem;">Change mood</div>
-      <div class="mood-grid" style="max-width:100%;">
-        <button class="mood-btn" style="background:var(--bg);border-color:var(--border2);" onclick="setMoodFromPicker('comfort')">
-          <span class="mood-emoji">🫕</span><span class="mood-text"><span class="mood-name" style="color:var(--text);">Comfort</span><span class="mood-desc" style="color:var(--text3);">Hearty &amp; satisfying</span></span>
-        </button>
-        <button class="mood-btn" style="background:var(--bg);border-color:var(--border2);" onclick="setMoodFromPicker('healthy')">
-          <span class="mood-emoji">🥗</span><span class="mood-text"><span class="mood-name" style="color:var(--text);">Healthy</span><span class="mood-desc" style="color:var(--text3);">Light &amp; nutritious</span></span>
-        </button>
-        <button class="mood-btn" style="background:var(--bg);border-color:var(--border2);" onclick="setMoodFromPicker('quick')">
-          <span class="mood-emoji">⚡</span><span class="mood-text"><span class="mood-name" style="color:var(--text);">Quick</span><span class="mood-desc" style="color:var(--text3);">On the table fast</span></span>
-        </button>
-        <button class="mood-btn" style="background:var(--bg);border-color:var(--border2);" onclick="setMoodFromPicker('adventure')">
-          <span class="mood-emoji">🌍</span><span class="mood-text"><span class="mood-name" style="color:var(--text);">Something new</span><span class="mood-desc" style="color:var(--text3);">Surprise me</span></span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- DEV TOGGLE -->
+<button class="dev-toggle" id="devToggle" onclick="devTogglePro()">
+  <span class="dev-toggle-dot" id="devDot"></span>
+  <span id="devToggleLabel">Free mode · click for Pro</span>
+</button>
 
 <script>
-// ════════════ DATA ════════════
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 
-const MOOD_META = {
-  comfort:   { emoji:'🫕', label:'Comfort',       tags:['kids','pasta','rice','soup'] },
-  healthy:   { emoji:'🥗', label:'Healthy',        tags:['healthy','veggie','seafood'] },
-  quick:     { emoji:'⚡', label:'Quick',          tags:['quick','wraps','stir','noodles'] },
-  adventure: { emoji:'🌍', label:'Something new',  tags:['mediterranean','curry','spicy'] },
-  surprise:  { emoji:'🎲', label:'Surprise',       tags:[] },
+const CATEGORIES = {
+  '🥩 Vlees & vis':   ['chicken','beef','salmon','cod','prawn','shrimp','lamb','chorizo','bacon','sausage','minced','fish','tuna','anchovy'],
+  '🥦 Groenten':      ['tomato','onion','leek','carrot','pepper','courgette','broccoli','spinach','mushroom','pak choi','lettuce','cabbage','kale','edamame','avocado','cucumber'],
+  '🧀 Zuivel & ei':   ['egg','milk','cream','butter','mozzarella','parmesan','feta','ricotta','yoghurt','sour cream','cheddar','cheese','béchamel'],
+  '🌾 Pasta, graan & brood': ['pasta','spaghetti','lasagne','linguine','tagliatelle','penne','rice','noodle','couscous','bread','pita','tortilla','flatbread','taco','bun','shell','flour'],
+  '🥫 Blik & saus':   ['tomato sauce','passata','canned tomato','coconut milk','stock','broth','pesto','hummus','salsa','soy sauce','oyster sauce','teriyaki','BBQ sauce','fish sauce','tahini','kecap'],
+  '🧄 Kruiden & specerijen': ['garlic','ginger','cumin','coriander','paprika','turmeric','oregano','thyme','basil','mint','parsley','dill','cinnamon','chilli','pepper','salt','spice','herb'],
+  '🫙 Olie & overig': ['olive oil','sesame oil','vegetable oil','oil','maple syrup','honey','mustard','vinegar','lime','lemon','capers','olives'],
+};
+
+const INGREDIENTS = {
+  'Creamy spaghetti bolognese with fresh herbs':['500g spaghetti','400g minced beef','1 onion','2 garlic cloves','400ml tomato sauce','50ml cream','fresh basil','olive oil','salt & pepper'],
+  'Chicken satay with rice and cucumber salad':['4 chicken thighs','300g jasmine rice','4 tbsp peanut butter','2 tbsp soy sauce','1 lime','1 cucumber','fresh coriander','coconut milk'],
+  'Vegetable soup with crusty bread':['2 carrots','2 potatoes','1 leek','1 onion','1.2L vegetable stock','400g canned tomatoes','thyme','crusty bread','olive oil'],
+  'Oven-baked salmon with lemon potatoes':['4 salmon fillets','600g new potatoes','2 lemons','4 garlic cloves','fresh dill','olive oil','capers','salt & pepper'],
+  'Grilled chicken wraps with garlic sauce':['4 chicken breasts','8 flour tortillas','1 head lettuce','2 tomatoes','100ml garlic sauce','1 red onion','paprika','olive oil'],
+  'Coconut chicken curry with jasmine rice':['4 chicken thighs','400ml coconut milk','300g jasmine rice','1 onion','2 tbsp red curry paste','fish sauce','lime leaves','fresh coriander'],
+  'Pancakes with bacon and maple syrup':['200g plain flour','2 eggs','300ml milk','200g streaky bacon','maple syrup','butter','pinch of salt'],
+  'Mashed potato stew with smoked sausage':['1kg potatoes','4 smoked sausages','1 onion','200ml milk','butter','mustard','kale (optional)'],
+  'Lasagne with beef and béchamel sauce':['500g lasagne sheets','400g minced beef','700ml tomato sauce','500ml béchamel sauce','150g mozzarella','50g parmesan','1 onion','2 garlic cloves'],
+  'Nasi goreng with chicken and fried egg':['300g jasmine rice','2 chicken breasts','4 eggs','3 tbsp kecap manis','2 tbsp sambal','1 onion','2 garlic cloves','spring onions','cucumber'],
+  'Tofu stir-fry with pak choi and sesame':['400g firm tofu','2 pak choi','3 tbsp soy sauce','1 tbsp sesame oil','2 tbsp sesame seeds','2 garlic cloves','ginger','vegetable oil','noodles'],
+  'Mushroom risotto with parmesan':['300g arborio rice','400g mushrooms','1 onion','3 garlic cloves','1L vegetable stock','100ml white wine','60g parmesan','butter','fresh thyme'],
+  'Pesto pasta with cherry tomatoes and mozzarella':['400g pasta','200g cherry tomatoes','125g mozzarella','4 tbsp green pesto','olive oil','fresh basil','salt & pepper'],
+  'Honey-glazed chicken thighs with roasted veg':['6 chicken thighs','3 tbsp honey','2 tbsp soy sauce','2 tbsp Dijon mustard','2 bell peppers','1 courgette','red onion','olive oil'],
+  'Tomato lentil soup with sourdough':['200g red lentils','400g canned tomatoes','1 onion','2 garlic cloves','1L vegetable stock','cumin','turmeric','sourdough bread','olive oil'],
+  'Fish tacos with avocado and lime slaw':['4 white fish fillets','8 small tortillas','2 avocados','200g cabbage','2 limes','sour cream','cumin','coriander','chilli flakes'],
+  'Greek chicken with tzatziki and pita':['4 chicken breasts','4 pita breads','200ml tzatziki','200g cherry tomatoes','1 cucumber','100g feta','olives','lemon','oregano'],
+  'Beef stir-fry with broccoli and oyster sauce':['400g beef strips','1 head broccoli','3 tbsp oyster sauce','2 tbsp soy sauce','sesame oil','2 garlic cloves','ginger','noodles or rice'],
+  'Spinach and ricotta stuffed pasta shells':['20 jumbo pasta shells','250g ricotta','200g spinach','400ml tomato sauce','50g parmesan','1 egg','nutmeg','mozzarella'],
+  'Teriyaki salmon with steamed edamame':['4 salmon fillets','4 tbsp teriyaki sauce','200g edamame','300g rice','sesame seeds','spring onions','ginger'],
+  'Homemade pizza margherita with fresh basil':['pizza dough (2 balls)','400ml tomato passata','200g mozzarella','fresh basil','olive oil','sea salt','garlic'],
+  'Chorizo pasta with roasted peppers':['400g penne','200g chorizo','3 roasted peppers','400g canned tomatoes','1 onion','2 garlic cloves','smoked paprika','parmesan'],
+  'Thai green curry with vegetables and rice':['400ml coconut milk','2 tbsp green curry paste','300g mixed vegetables','300g jasmine rice','lime leaves','fish sauce','fresh basil','lime'],
+  'Baked cod with herb crust and mashed potato':['4 cod fillets','1kg potatoes','50g breadcrumbs','fresh parsley','lemon zest','butter','garlic','200ml milk'],
+  'Falafel bowl with hummus and flatbread':['400g canned chickpeas','1 onion','2 garlic cloves','cumin','coriander','flatbreads','200g hummus','tomatoes','cucumber','tahini'],
+  'BBQ pulled chicken with coleslaw and buns':['4 chicken breasts','150ml BBQ sauce','4 burger buns','200g cabbage','2 carrots','mayo','apple cider vinegar'],
+  'Creamy mushroom tagliatelle':['400g tagliatelle','400g mushrooms','200ml cream','1 onion','3 garlic cloves','thyme','parmesan','white wine','olive oil'],
+  'Spiced lamb meatballs with couscous':['500g minced lamb','200g couscous','cumin','coriander','garlic','400g canned tomatoes','mint yoghurt','red onion','lemon'],
+  'Vietnamese noodle soup with chicken':['2 chicken breasts','200g rice noodles','1.2L chicken stock','star anise','ginger','fish sauce','spring onions','bean sprouts','lime','fresh herbs'],
+  'Shakshuka with crusty bread':['6 eggs','400g canned tomatoes','1 onion','2 garlic cloves','2 bell peppers','cumin','paprika','chilli flakes','crusty bread','feta'],
+  'Prawn stir-fry with noodles and ginger':['400g prawns','200g egg noodles','3cm fresh ginger','3 garlic cloves','soy sauce','sesame oil','spring onions','pak choi','lime'],
+  'Mediterranean baked chicken with olives and feta':['4 chicken thighs','100g olives','100g feta','400g cherry tomatoes','1 red onion','oregano','lemon','olive oil'],
+  'Beef tacos with salsa and sour cream':['400g minced beef','8 taco shells','200ml salsa','150ml sour cream','1 avocado','1 onion','cumin','cheddar','lime','coriander'],
+  'Garlic butter shrimp with linguine':['400g linguine','400g raw shrimp','6 garlic cloves','100g butter','white wine','parsley','lemon','chilli flakes'],
+  'Ramen with soft-boiled egg and spring onion':['2 ramen noodle packs','4 eggs','1L chicken or pork stock','soy sauce','miso paste','spring onions','nori','sesame seeds','bamboo shoots'],
 };
 
 const POOL = [
-  { dish:'Creamy spaghetti bolognese', emoji:'🍝', tags:['pasta','kids','beef'], price:'gemiddeld', time:35,
-    desc:'The one dish your entire family actually agrees on. Rich beef ragu, fresh herbs, zero complaints.',
-    ingredients:[['Spaghetti','400g'],['Minced beef','400g'],['Tomato passata','500ml'],['Onion','1'],['Garlic','2 cloves'],['Olive oil','2 tbsp'],['Fresh herbs','handful']] },
-  { dish:'Chicken satay with rice', emoji:'🍗', tags:['rice','quick','kids'], price:'gemiddeld', time:25,
-    desc:'Peanut sauce so good you\'ll be licking the spoon. Grilled chicken, jasmine rice, happy faces.',
-    ingredients:[['Chicken thighs','600g'],['Jasmine rice','300g'],['Peanut butter','4 tbsp'],['Soy sauce','3 tbsp'],['Cucumber','1'],['Lime','1'],['Coconut milk','100ml']] },
-  { dish:'Vegetable soup with crusty bread', emoji:'🥣', tags:['soup','healthy','veggie'], price:'goedkoop', time:30,
-    desc:'Your fridge\'s last vegetables, elevated to something actually delicious. Budget hero.',
-    ingredients:[['Carrots','3'],['Celery','2 stalks'],['Onion','1'],['Potato','2'],['Vegetable stock','1L'],['Thyme','few sprigs'],['Sourdough bread','1 loaf']] },
-  { dish:'Oven-baked salmon with lemon potatoes', emoji:'🐟', tags:['fish','healthy','seafood'], price:'duur', time:35,
-    desc:'Fancy enough for guests, easy enough for a Tuesday. Flaky salmon, crispy potatoes, chef kiss.',
-    ingredients:[['Salmon fillets','4×150g'],['Baby potatoes','600g'],['Lemon','2'],['Dill','1 bunch'],['Olive oil','3 tbsp'],['Garlic','3 cloves'],['Capers','1 tbsp']] },
-  { dish:'Chicken wraps with garlic sauce', emoji:'🌯', tags:['wraps','quick'], price:'gemiddeld', time:20,
-    desc:'20 minutes. Crispy chicken, crunchy salad, obscene amounts of garlic sauce. No judgement.',
-    ingredients:[['Chicken breast','500g'],['Tortilla wraps','6'],['Yoghurt','150ml'],['Garlic','2 cloves'],['Lettuce','1 head'],['Tomato','2'],['Cucumber','1']] },
-  { dish:'Coconut chicken curry', emoji:'🍛', tags:['curry','rice','healthy'], price:'gemiddeld', time:30,
-    desc:'Fragrant, silky, deeply satisfying. Makes the whole house smell like a good decision.',
-    ingredients:[['Chicken thighs','600g'],['Coconut milk','400ml'],['Curry paste','2 tbsp'],['Jasmine rice','300g'],['Spinach','100g'],['Onion','1'],['Ginger','1 thumb']] },
-  { dish:'Pancakes with bacon and maple syrup', emoji:'🥞', tags:['kids','quick'], price:'goedkoop', time:20,
-    desc:'Breakfast for dinner. The kids will lose their minds. The adults will quietly love it too.',
-    ingredients:[['Plain flour','250g'],['Eggs','2'],['Milk','300ml'],['Bacon','200g'],['Maple syrup','4 tbsp'],['Butter','50g'],['Baking powder','1 tsp']] },
-  { dish:'Mashed potato stew with smoked sausage', emoji:'🥔', tags:['kids','comfort'], price:'goedkoop', time:30,
-    desc:'Dutch stamppot. Creamy mash, sauerkraut, smoky sausage. It\'s basically a hug on a plate.',
-    ingredients:[['Potatoes','1kg'],['Smoked sausage','400g'],['Butter','50g'],['Milk','100ml'],['Sauerkraut','300g'],['Mustard','1 tbsp'],['Nutmeg','pinch']] },
-  { dish:'Lasagne with beef and béchamel', emoji:'🫕', tags:['pasta','kids','beef'], price:'gemiddeld', time:55,
-    desc:'Takes a while. Worth every minute. The layers, the bubbling cheese, the silence when everyone starts eating.',
-    ingredients:[['Lasagne sheets','250g'],['Minced beef','500g'],['Tomato passata','500ml'],['Butter','50g'],['Plain flour','50g'],['Milk','500ml'],['Parmesan','50g']] },
-  { dish:'Nasi goreng with fried egg', emoji:'🍚', tags:['rice','quick','eggs'], price:'goedkoop', time:20,
-    desc:'The perfect use for leftover rice. Indonesian-style fried rice with a jammy egg on top. Yes please.',
-    ingredients:[['Cooked rice','600g'],['Chicken breast','300g'],['Eggs','4'],['Soy sauce','4 tbsp'],['Kecap manis','2 tbsp'],['Spring onion','4'],['Sambal','1 tsp']] },
-  { dish:'Tofu stir-fry with pak choi', emoji:'🥢', tags:['stir','quick','veggie'], price:'goedkoop', time:20,
-    desc:'Crispy tofu that actually tastes good. Yes, really. Sesame-ginger sauce does the heavy lifting.',
-    ingredients:[['Firm tofu','400g'],['Pak choi','2 heads'],['Sesame oil','2 tbsp'],['Soy sauce','3 tbsp'],['Ginger','1 thumb'],['Garlic','2 cloves'],['Sesame seeds','2 tbsp']] },
-  { dish:'Mushroom risotto with parmesan', emoji:'🍄', tags:['rice','veggie','mushroom'], price:'gemiddeld', time:40,
-    desc:'Requires stirring. We know. But the result is so creamy and deeply savoury that it\'s worth it.',
-    ingredients:[['Arborio rice','300g'],['Mixed mushrooms','400g'],['Vegetable stock','1L'],['Parmesan','80g'],['White wine','100ml'],['Shallot','2'],['Butter','50g']] },
-  { dish:'Pesto pasta with tomatoes and mozzarella', emoji:'🍝', tags:['pasta','quick','veggie'], price:'goedkoop', time:15,
-    desc:'15 minutes. Barely any washing up. Tastes like you actually tried. Peak weeknight dinner.',
-    ingredients:[['Penne pasta','400g'],['Pesto','4 tbsp'],['Cherry tomatoes','300g'],['Mozzarella','125g'],['Olive oil','2 tbsp'],['Basil','handful'],['Pine nuts','2 tbsp']] },
-  { dish:'Honey-glazed chicken with roasted veg', emoji:'🍗', tags:['healthy'], price:'gemiddeld', time:40,
-    desc:'Sticky honey-glazed thighs with caramelised roasted vegetables. Effortlessly good.',
-    ingredients:[['Chicken thighs','8'],['Honey','3 tbsp'],['Soy sauce','2 tbsp'],['Courgette','1'],['Bell pepper','2'],['Sweet potato','2'],['Olive oil','3 tbsp']] },
-  { dish:'Tomato lentil soup', emoji:'🥣', tags:['soup','healthy','veggie'], price:'goedkoop', time:30,
-    desc:'Filling red lentil soup with smoked paprika and a thick slice of sourdough.',
-    ingredients:[['Red lentils','250g'],['Tinned tomatoes','400g'],['Vegetable stock','1L'],['Onion','1'],['Cumin','1 tsp'],['Smoked paprika','1 tsp'],['Sourdough','1 loaf']] },
-  { dish:'Fish tacos with avocado', emoji:'🌮', tags:['fish','wraps','quick','seafood'], price:'gemiddeld', time:20,
-    desc:'Crispy fish, creamy avocado and a sharp lime slaw in warm tortillas.',
-    ingredients:[['White fish fillets','500g'],['Tortillas','8'],['Avocado','2'],['Cabbage','¼ head'],['Lime','2'],['Sour cream','100ml'],['Coriander','handful']] },
-  { dish:'Greek chicken with tzatziki', emoji:'🫓', tags:['healthy','quick','mediterranean'], price:'gemiddeld', time:25,
-    desc:'Marinated chicken with cool tzatziki, warm pita and a squeeze of lemon.',
-    ingredients:[['Chicken breast','500g'],['Greek yoghurt','200ml'],['Cucumber','1'],['Pita bread','4'],['Lemon','1'],['Garlic','2 cloves'],['Oregano','1 tsp']] },
-  { dish:'Beef stir-fry with broccoli', emoji:'🥦', tags:['stir','quick','beef'], price:'gemiddeld', time:20,
-    desc:'Tender beef strips with crisp broccoli in a rich oyster sauce. Ready in 20 minutes.',
-    ingredients:[['Beef strips','400g'],['Broccoli','1 head'],['Oyster sauce','3 tbsp'],['Soy sauce','2 tbsp'],['Garlic','2 cloves'],['Ginger','1 thumb'],['Sesame oil','1 tbsp']] },
-  { dish:'Homemade pizza margherita', emoji:'🍕', tags:['pizza','kids','veggie'], price:'goedkoop', time:30,
-    desc:'Crispy homemade base, tangy tomato sauce, fresh mozzarella and basil. A classic.',
-    ingredients:[['Pizza dough','500g'],['Tomato passata','200ml'],['Mozzarella','250g'],['Fresh basil','handful'],['Olive oil','2 tbsp'],['Garlic','1 clove'],['Dried oregano','1 tsp']] },
-  { dish:'Thai green curry with vegetables', emoji:'🍛', tags:['curry','rice','veggie','spicy'], price:'gemiddeld', time:30,
-    desc:'Fragrant green curry with seasonal vegetables and jasmine rice. Warming and aromatic.',
-    ingredients:[['Green curry paste','2 tbsp'],['Coconut milk','400ml'],['Jasmine rice','300g'],['Courgette','1'],['Aubergine','1'],['Bamboo shoots','100g'],['Thai basil','handful']] },
-  { dish:'Falafel bowl with hummus', emoji:'🧆', tags:['veggie','healthy','mediterranean'], price:'goedkoop', time:20,
-    desc:'Crispy falafel on a bed of hummus with fresh vegetables and tahini drizzle.',
-    ingredients:[['Falafel (ready-made)','300g'],['Hummus','200g'],['Flatbread','4'],['Cherry tomatoes','200g'],['Cucumber','1'],['Red onion','1'],['Tahini','2 tbsp']] },
-  { dish:'BBQ pulled chicken burger', emoji:'🍔', tags:['kids','quick'], price:'gemiddeld', time:25,
-    desc:'Slow-cooked pulled chicken in smoky BBQ sauce on a toasted brioche bun with coleslaw.',
-    ingredients:[['Chicken breast','600g'],['BBQ sauce','150ml'],['Burger buns','6'],['Cabbage','¼ head'],['Carrot','2'],['Mayonnaise','3 tbsp'],['Apple cider vinegar','1 tbsp']] },
-  { dish:'Creamy mushroom tagliatelle', emoji:'🍝', tags:['pasta','quick','veggie','mushroom'], price:'gemiddeld', time:20,
-    desc:'Silky tagliatelle with wild mushrooms, cream and fresh thyme. Done in 20 minutes.',
-    ingredients:[['Tagliatelle','400g'],['Mixed mushrooms','350g'],['Double cream','150ml'],['Parmesan','50g'],['Shallot','2'],['Garlic','2 cloves'],['Thyme','few sprigs']] },
-  { dish:'Vietnamese noodle soup', emoji:'🍜', tags:['soup','noodles','healthy','quick'], price:'gemiddeld', time:25,
-    desc:'A light, fragrant broth with tender chicken, rice noodles and fresh lime.',
-    ingredients:[['Rice noodles','250g'],['Chicken stock','1.5L'],['Chicken breast','400g'],['Bean sprouts','100g'],['Spring onion','4'],['Lime','1'],['Fish sauce','2 tbsp']] },
-  { dish:'Shakshuka with crusty bread', emoji:'🍳', tags:['quick','veggie','spicy','mediterranean','eggs'], price:'goedkoop', time:25,
-    desc:'Eggs poached in a spiced tomato and pepper sauce. Scoop it up with crusty bread.',
-    ingredients:[['Eggs','6'],['Tinned tomatoes','800g'],['Bell pepper','2'],['Onion','1'],['Cumin','1 tsp'],['Smoked paprika','1 tsp'],['Crusty bread','1 loaf']] },
-  { dish:'Mediterranean baked chicken', emoji:'🍗', tags:['healthy','mediterranean'], price:'gemiddeld', time:45,
-    desc:'Chicken thighs baked with kalamata olives, feta and cherry tomatoes. Effortless and stunning.',
-    ingredients:[['Chicken thighs','8'],['Feta','150g'],['Kalamata olives','100g'],['Cherry tomatoes','300g'],['Oregano','1 tbsp'],['Olive oil','3 tbsp'],['Lemon','1']] },
-  { dish:'Ramen with soft-boiled egg', emoji:'🍜', tags:['noodles','soup','eggs'], price:'gemiddeld', time:30,
-    desc:'Rich miso broth with ramen noodles, a jammy egg and spring onions. Soul-warming.',
-    ingredients:[['Ramen noodles','300g'],['Chicken stock','1.5L'],['Eggs','4'],['Soy sauce','3 tbsp'],['Miso paste','2 tbsp'],['Spring onion','4'],['Nori sheets','4']] },
-  { dish:'Garlic butter shrimp linguine', emoji:'🍝', tags:['pasta','quick','seafood'], price:'duur', time:20,
-    desc:'Juicy prawns in a garlicky white wine butter sauce tossed with linguine.',
-    ingredients:[['Linguine','400g'],['Prawns','400g'],['Butter','75g'],['Garlic','4 cloves'],['White wine','100ml'],['Parsley','handful'],['Chilli flakes','pinch']] },
-  { dish:'Beef tacos with salsa', emoji:'🌮', tags:['wraps','quick','kids','beef'], price:'gemiddeld', time:25,
-    desc:'Spiced minced beef, fresh salsa and sour cream in crunchy taco shells.',
-    ingredients:[['Minced beef','500g'],['Taco shells','12'],['Tinned tomatoes','200g'],['Sour cream','150ml'],['Cheddar','100g'],['Iceberg lettuce','½'],['Taco seasoning','1 sachet']] },
-  { dish:'Spiced lamb meatballs with couscous', emoji:'🍖', tags:['healthy','spicy','mediterranean'], price:'duur', time:35,
-    desc:'Fragrant lamb meatballs with harissa and fluffy couscous. North African magic.',
-    ingredients:[['Minced lamb','500g'],['Couscous','300g'],['Harissa','2 tbsp'],['Cumin','1 tsp'],['Coriander','handful'],['Lemon','1'],['Yoghurt','100ml']] },
-  { dish:'Prawn stir-fry with noodles', emoji:'🍤', tags:['stir','noodles','quick','seafood'], price:'duur', time:20,
-    desc:'King prawns tossed with egg noodles, pak choi and fragrant ginger.',
-    ingredients:[['King prawns','400g'],['Egg noodles','300g'],['Ginger','2 thumbs'],['Soy sauce','3 tbsp'],['Spring onion','4'],['Pak choi','1 head'],['Sesame oil','2 tbsp']] },
+  { dish:'Creamy spaghetti bolognese with fresh herbs',emoji:'🍝',tags:['pasta','kids'] },
+  { dish:'Chicken satay with rice and cucumber salad',emoji:'🍗',tags:['rice','quick','kids'] },
+  { dish:'Vegetable soup with crusty bread',emoji:'🥣',tags:['soup','healthy','veggie'] },
+  { dish:'Oven-baked salmon with lemon potatoes',emoji:'🐟',tags:['fish','healthy','seafood'] },
+  { dish:'Grilled chicken wraps with garlic sauce',emoji:'🌯',tags:['wraps','quick'] },
+  { dish:'Coconut chicken curry with jasmine rice',emoji:'🍛',tags:['curry','rice','healthy'] },
+  { dish:'Pancakes with bacon and maple syrup',emoji:'🥞',tags:['kids','quick'] },
+  { dish:'Mashed potato stew with smoked sausage',emoji:'🥔',tags:['kids'] },
+  { dish:'Lasagne with beef and béchamel sauce',emoji:'🫕',tags:['pasta','kids','beef'] },
+  { dish:'Nasi goreng with chicken and fried egg',emoji:'🍚',tags:['rice','quick','eggs'] },
+  { dish:'Tofu stir-fry with pak choi and sesame',emoji:'🥢',tags:['stir','quick','veggie'] },
+  { dish:'Mushroom risotto with parmesan',emoji:'🍄',tags:['rice','veggie','mushroom'] },
+  { dish:'Pesto pasta with cherry tomatoes and mozzarella',emoji:'🍝',tags:['pasta','quick','veggie'] },
+  { dish:'Honey-glazed chicken thighs with roasted veg',emoji:'🍗',tags:['healthy'] },
+  { dish:'Tomato lentil soup with sourdough',emoji:'🥣',tags:['soup','healthy','veggie'] },
+  { dish:'Fish tacos with avocado and lime slaw',emoji:'🌮',tags:['fish','wraps','quick','seafood'] },
+  { dish:'Greek chicken with tzatziki and pita',emoji:'🫓',tags:['healthy','quick','mediterranean'] },
+  { dish:'Beef stir-fry with broccoli and oyster sauce',emoji:'🥦',tags:['stir','quick','beef'] },
+  { dish:'Spinach and ricotta stuffed pasta shells',emoji:'🍝',tags:['pasta','veggie'] },
+  { dish:'Teriyaki salmon with steamed edamame',emoji:'🐟',tags:['fish','healthy','quick','seafood'] },
+  { dish:'Homemade pizza margherita with fresh basil',emoji:'🍕',tags:['pizza','kids','veggie'] },
+  { dish:'Chorizo pasta with roasted peppers',emoji:'🍝',tags:['pasta','quick','pork'] },
+  { dish:'Thai green curry with vegetables and rice',emoji:'🍛',tags:['curry','rice','veggie','spicy'] },
+  { dish:'Baked cod with herb crust and mashed potato',emoji:'🐟',tags:['fish','healthy','seafood'] },
+  { dish:'Falafel bowl with hummus and flatbread',emoji:'🧆',tags:['veggie','healthy','mediterranean'] },
+  { dish:'BBQ pulled chicken with coleslaw and buns',emoji:'🍔',tags:['kids','quick'] },
+  { dish:'Creamy mushroom tagliatelle',emoji:'🍝',tags:['pasta','quick','veggie','mushroom'] },
+  { dish:'Spiced lamb meatballs with couscous',emoji:'🍖',tags:['healthy','spicy','mediterranean'] },
+  { dish:'Vietnamese noodle soup with chicken',emoji:'🍜',tags:['soup','noodles','healthy','quick'] },
+  { dish:'Shakshuka with crusty bread',emoji:'🍳',tags:['quick','veggie','spicy','mediterranean','eggs'] },
+  { dish:'Prawn stir-fry with noodles and ginger',emoji:'🍤',tags:['stir','noodles','quick','seafood'] },
+  { dish:'Mediterranean baked chicken with olives and feta',emoji:'🍗',tags:['healthy','mediterranean'] },
+  { dish:'Beef tacos with salsa and sour cream',emoji:'🌮',tags:['wraps','quick','kids','beef'] },
+  { dish:'Garlic butter shrimp with linguine',emoji:'🍝',tags:['pasta','quick','seafood'] },
+  { dish:'Ramen with soft-boiled egg and spring onion',emoji:'🍜',tags:['noodles','soup','eggs'] },
 ];
 
 const LABEL_META = {
-  quick:   { cls:'lbl-snel',    icon:'⚡', text:'Quick' },
-  healthy: { cls:'lbl-gezond',  icon:'🥦', text:'Healthy' },
-  kids:    { cls:'lbl-kids',    icon:'⭐', text:'Kid-friendly' },
-  veggie:  { cls:'lbl-vega',    icon:'🌿', text:'Vegetarian' },
-};
-const PRICE_META = {
-  goedkoop:  { cls:'lbl-goedkoop',  icon:'€',   text:'Budget' },
-  gemiddeld: { cls:'lbl-gemiddeld', icon:'€€',  text:'Mid-range' },
-  duur:      { cls:'lbl-duur',      icon:'€€€', text:'Premium' },
-};
-const CAT_ICONS = {
-  'Meat & Fish':'🥩','Vegetables':'🥕','Fruit':'🍋','Dairy & Eggs':'🧀',
-  'Pasta, Rice & Grains':'🍚','Bread & Dough':'🍞','Pantry':'🫙',
-  'Herbs & Spices':'🌿','Other':'📦'
+  quick:  { cls:'lbl-snel',   icon:'⚡', text:'Quick' },
+  healthy:{ cls:'lbl-gezond', icon:'🥦', text:'Healthy' },
+  kids:   { cls:'lbl-kids',   icon:'⭐', text:'Kid-friendly' },
+  veggie: { cls:'lbl-vega',   icon:'🌿', text:'Vegetarian' },
 };
 
-// ════════════ STATE ════════════
-let currentMood     = 'surprise';
-let candidateQueue  = [];       // dishes yet to show
-let currentCandidate = null;    // dish currently on screen
-let pickedMeals     = [];       // { dish, dayIndex }
-let skipCount       = 0;        // total skips this session
-let persons         = { adults:2, kids:0 };
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let currentMenu = []; // [{dish, emoji, tags}, …]
+// shoppingList: Map<dishKey, { dish, emoji, dayIndex, ingredients: Set<string> }>
+let shoppingList = new Map();
+// checkedOff: Set of ingredient strings the user has ticked off in the supermarket
+let checkedOff = new Set();
+let currentDetailIndex = -1; // which dish is open in detail screen
 
-// ── FREEMIUM ──
-const FREE_SKIP_LIMIT = 3;      // max skips before gate
+// ─── PRO TIER STATE ───
 let isPro = false;
-let selectedPlan = 'yearly';
+let selectedBilling = 'year'; // 'month' | 'year'
+let selectedUpgradePlan = 'year';
 
-function isPremiumUser()  { return isPro; }
-function totalPersons()   { return persons.adults + persons.kids || 2; }
-
-function adjustPersons(type, delta) {
-  persons[type] = Math.max(0, persons[type] + delta);
-  if (persons.adults === 0 && persons.kids === 0) persons.adults = 1;
-  document.getElementById('val-adults').textContent = persons.adults;
-  document.getElementById('val-kids').textContent   = persons.kids;
+// ═══════════════════════════════════════════════════
+// SCREEN ROUTING
+// ═══════════════════════════════════════════════════
+function show(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  window.scrollTo(0, 0);
+  if (screenId === 'shoppinglist') renderShoppingList();
+  if (screenId === 'pricing') renderPricing();
+  updateBadges();
+  updateProUI();
 }
 
-function updateCounter() {
-  const el = document.getElementById('genCounter');
-  if (!el || isPremiumUser()) { if(el) el.classList.remove('visible'); return; }
-  const rem = Math.max(0, FREE_SKIP_LIMIT - skipCount);
-  if (rem <= FREE_SKIP_LIMIT) {
-    el.textContent = `${rem} free skip${rem!==1?'s':''} left`;
-    el.classList.add('visible');
-    el.classList.toggle('warn', rem <= 1);
+// ═══════════════════════════════════════════════════
+// PRO TIER LOGIC
+// ═══════════════════════════════════════════════════
+function updateProUI() {
+  const badges = ['hdrProBadge','hdrProBadgeDetail','hdrProBadgeSL','hdrProBadgePricing'];
+  badges.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isPro ? 'inline-flex' : 'none';
+  });
+  const upgradeBtn = document.getElementById('hdrUpgradeBtn');
+  if (upgradeBtn) upgradeBtn.style.display = isPro ? 'none' : 'flex';
+  // Dev toggle label
+  const lbl = document.getElementById('devToggleLabel');
+  const dot = document.getElementById('devDot');
+  if (lbl) lbl.textContent = isPro ? 'Pro active · click for Free' : 'Free mode · click for Pro';
+  if (dot) dot.style.background = isPro ? '#A8D5B5' : 'rgba(255,255,255,0.4)';
+}
+
+function devTogglePro() {
+  isPro = !isPro;
+  updateProUI();
+  if (isPro) showToast('✦ Pro active — enjoy!');
+  else showToast('Back to Free mode');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--green-d);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:500;z-index:500;white-space:nowrap;animation:fadeUp 0.2s ease;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+// Pricing screen
+function setBilling(mode) {
+  selectedBilling = mode;
+  document.getElementById('billMonthBtn').classList.toggle('active', mode === 'month');
+  document.getElementById('billYearBtn').classList.toggle('active', mode === 'year');
+  renderPricing();
+}
+
+function renderPricing() {
+  const yearly = selectedBilling === 'year';
+  const monthlyPrice = 2.99;
+  const yearlyTotal = 29.99;
+  const yearlyMonthly = (yearlyTotal / 12).toFixed(2);
+  const savingPct = Math.round((1 - yearlyTotal / (monthlyPrice * 12)) * 100);
+  document.getElementById('proPrice').innerHTML = yearly
+    ? `<sup>€</sup>${yearlyMonthly}`
+    : `<sup>€</sup>${monthlyPrice.toFixed(2).replace('.',',')}`;
+  document.getElementById('proPeriod').innerHTML = yearly
+    ? `per month · <em>€${yearlyTotal.toFixed(2).replace('.',',')} billed yearly — save ${savingPct}%</em>`
+    : 'per month · <em>cancel anytime</em>';
+  const freeCta = document.getElementById('freePlanCta');
+  const proCta = document.getElementById('proPlanCta');
+  if (freeCta) {
+    freeCta.textContent = isPro ? 'Downgrade to Free' : 'Current plan';
+    freeCta.className = isPro ? 'plan-cta' : 'plan-cta active-plan';
+  }
+  if (proCta) {
+    proCta.textContent = isPro ? '✓ Current plan' : 'Start Pro →';
+    proCta.className = isPro ? 'plan-cta active-plan' : 'plan-cta primary';
   }
 }
 
-// ════════════ LANDING AVOID CHIPS ════════════
-// These pre-set avoid filters before entering the app
-function toggleLpAvoid(el) {
-  el.classList.toggle('on');
-}
-function getLpAvoids() {
-  return [...document.querySelectorAll('#lpAvoidRow .lp-avoid-chip.on')].map(c => c.dataset.val);
+function handleFreeCta() {
+  if (isPro) { isPro = false; updateProUI(); showToast('Switched back to Free'); renderPricing(); }
 }
 
-// ════════════ ROUTING ════════════
-function goToApp(mood) {
-  if (mood) setMood(mood);
+function handleProCta() {
+  if (isPro) return;
+  selectedUpgradePlan = selectedBilling;
+  openUpgradeModal();
+}
 
-  // Apply landing-page avoid selections into the in-app avoid chips
-  const lpAvoids = getLpAvoids();
-  if (lpAvoids.length > 0) {
-    document.querySelectorAll('#avoidChips .chip').forEach(chip => {
-      if (lpAvoids.includes(chip.dataset.val)) {
-        chip.classList.add('veto');
-      }
-    });
+// Upgrade modal
+function openUpgradeModal(triggerFeature) {
+  selectedUpgradePlan = 'year';
+  document.getElementById('upgradeModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  goUpgradeStep(1);
+  updateModalPlanUI();
+}
+
+function closeUpgradeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('upgradeModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function goUpgradeStep(n) {
+  document.querySelectorAll('.upgrade-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('upgradeStep' + n).classList.add('active');
+  if (n === 2) {
+    const yearly = selectedUpgradePlan === 'year';
+    document.getElementById('paymentSubline').textContent = yearly
+      ? 'Yearly plan · €29.99/year (€2.50/month)'
+      : 'Monthly plan · €2.99/month';
   }
+}
 
-  document.getElementById('landing').style.display  = 'none';
-  document.getElementById('shopview').style.display = 'none';
-  document.getElementById('app').style.display      = 'block';
-  window.scrollTo(0,0);
-  if (candidateQueue.length === 0) buildQueue();
-  showNextCandidate();
+function selectPlan(plan) {
+  selectedUpgradePlan = plan;
+  updateModalPlanUI();
 }
-function goToLanding() {
-  document.getElementById('app').style.display      = 'none';
-  document.getElementById('shopview').style.display = 'none';
-  document.getElementById('landing').style.display  = 'block';
-  window.scrollTo(0,0);
-}
-function goToShop() {
-  document.getElementById('app').style.display      = 'none';
-  document.getElementById('shopview').style.display = 'block';
-  renderShoppingList();
-  window.scrollTo(0,0);
-}
-function goToAppFromShop() { goToApp(); }
 
-// ════════════ MOOD ════════════
-function setMood(mood) {
-  currentMood = mood;
-  const m = MOOD_META[mood] || MOOD_META.surprise;
-  const pill = document.getElementById('moodPill');
-  if (pill) pill.innerHTML = `${m.emoji} ${m.label} <span style="opacity:0.6;font-size:10px;margin-left:2px;">change</span>`;
+function updateModalPlanUI() {
+  document.getElementById('pscMonth').classList.toggle('chosen', selectedUpgradePlan === 'month');
+  document.getElementById('pscYear').classList.toggle('chosen', selectedUpgradePlan === 'year');
+  document.getElementById('pscMonthPrice').className = 'psc-price' + (selectedUpgradePlan === 'month' ? ' chosen' : '');
+  document.getElementById('pscYearPrice').className = 'psc-price' + (selectedUpgradePlan === 'year' ? ' chosen' : '');
 }
-function changeMood() { document.getElementById('moodOverlay').style.display = 'flex'; }
-function setMoodFromPicker(mood) {
-  setMood(mood);
-  closeMoodOverlay();
-  buildQueue();
-  showNextCandidate();
+
+function activateProDemo() {
+  isPro = true;
+  updateProUI();
+  goUpgradeStep(3);
+  renderPricing();
 }
-function closeMoodOverlay() { document.getElementById('moodOverlay').style.display = 'none'; }
-function closeMoodBackdrop(e) { if (e.target === document.getElementById('moodOverlay')) closeMoodOverlay(); }
 
-// ════════════ QUEUE ════════════
-function getVetos() {
-  const raw = [...document.querySelectorAll('#avoidChips .chip.veto')].map(c => c.dataset.val);
-  // expand 'vegan' into all animal products
-  if (raw.includes('vegan')) {
-    return [...new Set([...raw, 'veggie', 'fish', 'seafood', 'eggs', 'lactose', 'beef', 'pork'])];
-  }
-  // expand 'veggie' to exclude meat & fish
-  if (raw.includes('veggie')) {
-    return [...new Set([...raw, 'fish', 'seafood', 'beef', 'pork'])];
-  }
-  return raw;
+// Trigger upgrade modal from Pro-gated feature clicks
+function requirePro(featureName) {
+  if (isPro) return true;
+  openUpgradeModal(featureName);
+  return false;
 }
-function getLpAvoids() { return []; } // landing avoids removed; kept for compatibility
-function toggleVeto(el) { el.classList.toggle('veto'); buildQueue(); }
 
-function buildQueue() {
-  const m     = MOOD_META[currentMood] || MOOD_META.surprise;
-  const vetos = getVetos();
-  const picked = pickedMeals.map(p => p.dish);
+// ═══════════════════════════════════════════════════
+// BADGE
+// ═══════════════════════════════════════════════════
+function updateBadges() {
+  const count = shoppingList.size;
+  ['slBadgeBtn','slBadgeBtnDetail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = count > 0 ? 'flex' : 'none';
+  });
+  ['slBadgeCount','slBadgeCountDetail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count;
+  });
+}
 
-  let candidates = POOL.filter(d => {
-    if (picked.includes(d)) return false;
+// ═══════════════════════════════════════════════════
+// CHIPS
+// ═══════════════════════════════════════════════════
+function toggleChip(el){ el.classList.toggle('on'); }
+function toggleVeto(el){ el.classList.toggle('veto'); }
+function getLikes(){ return [...document.querySelectorAll('#likeChips .chip.on')].map(c=>c.dataset.val); }
+function getVetos(){ return [...document.querySelectorAll('#dislikeChips .chip.veto')].map(c=>c.dataset.val); }
+
+// ═══════════════════════════════════════════════════
+// GENERATE
+// ═══════════════════════════════════════════════════
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+function pickMenu(exclude = []) {
+  const likes = getLikes(), vetos = getVetos();
+  let cands = POOL.filter(d => {
+    if (exclude.includes(d.dish)) return false;
     if (vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v))) return false;
     return true;
   });
-
-  if (m.tags.length) {
-    const preferred = candidates.filter(d => m.tags.some(t => d.tags.includes(t)));
-    const rest      = candidates.filter(d => !preferred.includes(d));
-    candidates = [...shuffle(preferred), ...shuffle(rest)];
-  } else {
-    candidates = shuffle(candidates);
+  if (likes.length) {
+    const pref = cands.filter(d => likes.some(l => d.tags.includes(l) || d.dish.toLowerCase().includes(l)));
+    const rest = cands.filter(d => !pref.includes(d));
+    cands = [...shuffle(pref), ...shuffle(rest)];
+  } else { cands = shuffle(cands); }
+  // If not enough after exclusion, fill with full pool (minus vetos only)
+  if (cands.length < 5) {
+    const fallback = POOL.filter(d => !vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v)) && !exclude.includes(d.dish));
+    cands = shuffle(fallback);
   }
-  candidateQueue = candidates;
+  return cands.slice(0, 5);
 }
 
-function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
-
-// ════════════ DISH CARD ════════════
-function showNextCandidate() {
-  if (candidateQueue.length === 0) buildQueue();
-  currentCandidate = candidateQueue.shift();
-  renderDishCard(currentCandidate);
-}
-
-function renderDishCard(dish) {
-  const pm = PRICE_META[dish.price] || PRICE_META.gemiddeld;
-  const stage = document.getElementById('dishStage');
-
-  const tagBadges = (dish.tags||[]).map(t => {
-    const m = { quick:'badge-quick',healthy:'badge-healthy',kids:'badge-kids',veggie:'badge-veggie' };
-    const labels = { quick:'⚡ Quick',healthy:'🥦 Healthy',kids:'⭐ Kids',veggie:'🌿 Veggie' };
-    return m[t] ? `<span class="badge ${m[t]}">${labels[t]}</span>` : '';
-  }).filter(Boolean).slice(0,2).join('');
-
-  const priceBadgeClass = { goedkoop:'badge-budget',gemiddeld:'badge-midrange',duur:'badge-premium' }[dish.price]||'badge-midrange';
-  const priceBadge = `<span class="badge ${priceBadgeClass}">${pm.icon} ${pm.text}</span>`;
-
-  stage.innerHTML = `
-    <div class="swipe-yes">✓ This one!</div>
-    <div class="swipe-nope">✕ Nope</div>
-    <div class="dish-card" id="currentDishCard">
-      <div class="dish-card-top">
-        <span class="dish-card-emoji">${dish.emoji}</span>
-        <div class="dish-card-name">${dish.dish}</div>
-        <div class="dish-card-badges">${tagBadges}${priceBadge}</div>
-      </div>
-      <div class="dish-card-body">
-        <div class="dish-card-time">🕐 About ${dish.time} min</div>
-        <div class="dish-card-desc">${dish.desc}</div>
-      </div>
-    </div>`;
-
-  initSwipe(stage);
-}
-
-// ════════════ SWIPE ════════════
-function initSwipe(stage) {
-  const card = document.getElementById('currentDishCard');
-  if (!card) return;
-  let startX = 0, startY = 0, dx = 0, dragging = false;
-  const yesEl  = stage.querySelector('.swipe-yes');
-  const nopeEl = stage.querySelector('.swipe-nope');
-
-  function onStart(x, y) { startX = x; startY = y; dragging = true; card.style.transition = 'none'; }
-  function onMove(x, y) {
-    if (!dragging) return;
-    dx = x - startX;
-    const dy = y - startY;
-    if (Math.abs(dy) > Math.abs(dx) + 10) { dragging = false; reset(); return; } // vertical scroll
-    const rot = dx * 0.06;
-    card.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
-    const ratio = Math.min(Math.abs(dx) / 100, 1);
-    if (dx > 0) { yesEl.style.opacity = ratio; nopeEl.style.opacity = 0; }
-    else        { nopeEl.style.opacity = ratio; yesEl.style.opacity = 0; }
-  }
-  function onEnd() {
-    if (!dragging) return;
-    dragging = false;
-    card.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
-    if (dx > 80)       { flyOut('right'); }
-    else if (dx < -80) { flyOut('left'); }
-    else               { reset(); }
-  }
-  function reset() {
-    card.style.transform = '';
-    card.style.transition = 'transform 0.3s ease';
-    yesEl.style.opacity = 0; nopeEl.style.opacity = 0;
-  }
-  function flyOut(dir) {
-    card.style.transform = `translateX(${dir==='right'?400:-400}px) rotate(${dir==='right'?20:-20}deg)`;
-    card.style.opacity = '0';
-    yesEl.style.opacity = 0; nopeEl.style.opacity = 0;
-    setTimeout(() => { dir === 'right' ? pickDish(true) : skipDish(true); }, 260);
-  }
-
-  // touch
-  card.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
-  card.addEventListener('touchmove',  e => onMove(e.touches[0].clientX, e.touches[0].clientY),  {passive:true});
-  card.addEventListener('touchend',   onEnd);
-  // mouse
-  card.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
-  window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientX, e.clientY); });
-  window.addEventListener('mouseup',   onEnd);
-}
-
-function skipDish(fromSwipe) {
-  if (!isPremiumUser() && skipCount >= FREE_SKIP_LIMIT) {
-    showUpgrade('skip','You\'ve used your free skips 😅','Upgrade to keep swiping without limits. It\'s cheaper than ordering takeaway.');
-    return;
-  }
-  skipCount++;
-  updateCounter();
-  if (!fromSwipe) {
-    const card = document.getElementById('currentDishCard');
-    if (card) { card.style.transition='transform 0.25s ease,opacity 0.25s ease'; card.style.transform='translateX(-400px) rotate(-20deg)'; card.style.opacity='0'; }
-    setTimeout(() => showNextCandidate(), 260);
-  } else {
-    showNextCandidate();
-  }
-}
-
-function pickDish(fromSwipe) {
-  const dish = currentCandidate;
-  if (!dish) return;
-  if (!fromSwipe) {
-    const card = document.getElementById('currentDishCard');
-    if (card) { card.style.transition='transform 0.25s ease,opacity 0.25s ease'; card.style.transform='translateX(400px) rotate(20deg)'; card.style.opacity='0'; }
-  }
-  const dayIdx = pickedMeals.length;
-  pickedMeals.push({ dish, dayIdx });
+function generate() {
+  document.getElementById('genBtn').disabled = true;
+  showSkeleton();
   setTimeout(() => {
-    const refine = document.getElementById('refineSection');
-    if (refine && refine.style.display === 'none') refine.style.display = 'block';
-    renderWeekSection();
-    if (pickedMeals.length < 5) showNextCandidate();
-    else renderWeekComplete();
-  }, fromSwipe ? 10 : 260);
+    document.getElementById('genBtn').disabled = false;
+    currentMenu = pickMenu();
+    renderMenu();
+  }, 900);
 }
 
-// ════════════ WEEK SECTION ════════════
-function renderWeekSection() {
-  const sec = document.getElementById('weekSection');
-  sec.style.display = 'block';
+function regenerate() {
+  document.getElementById('genBtn').disabled = true;
+  showSkeleton();
+  // Exclude dishes already in the shopping list
+  const alreadyAdded = [...shoppingList.keys()];
+  setTimeout(() => {
+    document.getElementById('genBtn').disabled = false;
+    currentMenu = pickMenu(alreadyAdded);
+    renderMenu();
+  }, 900);
+}
 
-  const shopLocked = !isPremiumUser();
-  const filled = pickedMeals.length;
+// ═══════════════════════════════════════════════════
+// RENDER MENU
+// ═══════════════════════════════════════════════════
+function renderMenu() {
+  // Do NOT auto-select — user picks what they want
 
-  const pickedCards = pickedMeals.map((p, i) => {
-    return `<div class="picked-card" style="animation-delay:${i*0.04}s">
-      <span class="picked-emoji">${p.dish.emoji}</span>
-      <div class="picked-right">
-        <div class="picked-day">${DAYS[i] || 'Extra'}</div>
-        <div class="picked-dish">${p.dish.dish}</div>
-        <button class="btn-detail-small" onclick="openModal(${i})">View ingredients ›</button>
-      </div>
-      <button class="btn-remove" onclick="removePicked(${i})" title="Remove">×</button>
-    </div>`;
+  const cards = currentMenu.map((item, i) => {
+    const labels = (item.tags||[]).map(t=>{ const m=LABEL_META[t]; return m?`<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>`:''; }).join('');
+    const inList = shoppingList.has(item.dish);
+    return `
+      <div class="menu-card" id="mc-${i}" style="${inList?'border-color:var(--green);background:var(--green-l);':''}">
+        <div class="mc-clickable" onclick="openDetail(${i})">
+          <span class="mc-emoji">${item.emoji}</span>
+          <div class="mc-right">
+            <div class="mc-day">${DAYS[i]}</div>
+            <div class="mc-dish" style="${inList?'color:var(--green-d);':''}">${item.dish}</div>
+            ${labels ? `<div class="mc-labels">${labels}</div>` : ''}
+          </div>
+        </div>
+        <button class="mc-add-btn ${inList?'added':''}" id="mc-addbtn-${i}" onclick="quickAddToList(${i})" title="${inList?'Remove from list':'Add to shopping list'}">
+          ${inList ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`}
+        </button>
+      </div>`;
   }).join('');
 
-  const funTitles = ['Tonight sorted 🎉','Two down, three to go 💪','Halfway there 🍽','Almost a full week 🔥','The whole week. You legend. 🏆'];
-  const titleText = filled >= 5 ? funTitles[4] : filled > 1 ? funTitles[filled-1] : 'Tonight sorted 🎉';
+  const selectedCount = [...shoppingList.keys()].filter(k => currentMenu.some(m => m.dish === k)).length;
 
-  sec.innerHTML = `
-    <div class="week-header">
-      <div class="week-title">${filled >= 1 ? titleText : ''}</div>
-    </div>
-    <div class="picked-list">${pickedCards}</div>
-    <div class="fill-week-row">
-      ${filled < 5 ? `<button class="btn-fill-week" onclick="showNextDishFromWeek()">+ Add another night</button>` : ''}
-      <button class="btn-to-shop${shopLocked?' locked':''}"
-        onclick="${shopLocked ? `showUpgrade('shop','Shopping list is a Pro feature 🛒','See this working? With Pro you get a full shopping list, sorted by category, exportable as CSV or PDF. For €2.50/month.')` : `goToShop()`}">
-        ${shopLocked ? '🔒 Shopping list (Pro)' : '🛒 Shopping list'}
-      </button>
+  document.getElementById('out').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-title">Here's what you could make. 👇</div>
+      <div class="result-sub">Click a dish for ingredients · tap 🛒 to add to your list</div>
+      <div class="menu-cards">${cards}</div>
+      <div class="select-cta-bar" id="selectCtaBar">
+        <div class="select-cta-text">
+          ✅ Select your meals → Create your shopping list
+        </div>
+        <button class="btn-create-list" id="createListBtn" onclick="show('shoppinglist')" ${selectedCount===0?'disabled':''}>
+          🛒 Go to shopping list →
+        </button>
+      </div>
+      <div class="result-actions" style="margin-top:0.75rem;">
+        <button class="btn-sec" onclick="regenerate()">↻ Generate again</button>
+      </div>
     </div>`;
+  document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+  updateBadges();
 }
 
-function renderWeekComplete() {
-  // hide the single dish card & actions when week is full
-  const stage   = document.getElementById('dishStage');
-  const actions = document.getElementById('dishActions');
-  stage.innerHTML   = '';
-  actions.style.display = 'none';
-  renderWeekSection();
-}
-
-function removePicked(i) {
-  pickedMeals.splice(i,1);
-  if (pickedMeals.length === 0) {
-    document.getElementById('weekSection').style.display = 'none';
-    document.getElementById('dishActions').style.display = 'grid';
-    showNextCandidate();
+// Quick-add entire dish with all ingredients selected
+function quickAddToList(index) {
+  const item = currentMenu[index];
+  if (!item) return;
+  const key = item.dish;
+  if (shoppingList.has(key)) {
+    shoppingList.delete(key);
   } else {
-    renderWeekSection();
-    if (document.getElementById('dishActions').style.display === 'none') {
-      document.getElementById('dishActions').style.display = 'grid';
-      showNextCandidate();
-    }
+    const ings = INGREDIENTS[key] || [];
+    shoppingList.set(key, { dish: item.dish, emoji: item.emoji, dayIndex: index, ingredients: new Set(ings) });
   }
+  const inList = shoppingList.has(key);
+  // Update card visual
+  const card = document.getElementById(`mc-${index}`);
+  if (card) {
+    card.style.borderColor = inList ? 'var(--green)' : '';
+    card.style.background = inList ? 'var(--green-l)' : '';
+    const dish = card.querySelector('.mc-dish');
+    if (dish) dish.style.color = inList ? 'var(--green-d)' : '';
+  }
+  const btn = document.getElementById(`mc-addbtn-${index}`);
+  if (btn) {
+    btn.className = `mc-add-btn ${inList?'added':''}`;
+    btn.title = inList ? 'Remove from list' : 'Add to shopping list';
+    btn.innerHTML = inList
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
+  }
+  // Update CTA bar
+  refreshCtaBar();
+  updateBadges();
 }
 
-// ════════════ DETAIL MODAL ════════════
-function openModal(pickedIdx) {
-  const p = pickedMeals[pickedIdx];
-  if (!p) return;
-  const dish = p.dish;
-  const pm   = PRICE_META[dish.price] || PRICE_META.gemiddeld;
-  const priceText = { goedkoop:'< €8', gemiddeld:'€8–14', duur:'> €14' }[dish.price] || '';
-  const pp   = totalPersons();
+function refreshCtaBar() {
+  const selectedCount = [...shoppingList.keys()].filter(k => currentMenu.some(m => m.dish === k)).length;
+  const btn = document.getElementById('createListBtn');
+  if (btn) btn.disabled = selectedCount === 0;
+}
 
-  const tagLbls = (dish.tags||[]).map(t => {
-    const m = LABEL_META[t]; return m ? `<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>` : '';
+// ═══════════════════════════════════════════════════
+// DETAIL SCREEN
+// ═══════════════════════════════════════════════════
+function openDetail(index) {
+  currentDetailIndex = index;
+  const item = currentMenu[index];
+  const ings = INGREDIENTS[item.dish] || [];
+  const existing = shoppingList.get(item.dish);
+  // Which are currently selected in the list (or default all)
+  const selectedSet = existing ? existing.ingredients : new Set(ings);
+
+  const labels = (item.tags||[]).map(t=>{ const m=LABEL_META[t]; return m?`<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>`:''; }).join('');
+  const inList = shoppingList.has(item.dish);
+
+  const ingItems = ings.map((ing, ii) => {
+    const checked = selectedSet.has(ing);
+    return `<div class="ing-item ${checked?'checked':'unchecked'}" id="ing-${ii}" onclick="toggleIng(${ii})">
+      <div class="ing-cb"><span class="ing-cb-icon">✓</span></div>
+      <span class="ing-name">${ing}</span>
+    </div>`;
   }).join('');
 
-  const ingredients = (dish.ingredients||[]).map(([name,amt]) =>
-    `<div class="ingredient-row"><span class="ingr-name">${name}</span><span class="ingr-amount">${amt}</span></div>`
-  ).join('');
-
-  document.getElementById('modalInner').innerHTML = `
-    <div class="modal-header">
-      <span class="modal-emoji">${dish.emoji}</span>
-      <div class="modal-dish-name">${dish.dish}</div>
-      <div class="modal-badges">${tagLbls}<span class="lbl ${pm.cls}">${pm.icon} ${pm.text}</span></div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-section-title">Ingredients — ${pp} ${pp===1?'person':'people'}</div>
-      <div class="ingredient-list">${ingredients}</div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-section-title">Estimated cost</div>
-      <div class="price-estimate">
-        <div class="price-tag">${priceText}</div>
-        <div class="price-note">For ${pp} ${pp===1?'person':'people'}. Adjust quantities in your shopping list.</div>
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-emoji">${item.emoji}</div>
+      <div class="detail-meta">
+        <div class="detail-day">${DAYS[index]}</div>
+        <div class="detail-dish">${item.dish}</div>
+        ${labels ? `<div class="detail-labels" style="margin-top:6px;">${labels}</div>` : ''}
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-modal-close" style="flex:1;" onclick="closeModal()">Close</button>
+    <div class="detail-ing-header">
+      <div class="detail-section-label">Ingrediënten</div>
+      <span class="detail-select-all" onclick="toggleAllIngs()">Alles aan/uit</span>
+    </div>
+    <div class="ing-list" id="ingList">${ingItems}</div>
+    <div class="detail-actions">
+      <button class="btn-primary" id="detailAddBtn" onclick="addFromDetail()">
+        ${inList ? '✓ Update in list' : '+ Add to shopping list'}
+      </button>
+      <button class="btn-ghost" onclick="show('menu')">← Close</button>
     </div>`;
 
-  document.getElementById('modalOverlay').style.display = 'flex';
-}
-function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-function closeModalBackdrop(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
-
-// ════════════ UPGRADE ════════════
-function showUpgrade(trigger, title, sub) {
-  const configs = {
-    skip:    { emoji:'🔄', title:'Free skips used up',           sub:'Upgrade for unlimited suggestions and skips.' },
-    details: { emoji:'📋', title:'Meal details is a Pro feature', sub:'See full ingredient lists, portions and cost per dish.' },
-    shop:    { emoji:'🛒', title:'Shopping list is a Pro feature', sub:'Turn picked meals into a sorted, exportable shopping list.' },
-    lp:      { emoji:'✨', title:'Unlock the full experience',     sub:'Less than a coffee a month.' },
-  };
-  const c = configs[trigger] || configs.lp;
-  document.getElementById('upgradeEmoji').textContent = c.emoji;
-  document.getElementById('upgradeTitle').textContent = title || c.title;
-  document.getElementById('upgradeSub').textContent   = sub   || c.sub;
-  document.getElementById('upgradeOverlay').style.display = 'flex';
-}
-function closeUpgrade() { document.getElementById('upgradeOverlay').style.display = 'none'; }
-function closeUpgradeBackdrop(e) { if (e.target === document.getElementById('upgradeOverlay')) closeUpgrade(); }
-
-function selectPlan(plan) {
-  selectedPlan = plan;
-  document.querySelectorAll('.upgrade-plan').forEach(el => el.classList.remove('best'));
-  const plans = document.querySelectorAll('.upgrade-plan');
-  if (plan === 'monthly' && plans[0]) plans[0].classList.add('best');
-  if (plan === 'yearly'  && plans[1]) plans[1].classList.add('best');
-  document.getElementById('upgradeBtn').textContent =
-    plan === 'monthly' ? 'Get Pro — €2.50/month' : 'Get Pro — €25/year';
-}
-function handleUpgradeClick() {
-  alert('Payment integration coming soon!\nThis will redirect to Stripe checkout.');
-}
-function showNextDishFromWeek() {
-  const stage = document.getElementById('dishStage');
-  const actions = document.getElementById('dishActions');
-  if (actions) actions.style.display = 'grid';
-  showNextCandidate();
-  stage.scrollIntoView({ behavior:'smooth' });
+  show('detail');
 }
 
-function toggleProMode() {
-  isPro = !isPro;
-  const btn = document.getElementById('proToggle');
-  if (btn) {
-    btn.textContent = isPro ? '✨ Pro' : '⭐ Free';
-    btn.classList.toggle('is-pro', isPro);
+// Store temp ingredient state per detail view
+function getDetailSelectedIngs() {
+  const item = currentMenu[currentDetailIndex];
+  const ings = INGREDIENTS[item.dish] || [];
+  const selected = new Set();
+  ings.forEach((ing, ii) => {
+    const el = document.getElementById(`ing-${ii}`);
+    if (el && el.classList.contains('checked')) selected.add(ing);
+  });
+  return selected;
+}
+
+function toggleIng(ii) {
+  const el = document.getElementById(`ing-${ii}`);
+  if (!el) return;
+  el.classList.toggle('checked');
+  el.classList.toggle('unchecked');
+}
+
+function toggleAllIngs() {
+  const item = currentMenu[currentDetailIndex];
+  const ings = INGREDIENTS[item.dish] || [];
+  const allChecked = ings.every((_, ii) => document.getElementById(`ing-${ii}`)?.classList.contains('checked'));
+  ings.forEach((_, ii) => {
+    const el = document.getElementById(`ing-${ii}`);
+    if (!el) return;
+    if (allChecked) { el.classList.remove('checked'); el.classList.add('unchecked'); }
+    else { el.classList.add('checked'); el.classList.remove('unchecked'); }
+  });
+}
+
+function addFromDetail() {
+  const item = currentMenu[currentDetailIndex];
+  const selected = getDetailSelectedIngs();
+  if (selected.size === 0) {
+    shoppingList.delete(item.dish);
+  } else {
+    shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: currentDetailIndex, ingredients: selected });
   }
-  updateCounter();
-  // re-render week section if visible
-  if (pickedMeals.length > 0) renderWeekSection();
-  // toast
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:8px 18px;border-radius:999px;font-size:13px;font-weight:500;z-index:999;animation:fadeUp 0.2s ease;font-family:DM Sans,sans-serif;';
-  toast.textContent = isPro ? '✨ Pro mode on — all features unlocked' : '⭐ Free mode — some features locked';
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
-}
-
-window.activatePro = () => { if (!isPro) toggleProMode(); };
-
-// ════════════ SHOPPING LIST ════════════
-const CATEGORIES = {
-  'Meat & Fish':         ['chicken','beef','lamb','pork','salmon','cod','fish','shrimp','prawn','tuna','chorizo','sausage','mince','minced'],
-  'Vegetables':          ['onion','garlic','carrot','celery','potato','courgette','broccoli','spinach','aubergine','pepper','tomato','pak choi','cucumber','lettuce','cabbage','leek','mushroom','spring onion','shallot','bean sprout'],
-  'Fruit':               ['lemon','lime','avocado','apple'],
-  'Dairy & Eggs':        ['butter','milk','cream','parmesan','mozzarella','feta','yoghurt','egg','cheddar','ricotta'],
-  'Pasta, Rice & Grains':['pasta','spaghetti','linguine','tagliatelle','rigatoni','penne','rice','noodle','couscous','lentil','falafel','edamame'],
-  'Bread & Dough':       ['bread','tortilla','pita','wrap','bun','dough','flatbread','sourdough'],
-  'Pantry':              ['oil','sauce','paste','stock','tinned','flour','sugar','vinegar','honey','soy','sesame','harissa','pesto','hummus','tahini','miso','maple','kecap','sambal','bbq','mayonnaise','wine','olives','capers'],
-  'Herbs & Spices':      ['herbs','basil','parsley','coriander','thyme','oregano','dill','cumin','paprika','spice','seasoning','chilli','ginger','turmeric','nutmeg','bay','baking powder'],
-  'Other':               [],
-};
-function categoriseIngredient(name) {
-  const n = name.toLowerCase();
-  for (const [cat, kws] of Object.entries(CATEGORIES)) {
-    if (cat === 'Other') continue;
-    if (kws.some(k => n.includes(k))) return cat;
+  // Update the add button on the menu card too
+  const inList = shoppingList.has(item.dish);
+  const menuBtn = document.getElementById(`mc-addbtn-${currentDetailIndex}`);
+  if (menuBtn) {
+    menuBtn.className = `mc-add-btn ${inList?'added':''}`;
+    menuBtn.title = inList ? 'Remove from list' : 'Add to shopping list';
+    menuBtn.innerHTML = inList
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
   }
-  return 'Other';
+  // Update card visual
+  const card = document.getElementById(`mc-${currentDetailIndex}`);
+  if (card) {
+    card.style.borderColor = inList ? 'var(--green)' : '';
+    card.style.background = inList ? 'var(--green-l)' : '';
+    const dish = card.querySelector('.mc-dish');
+    if (dish) dish.style.color = inList ? 'var(--green-d)' : '';
+  }
+  refreshCtaBar();
+  const btn = document.getElementById('detailAddBtn');
+  if (btn) btn.textContent = inList ? '✓ Updated!' : '+ Add to shopping list';
+  updateBadges();
+  setTimeout(() => show('menu'), 600);
 }
 
-let shopChecked = {};
+// ═══════════════════════════════════════════════════
+// SHOPPING LIST SCREEN
+// ═══════════════════════════════════════════════════
+let slFilterDish = null; // null = all dishes
+let slMode = 'dishes'; // 'dishes' | 'smart'
 
 function renderShoppingList() {
-  if (!pickedMeals.length) return;
-  shopChecked = {};
-  const dishes = pickedMeals.map(p => p.dish);
-  const allIngr = [];
-  dishes.forEach(dish => (dish.ingredients||[]).forEach(([name,amt]) => allIngr.push({name,amt,dish:dish.dish})));
+  const el = document.getElementById('slContent');
+  if (shoppingList.size === 0) {
+    el.innerHTML = `<div style="padding-top:4rem;">
+      <div class="sl-empty">
+        <div class="sl-empty-icon">🛒</div>
+        <div class="sl-empty-text">Your list is empty</div>
+        <div class="sl-empty-sub">Add dishes via the menu</div>
+      </div></div>`;
+    return;
+  }
 
-  const merged = {};
-  allIngr.forEach(({name,amt,dish}) => {
-    const key = name.toLowerCase();
-    if (!merged[key]) merged[key] = { name, amounts:[], dishes:[] };
-    merged[key].amounts.push(amt);
-    if (!merged[key].dishes.includes(dish)) merged[key].dishes.push(dish);
-  });
+  // Count total ingredients + checked off
+  const allIngs = [];
+  [...shoppingList.values()].forEach(v => [...v.ingredients].forEach(i => allIngs.push(i)));
+  // deduplicate for smart mode count consistency — use raw for per-dish
+  const totalCount = allIngs.length;
+  const doneCount = allIngs.filter(i => checkedOff.has(i)).length;
+  const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
-  const grouped = {};
-  Object.values(merged).forEach(item => {
-    const cat = categoriseIngredient(item.name);
-    if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(item);
-  });
+  // Filter tabs
+  const filterTabs = `<div class="sl-filter-tab ${slFilterDish===null?'active':''}" onclick="setSLFilter(null)">Alles</div>` +
+    [...shoppingList.values()].map(v =>
+      `<div class="sl-filter-tab ${slFilterDish===v.dish?'active':''}" onclick="setSLFilter('${escQ(v.dish)}')">
+        <span class="sl-filter-emoji">${v.emoji}</span>${v.dish.split(' ').slice(0,2).join(' ')}…
+      </div>`
+    ).join('');
 
-  const total = Object.values(merged).length;
-  const p = totalPersons();
+  // Mode toggle
+  const modeToggle = `<div class="sl-mode-toggle">
+    <button class="sl-mode-btn ${slMode==='dishes'?'active':''}" onclick="setSLMode('dishes')">📋 By dish</button>
+    <button class="sl-mode-btn ${slMode==='smart'?'active':''}" onclick="trySmartMode()">✨ Smart merge ${isPro?'':'✦'}</button>
+  </div>`;
 
-  const catBlocks = Object.keys(CATEGORIES).filter(c => grouped[c]).map(cat => {
-    const icon  = CAT_ICONS[cat]||'📦';
-    const items = grouped[cat].map((item,idx) => {
-      const id     = `si-${cat.replace(/\W/g,'')}-${idx}`;
-      const amtStr = [...new Set(item.amounts)].join(' + ');
-      const hint   = item.dishes.length > 1
-        ? `<div class="shop-item-dishes">${item.dishes.map(d=>d.split(' ').slice(0,3).join(' ')+'…').join(', ')}</div>` : '';
-      return `<div class="shop-item" id="${id}">
-        <div class="shop-check" id="chk-${id}" onclick="toggleShopCheck('${id}')"></div>
-        <div class="shop-item-body">
-          <div class="shop-item-name">${item.name}</div>${hint}
+  // Content
+  let content = '';
+  const entries = [...shoppingList.entries()].filter(([k]) => slFilterDish === null || k === slFilterDish);
+
+  if (slMode === 'dishes') {
+    content = entries.map(([key, val]) => {
+      const ings = [...val.ingredients];
+      const ingsDone = ings.filter(i => checkedOff.has(i)).length;
+      return `<div class="sl-dish-block open" id="slb-${escId(key)}">
+        <div class="sl-dish-hdr" onclick="toggleSlBlock('${escQ(key)}')">
+          <span class="sl-dish-emoji">${val.emoji}</span>
+          <span class="sl-dish-name">${val.dish}</span>
+          <span class="sl-dish-ingcount">${ingsDone}/${ings.length}</span>
+          <span class="sl-chevron">▾</span>
         </div>
-        <span class="shop-item-amount">${amtStr}</span>
+        <div class="sl-dish-ings">
+          ${ings.map(ing => {
+            const done = checkedOff.has(ing);
+            return `<div class="sl-dish-ing-item ${done?'done':''}" onclick="toggleCheckedOff('${escQ(ing)}')">
+              <div class="sl-ing-check"><span class="sl-ing-check-icon">✓</span></div>
+              <span class="sl-ing-label">${ing}</span>
+            </div>`;
+          }).join('')}
+        </div>
       </div>`;
     }).join('');
-    return `<div class="shop-category">
-      <div class="shop-cat-header">
-        <span class="shop-cat-icon">${icon}</span>
-        <span class="shop-cat-title">${cat}</span>
-        <span class="shop-cat-count">${grouped[cat].length} item${grouped[cat].length>1?'s':''}</span>
-      </div>${items}
-    </div>`;
-  }).join('');
+  } else {
+    content = buildSmartView(entries);
+  }
 
-  const mealPills = dishes.map(d=>`<span class="shop-meal-pill">${d.emoji} ${d.dish}</span>`).join('');
+  const clearDoneBtn = doneCount > 0
+    ? `<button class="sl-clear-btn" onclick="clearDone()" style="font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px 8px;border-radius:6px;transition:color 0.12s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--text3)'">Clear checked (${doneCount})</button>`
+    : '';
 
-  document.getElementById('shopContent').innerHTML = `
-    <div class="shop-hero">
-      <div class="shop-hero-title">🛒 Shopping list</div>
-      <div class="shop-hero-meta">${dishes.length} meal${dishes.length>1?'s':''} · ${total} ingredients · ${p} ${p===1?'person':'people'}</div>
-      <div class="shop-hero-meals">${mealPills}</div>
+  el.innerHTML = `
+    <div class="sl-top">
+      <h1 class="sl-heading">🛒 Shopping list</h1>
+      <div class="sl-export-row">
+        <button class="sl-export-btn" onclick="exportCSV()">⬇ CSV</button>
+        <button class="sl-export-btn" onclick="printList()">🖨 Print</button>
+      </div>
     </div>
-    <div class="shop-export-row">
-      <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn-export" onclick="window.print()">🖨 Print / PDF</button>
+    <div class="sl-progress-wrap">
+      <div class="sl-progress-label">
+        <span>${doneCount === totalCount && totalCount > 0 ? '🎉 Alles in the basket!' : `${doneCount} of ${totalCount} in the basket`}</span>
+        ${clearDoneBtn}
+      </div>
+      <div class="sl-progress-bar"><div class="sl-progress-fill" style="width:${pct}%"></div></div>
     </div>
-    <div class="shop-progress">
-      <div class="shop-progress-bar"><div class="shop-progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="shop-progress-label" id="progressLabel">0 of ${total} items ticked off</div>
-    </div>
-    ${catBlocks}`;
+    <div class="sl-filters">${filterTabs}</div>
+    ${modeToggle}
+    <div id="slBody">${content}</div>`;
 }
 
-function toggleShopCheck(id) {
-  shopChecked[id] = !shopChecked[id];
-  const chk = document.getElementById(`chk-${id}`);
-  const row = document.getElementById(id);
-  if (shopChecked[id]) { chk.classList.add('checked'); chk.textContent='✓'; row.classList.add('done'); }
-  else                  { chk.classList.remove('checked'); chk.textContent=''; row.classList.remove('done'); }
-  const all  = document.querySelectorAll('.shop-item').length;
-  const done = Object.values(shopChecked).filter(Boolean).length;
-  const fill = document.getElementById('progressFill');
-  const lbl  = document.getElementById('progressLabel');
-  if (fill) fill.style.width = (all?Math.round(done/all*100):0)+'%';
-  if (lbl)  lbl.textContent  = `${done} of ${all} items ticked off`;
+function buildSmartView(entries) {
+  const seen = new Map();
+  entries.forEach(([key, val]) => {
+    [...val.ingredients].forEach(ing => {
+      const norm = ing.toLowerCase().replace(/^[\d\.]+ ?(g|kg|ml|l|tbsp?|tsp?|cups?|oz|lb|x|stuks?|bos|blik|pak|el|tl)?\s*/i,'').trim();
+      if (seen.has(norm)) {
+        seen.get(norm).sources.push(val.emoji + ' ' + val.dish.split(' ').slice(0,3).join(' '));
+      } else {
+        seen.set(norm, { display: ing, raw: ing, sources: [val.emoji + ' ' + val.dish.split(' ').slice(0,3).join(' ')] });
+      }
+    });
+  });
+
+  const cats = {};
+  Object.keys(CATEGORIES).forEach(c => cats[c] = []);
+  cats['🗂 Overig'] = [];
+
+  seen.forEach(({ display, raw, sources }, norm) => {
+    let placed = false;
+    for (const [cat, kws] of Object.entries(CATEGORIES)) {
+      if (kws.some(kw => norm.includes(kw))) {
+        cats[cat].push({ display, raw, sources });
+        placed = true; break;
+      }
+    }
+    if (!placed) cats['🗂 Overig'].push({ display, raw, sources });
+  });
+
+  return Object.entries(cats).filter(([,items])=>items.length>0).map(([cat, items]) => `
+    <div class="sl-category-block">
+      <div class="sl-cat-label"><span class="sl-cat-icon">${cat.split(' ')[0]}</span>${cat.split(' ').slice(1).join(' ')}</div>
+      <div class="sl-cat-items">
+        ${items.map(({display, raw, sources})=>{
+          const done = checkedOff.has(raw);
+          return `<div class="sl-cat-item ${done?'done':''}" onclick="toggleCheckedOff('${escQ(raw)}')">
+            <div class="sl-ing-check"><span class="sl-ing-check-icon">✓</span></div>
+            <span class="sl-cat-ing-label">${display}</span>
+            ${sources.length>1?`<span class="sl-cat-source">${sources.length}×</span>`:`<span class="sl-cat-source">${sources[0]}</span>`}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
 }
 
+function setSLFilter(dish) { slFilterDish = dish; renderShoppingList(); }
+function setSLMode(mode) { slMode = mode; renderShoppingList(); }
+function trySmartMode() {
+  if (!requirePro('Smart merge')) return;
+  setSLMode('smart');
+}
+
+function toggleCheckedOff(ing) {
+  if (checkedOff.has(ing)) {
+    checkedOff.delete(ing);
+  } else {
+    checkedOff.add(ing);
+  }
+  renderShoppingList();
+}
+
+function clearDone() {
+  checkedOff.clear();
+  renderShoppingList();
+}
+function toggleSlBlock(key) {
+  const el = document.getElementById('slb-' + escId(key));
+  if (el) el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT / PRINT
+// ═══════════════════════════════════════════════════
 function exportCSV() {
-  const dishes = pickedMeals.map(p=>p.dish);
-  const rows = [['Ingredient','Amount','Category','Meal']];
-  dishes.forEach(dish => (dish.ingredients||[]).forEach(([name,amt]) => rows.push([name,amt,categoriseIngredient(name),dish.dish])));
-  const csv  = rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
-  const blob = new Blob([csv],{type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='dinr-shopping-list.csv'; a.click();
+  const rows = [['Ingrediënt','Gerecht']];
+  shoppingList.forEach(val => {
+    [...val.ingredients].forEach(ing => rows.push([ing, val.dish]));
+  });
+  const csv = rows.map(r => r.map(c => `"${c.replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'shopping-list.csv'; a.click();
   URL.revokeObjectURL(url);
 }
 
-// kick off
-buildQueue();
+function printList() {
+  let html = '<html><head><title>Shopping List — Dinr</title>';
+  html += '<style>body{font-family:sans-serif;padding:2rem;max-width:600px;margin:0 auto;}h1{margin-bottom:1.5rem;font-size:1.4rem;}h2{font-size:1rem;margin:1.25rem 0 0.4rem;border-bottom:1px solid #ddd;padding-bottom:4px;}ul{list-style:disc;padding-left:1.5rem;}li{padding:3px 0;font-size:14px;}</style></head><body>';
+  html += '<h1>🛒 Shopping list</h1>';
+  if (slMode === 'smart') {
+    const entries = [...shoppingList.entries()];
+    const seen = new Map();
+    entries.forEach(([,val]) => {
+      [...val.ingredients].forEach(ing => {
+        const norm = ing.toLowerCase().replace(/^[\d\.]+ ?(g|kg|ml|l|tbsp?|tsp?|cups?|oz)?\s*/i,'').trim();
+        if (!seen.has(norm)) seen.set(norm, ing);
+      });
+    });
+    Object.entries(CATEGORIES).forEach(([cat, kws]) => {
+      const items = [...seen.entries()].filter(([norm])=>kws.some(kw=>norm.includes(kw)));
+      if (!items.length) return;
+      html += `<h2>${cat}</h2><ul>` + items.map(([,d])=>`<li>${d}</li>`).join('') + '</ul>';
+    });
+  } else {
+    shoppingList.forEach(val => {
+      html += `<h2>${val.emoji} ${val.dish}</h2><ul>` + [...val.ingredients].map(i=>`<li>${i}</li>`).join('') + '</ul>';
+    });
+  }
+  html += '</body></html>';
+  const w = window.open('','_blank');
+  w.document.write(html); w.document.close(); w.print();
+}
+
+// ═══════════════════════════════════════════════════
+// SKELETON
+// ═══════════════════════════════════════════════════
+function showSkeleton() {
+  document.getElementById('out').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-title" style="color:var(--text3);">👨‍🍳 Thinking…</div>
+      <div class="menu-cards">
+        ${DAYS.map((_,i)=>`<div class="skeleton-card">
+          <div class="sk-dot" style="animation-delay:${i*0.08}s"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <div class="sk-line" style="width:28%;animation-delay:${i*0.08}s"></div>
+            <div class="sk-line" style="width:${50+i*7}%;animation-delay:${i*0.08+0.08}s"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function escQ(s){ return s.replace(/'/g,"\\'"); }
+function escId(s){ return s.replace(/[^a-z0-9]/gi,'-'); }
+
+// ═══════════════════════════════════════════════════
+// LEGAL MODALS
+// ═══════════════════════════════════════════════════
+const LEGAL = {
+  privacy: {
+    title: 'Privacy Policy',
+    body: `<p><strong>Last updated: January 2025</strong></p>
+<p>Dinr ("we", "us") operates dinr.online. This page informs you of our policies regarding the collection, use, and disclosure of personal data.</p>
+<h4>Data we collect</h4>
+<p>Dinr is a fully client-side application. We do not collect, store, or process any personal data on our servers. Your preferences and shopping list exist only in your browser session and are not transmitted to us.</p>
+<h4>Analytics</h4>
+<p>We may use anonymous, aggregated analytics (such as page view counts) to understand how Dinr is used. No personally identifiable information is collected.</p>
+<h4>Cookies</h4>
+<p>Dinr does not use cookies or local storage to track you.</p>
+<h4>Third-party services</h4>
+<p>We use Google Fonts to serve typefaces. Google may collect data in accordance with their own privacy policy.</p>
+<h4>Contact</h4>
+<p>Questions about privacy? Email us at <a href="mailto:hello@dinr.online">hello@dinr.online</a>.</p>`
+  },
+  terms: {
+    title: 'Terms & Conditions',
+    body: `<p><strong>Last updated: January 2025</strong></p>
+<p>By using Dinr at dinr.online, you agree to these terms.</p>
+<h4>Use of service</h4>
+<p>Dinr is provided free of charge for personal, non-commercial use. You may not reproduce, distribute, or create derivative works from our content without permission.</p>
+<h4>No warranties</h4>
+<p>Dinr is provided "as is" without any warranties. Ingredient lists are suggestions only — always verify allergens and dietary requirements yourself before cooking or shopping.</p>
+<h4>Limitation of liability</h4>
+<p>Dinr is not liable for any damages arising from the use or inability to use this service, including but not limited to incorrect ingredient information.</p>
+<h4>Changes</h4>
+<p>We may update these terms at any time. Continued use of Dinr after changes constitutes acceptance of the new terms.</p>
+<h4>Contact</h4>
+<p>Questions? Email <a href="mailto:hello@dinr.online">hello@dinr.online</a>.</p>`
+  }
+};
+
+function showModal(type) {
+  const data = LEGAL[type];
+  if (!data) return;
+  const existing = document.getElementById('legalModal');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'legalModal';
+  div.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
+  div.innerHTML = `
+    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:80vh;overflow-y:auto;padding:2rem 1.75rem 3rem;animation:slideUp 0.25s ease;">
+      <div style="width:40px;height:4px;background:rgba(26,24,20,0.15);border-radius:2px;margin:0 auto 1.5rem;"></div>
+      <h2 style="font-family:'Fraunces',serif;font-size:1.4rem;letter-spacing:-0.02em;margin-bottom:1.25rem;">${data.title}</h2>
+      <div style="font-size:13px;color:#4a4540;line-height:1.75;">${data.body.replace(/<h4>/g,'<h4 style="font-size:13px;font-weight:600;margin:1rem 0 0.4rem;color:#1A1814;">').replace(/<p>/g,'<p style="margin-bottom:0.75rem;">').replace(/<a /g,'<a style="color:#2D5A3D;" ')}</div>
+      <button onclick="document.getElementById('legalModal').remove()" style="margin-top:1.5rem;padding:10px 24px;background:#2D5A3D;color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;">Close</button>
+    </div>`;
+  div.addEventListener('click', e => { if (e.target === div) div.remove(); });
+  document.body.appendChild(div);
+  return false;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const lm = document.getElementById('legalModal');
+    if (lm) lm.remove();
+    closeUpgradeModal();
+  }
+});
+
+updateProUI();
 </script>
 </body>
 </html>
