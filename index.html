@@ -58,7 +58,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .lp-benefit-icon{font-size:28px;margin-bottom:0.75rem;}
 .lp-benefit-title{font-weight:500;font-size:15px;margin-bottom:4px;}
 .lp-benefit-body{font-size:13px;color:var(--text2);line-height:1.6;}
-.lp-bottom-cta{background:var(--green);padding:5rem 1.5rem;text-align:center;}
+/* ─── SEO SECTION ─── */
+.lp-seo{padding:4rem 1.5rem;background:var(--surface2);border-top:1px solid var(--border);}
+.lp-seo-inner{max-width:700px;margin:0 auto;text-align:center;}
+.lp-seo-body{font-size:14px;color:var(--text2);line-height:1.8;max-width:560px;margin:0 auto;}
+
+/* ─── FOOTER ─── */
+.site-footer{background:var(--green-d);padding:2.5rem 1.5rem;text-align:center;}
+.footer-logo{font-family:'Fraunces',serif;font-size:22px;font-style:italic;color:#fff;margin-bottom:0.4rem;}
+.footer-logo em{color:#A8D5B5;}
+.footer-tagline{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:1.25rem;}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.12s;}
+.footer-links a:hover{color:#fff;}
+.footer-sep{color:rgba(255,255,255,0.25);font-size:12px;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,0.3);}
+
+
+.lp-bottom-cta{background:var(--green);padding:5rem 1.5rem;text-align:center;overflow:hidden;}
 .lp-bottom-cta h2{font-family:'Fraunces',serif;font-size:clamp(1.75rem,5vw,3rem);color:#fff;letter-spacing:-0.02em;margin-bottom:1rem;line-height:1.15;}
 .lp-bottom-cta p{color:rgba(255,255,255,0.65);margin-bottom:2rem;font-size:15px;}
 
@@ -372,15 +389,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </section>
 
-  <!-- SEO section -->
-  <section class="lp-seo">
-    <div class="lp-seo-inner">
-      <div class="lp-section-label" style="text-align:center;">The meal planner that actually works</div>
-      <h2 class="lp-section-title" style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:1.5rem;">Dinner ideas + grocery list generator,<br>all in one place</h2>
-      <p class="lp-seo-body">Dinr is a free weekly meal planner designed for busy people. Pick dinner ideas from a curated list, build your grocery list in seconds, and remove what you already have at home. Whether you're planning 3 family meals or a full week — Dinr handles the thinking so you don't have to.</p>
-    </div>
-  </section>
-
   <section class="lp-bottom-cta">
     <h2>Dinner sorted.<br>List ready. Let's go.</h2>
     <p>Free. No account needed.</p>
@@ -597,6 +605,7 @@ const INGREDIENTS = {
   'Ramen with soft-boiled egg and spring onion':['2 ramen noodle packs','4 eggs','1L chicken or pork stock','soy sauce','miso paste','spring onions','nori','sesame seeds','bamboo shoots'],
   // ── New curated dishes ────────────────────────────────────────────────────
   'Spaghetti bolognese':['400g spaghetti','400g minced beef','1 onion','2 garlic cloves','400ml tomato sauce','olive oil','salt & pepper','fresh basil'],
+  'Chicken soup with noodles':['2 chicken breasts','200g egg noodles','1.2L chicken stock','1 onion','2 garlic cloves','2 carrots','fresh thyme','salt & pepper'],
   'Chicken with rice':['4 chicken thighs','300g rice','1 onion','2 garlic cloves','500ml chicken stock','paprika','olive oil','salt & pepper'],
   'Mashed potatoes with smoked sausage':['1kg potatoes','4 smoked sausages','1 onion','200ml milk','butter','mustard'],
   'Pasta carbonara':['400g spaghetti','150g pancetta or bacon','3 eggs','50g parmesan','2 garlic cloves','black pepper','salt'],
@@ -701,60 +710,56 @@ const RECIPES = {
 
 // ── CUSTOM PREFERENCES STATE ──
 
-// POOL — curated 30-dish MVP set
-// Buckets: comfort | twist | healthy | veggie
-// Generator mixes: 2× twist, 1× comfort, 1× healthy, 1× wildcard (veggie or comfort)
 const POOL = [
-  // ── COMFORT ──────────────────────────────────────────────────────────────
-  { id:'spaghetti-bolognese', dish:'Spaghetti bolognese',                  emoji:'🍝', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['minced beef','pasta','onion','garlic','tomato sauce'] },
-  { id:'chicken-with-rice', dish:'Chicken with rice',                    emoji:'🍗', tags:['comfort','rice','kids','quick'],  cost:2, bucket:'comfort', base:['chicken','rice','onion','garlic'] },
-  { id:'mashed-potatoes-with-smoked-sa', dish:'Mashed potatoes with smoked sausage',  emoji:'🥔', tags:['comfort','kids'],                 cost:1, bucket:'comfort', base:['potatoes','sausage','onion','butter'] },
-  { id:'pasta-carbonara', dish:'Pasta carbonara',                      emoji:'🍝', tags:['comfort','pasta','quick','eggs'], cost:1, bucket:'comfort', base:['pasta','bacon','egg','parmesan','garlic'] },
-  { id:'mac-cheese', dish:'Mac & cheese',                         emoji:'🧀', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['pasta','cheddar','butter','milk'] },
-  { id:'chicken-wraps', dish:'Chicken wraps',                        emoji:'🌯', tags:['comfort','wraps','quick','kids'], cost:2, bucket:'comfort', base:['chicken','tortilla','onion','pepper','lettuce'] },
-  { id:'fried-rice-with-chicken', dish:'Fried rice with chicken',              emoji:'🍚', tags:['comfort','rice','quick','eggs'],  cost:2, bucket:'comfort', base:['rice','chicken','egg','garlic','onion'] },
+  // ── QUICK / SAFE (10) ──────────────────────────────────────────────────────
+  { id:'pasta-pesto',                    dish:'Pasta pesto',                         emoji:'🍝', tags:['pasta','quick','safe','kids'],          bucket:'quick',   protein:'none',     isVeggie:true,  isHealthy:false },
+  { id:'tomato-pasta',                   dish:'Tomato pasta',                        emoji:'🍝', tags:['pasta','quick','safe','kids'],          bucket:'quick',   protein:'none',     isVeggie:true,  isHealthy:false },
+  { id:'chicken-wraps',                  dish:'Chicken wraps',                       emoji:'🌯', tags:['wraps','quick','safe','kids'],          bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'chicken-fajitas',                dish:'Chicken fajitas',                     emoji:'🌮', tags:['wraps','quick','safe'],                 bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'beef-tacos-with-salsa',          dish:'Beef tacos with salsa',               emoji:'🌮', tags:['wraps','quick','safe'],                 bucket:'quick',   protein:'beef',     isVeggie:false, isHealthy:false },
+  { id:'chicken-with-rice',              dish:'Chicken with rice',                   emoji:'🍗', tags:['rice','quick','safe','kids'],           bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'chicken-stir-fry-with-broccoli', dish:'Chicken stir-fry with broccoli',      emoji:'🥦', tags:['stir','quick','safe'],                  bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'fried-rice-with-chicken',        dish:'Fried rice with chicken',             emoji:'🍚', tags:['rice','quick','safe'],                  bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'wraps-with-chicken-veggies',     dish:'Wraps with chicken & veggies',        emoji:'🌯', tags:['wraps','quick','safe'],                 bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'teriyaki-chicken-bowl',          dish:'Teriyaki chicken bowl',               emoji:'🍱', tags:['rice','quick','safe'],                  bucket:'quick',   protein:'chicken',  isVeggie:false, isHealthy:false },
 
-  // ── FAMILIAR + TWIST ──────────────────────────────────────────────────────
-  { id:'chicken-stir-fry-with-broccoli', dish:'Chicken stir-fry with broccoli',       emoji:'🥦', tags:['twist','stir','quick'],           cost:2, bucket:'twist', base:['chicken','broccoli','garlic','soy sauce','rice'] },
-  { id:'beef-tacos-with-salsa', dish:'Beef tacos with salsa',                emoji:'🌮', tags:['twist','wraps','quick','beef'],   cost:2, bucket:'twist', base:['minced beef','tortilla','onion','garlic','salsa'] },
-  { id:'pasta-pesto-with-chicken', dish:'Pasta pesto with chicken',             emoji:'🍝', tags:['twist','pasta','quick'],          cost:2, bucket:'twist', base:['chicken','pasta','pesto','garlic','parmesan'] },
-  { id:'teriyaki-chicken-bowl', dish:'Teriyaki chicken bowl',                emoji:'🍱', tags:['twist','rice','quick'],           cost:2, bucket:'twist', base:['chicken','rice','garlic','ginger','soy sauce'] },
-  { id:'creamy-chicken-pasta', dish:'Creamy chicken pasta',                 emoji:'🍝', tags:['twist','pasta','quick'],          cost:2, bucket:'twist', base:['chicken','pasta','cream','garlic','onion'] },
-  { id:'sweet-chilli-chicken-with-rice', dish:'Sweet chilli chicken with rice',       emoji:'🍗', tags:['twist','rice','quick'],           cost:2, bucket:'twist', base:['chicken','rice','pepper','garlic','onion'] },
-  { id:'chicken-fajitas', dish:'Chicken fajitas',                      emoji:'🌮', tags:['twist','wraps','quick'],          cost:2, bucket:'twist', base:['chicken','tortilla','pepper','onion','garlic'] },
-  { id:'noodles-with-chicken-veggies', dish:'Noodles with chicken & veggies',       emoji:'🍜', tags:['twist','noodles','quick'],        cost:2, bucket:'twist', base:['chicken','noodles','pepper','garlic','soy sauce'] },
-  { id:'rice-bowl-with-minced-beef', dish:'Rice bowl with minced beef',           emoji:'🍚', tags:['twist','rice','beef','quick'],    cost:2, bucket:'twist', base:['minced beef','rice','garlic','onion','soy sauce'] },
-  { id:'wraps-with-chicken-veggies', dish:'Wraps with chicken & veggies',         emoji:'🌯', tags:['twist','wraps','quick'],          cost:2, bucket:'twist', base:['chicken','tortilla','pepper','onion','lettuce'] },
+  // ── COMFORT / FAMILY (8) ──────────────────────────────────────────────────
+  { id:'spaghetti-bolognese',            dish:'Spaghetti bolognese',                 emoji:'🍝', tags:['pasta','comfort','kids'],               bucket:'comfort', protein:'beef',     isVeggie:false, isHealthy:false },
+  { id:'pasta-carbonara',                dish:'Pasta carbonara',                     emoji:'🍝', tags:['pasta','comfort','quick'],              bucket:'comfort', protein:'pork',     isVeggie:false, isHealthy:false },
+  { id:'mac-cheese',                     dish:'Mac & cheese',                        emoji:'🧀', tags:['pasta','comfort','kids'],               bucket:'comfort', protein:'none',     isVeggie:true,  isHealthy:false },
+  { id:'creamy-chicken-pasta',           dish:'Creamy chicken pasta',                emoji:'🍝', tags:['pasta','comfort','quick'],              bucket:'comfort', protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'mashed-potatoes-with-smoked-sa', dish:'Mashed potatoes with smoked sausage', emoji:'🥔', tags:['potatoes','comfort','kids'],            bucket:'comfort', protein:'sausage',  isVeggie:false, isHealthy:false },
+  { id:'lasagne-beef',                   dish:'Lasagne with beef and béchamel sauce',emoji:'🫕', tags:['pasta','comfort','kids'],               bucket:'comfort', protein:'beef',     isVeggie:false, isHealthy:false },
+  { id:'chorizo-pasta',                  dish:'Chorizo pasta with roasted peppers',  emoji:'🍝', tags:['pasta','comfort'],                      bucket:'comfort', protein:'pork',     isVeggie:false, isHealthy:false },
+  { id:'chicken-soup-with-noodles',      dish:'Chicken soup with noodles',           emoji:'🍜', tags:['soup','comfort','kids','quick'],        bucket:'comfort', protein:'chicken',  isVeggie:false, isHealthy:false },
 
-  // ── HEALTHY ────────────────────────────────────────────────────────────────
-  { id:'chicken-salad-bowl', dish:'Chicken salad bowl',                   emoji:'🥗', tags:['healthy','quick'],                cost:2, bucket:'healthy', base:['chicken','lettuce','tomato','cucumber','onion'] },
-  { id:'veggie-stir-fry', dish:'Veggie stir-fry',                      emoji:'🥦', tags:['healthy','stir','quick','veggie'],cost:1, bucket:'healthy', base:['broccoli','pepper','garlic','soy sauce','rice'] },
-  { id:'rice-bowl-with-roasted-vegetab', dish:'Rice bowl with roasted vegetables',    emoji:'🍚', tags:['healthy','rice','veggie'],        cost:1, bucket:'healthy', base:['rice','pepper','courgette','onion','garlic'] },
-  { id:'grilled-chicken-with-veggies', dish:'Grilled chicken with veggies',         emoji:'🍗', tags:['healthy','quick'],                cost:2, bucket:'healthy', base:['chicken','pepper','courgette','garlic','olive oil'] },
-  { id:'pasta-with-spinach-tomatoes', dish:'Pasta with spinach & tomatoes',        emoji:'🍝', tags:['healthy','pasta','quick','veggie'],cost:1, bucket:'healthy', base:['pasta','spinach','tomato','garlic','parmesan'] },
-  { id:'lentil-curry-mild', dish:'Lentil curry (mild)',                  emoji:'🍛', tags:['healthy','curry','veggie'],       cost:1, bucket:'healthy', base:['lentils','onion','garlic','tomato','rice'] },
-  { id:'couscous-with-roasted-vegetabl', dish:'Couscous with roasted vegetables',     emoji:'🫙', tags:['healthy','veggie'],               cost:1, bucket:'healthy', base:['couscous','pepper','courgette','onion','garlic'] },
+  // ── HEALTHY / LIGHTER (8) ─────────────────────────────────────────────────
+  { id:'chicken-salad-bowl',             dish:'Chicken salad bowl',                  emoji:'🥗', tags:['healthy','quick'],                      bucket:'healthy', protein:'chicken',  isVeggie:false, isHealthy:true  },
+  { id:'grilled-chicken-with-veggies',   dish:'Grilled chicken with veggies',        emoji:'🍗', tags:['healthy','quick'],                      bucket:'healthy', protein:'chicken',  isVeggie:false, isHealthy:true  },
+  { id:'rice-bowl-with-roasted-vegetab', dish:'Rice bowl with roasted vegetables',   emoji:'🍚', tags:['rice','healthy','veggie'],              bucket:'healthy', protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'greek-salad-with-grilled-chick', dish:'Greek chicken with tzatziki and pita',emoji:'🥙', tags:['healthy','quick','mediterranean'],      bucket:'healthy', protein:'chicken',  isVeggie:false, isHealthy:true  },
+  { id:'mediterranean-baked-chicken',    dish:'Mediterranean baked chicken with olives and feta',emoji:'🍗', tags:['healthy','mediterranean'],  bucket:'healthy', protein:'chicken',  isVeggie:false, isHealthy:true  },
+  { id:'salmon-with-lemon-potatoes',     dish:'Oven-baked salmon with lemon potatoes',emoji:'🐟',tags:['healthy','seafood'],                   bucket:'healthy', protein:'fish',     isVeggie:false, isHealthy:true  },
+  { id:'baked-cod-mashed-potato',        dish:'Baked cod with herb crust and mashed potato',emoji:'🐟', tags:['healthy','seafood'],             bucket:'healthy', protein:'fish',     isVeggie:false, isHealthy:true  },
+  { id:'teriyaki-salmon',                dish:'Teriyaki salmon with steamed edamame',emoji:'🐟', tags:['healthy','seafood','quick'],            bucket:'healthy', protein:'fish',     isVeggie:false, isHealthy:true  },
 
-  // ── VEGETARIAN ────────────────────────────────────────────────────────────
-  { id:'pasta-pesto', dish:'Pasta pesto',                          emoji:'🍝', tags:['veggie','pasta','quick'],         cost:1, bucket:'veggie', base:['pasta','pesto','garlic','parmesan','tomato'] },
-  { id:'veggie-tacos', dish:'Veggie tacos',                         emoji:'🌮', tags:['veggie','wraps','quick'],         cost:1, bucket:'veggie', base:['tortilla','pepper','onion','garlic','beans'] },
-  { id:'tofu-stir-fry-with-veggies', dish:'Tofu stir-fry with veggies',           emoji:'🥢', tags:['veggie','stir','quick'],          cost:1, bucket:'veggie', base:['tofu','broccoli','pepper','garlic','soy sauce'] },
-  { id:'veggie-fried-rice', dish:'Veggie fried rice',                    emoji:'🍚', tags:['veggie','rice','quick'],          cost:1, bucket:'veggie', base:['rice','egg','garlic','onion','peas'] },
-  { id:'tomato-pasta', dish:'Tomato pasta',                         emoji:'🍝', tags:['veggie','pasta','quick','kids'],  cost:1, bucket:'veggie', base:['pasta','tomato sauce','garlic','onion','basil'] },
-  { id:'wraps-with-hummus-grilled-vegg', dish:'Wraps with hummus & grilled veggies',  emoji:'🌯', tags:['veggie','wraps','healthy'],       cost:1, bucket:'veggie', base:['tortilla','hummus','pepper','courgette','onion'] },
-  { id:'veggie-curry-mild', dish:'Veggie curry (mild)',                  emoji:'🍛', tags:['veggie','curry','healthy'],       cost:1, bucket:'veggie', base:['onion','garlic','tomato','coconut milk','rice'] },
+  // ── VEGGIE (10) ───────────────────────────────────────────────────────────
+  { id:'veggie-stir-fry',                dish:'Veggie stir-fry',                     emoji:'🥦', tags:['stir','veggie','quick','healthy'],      bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'lentil-curry-mild',              dish:'Lentil curry (mild)',                 emoji:'🍛', tags:['curry','veggie','healthy'],             bucket:'veggie',  protein:'lentils',  isVeggie:true,  isHealthy:true  },
+  { id:'veggie-curry-mild',              dish:'Veggie curry (mild)',                 emoji:'🍛', tags:['curry','veggie','healthy'],             bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'pasta-with-spinach-tomatoes',    dish:'Pasta with spinach & tomatoes',       emoji:'🍝', tags:['pasta','veggie','quick','healthy'],     bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'veggie-tacos',                   dish:'Veggie tacos',                        emoji:'🌮', tags:['wraps','veggie','quick'],               bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:false },
+  { id:'tomato-lentil-soup',             dish:'Tomato lentil soup with sourdough',   emoji:'🍲', tags:['soup','veggie','healthy'],              bucket:'veggie',  protein:'lentils',  isVeggie:true,  isHealthy:true  },
+  { id:'falafel-bowl',                   dish:'Falafel bowl with hummus and flatbread',emoji:'🧆', tags:['veggie','healthy','mediterranean'],   bucket:'veggie',  protein:'chickpeas',isVeggie:true,  isHealthy:true  },
+  { id:'couscous-with-roasted-vegetabl', dish:'Couscous with roasted vegetables',    emoji:'🫙', tags:['couscous','veggie','healthy'],          bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'tofu-stir-fry-with-veggies',     dish:'Tofu stir-fry with veggies',          emoji:'🥢', tags:['stir','veggie','quick'],                bucket:'veggie',  protein:'tofu',     isVeggie:true,  isHealthy:false },
+  { id:'veggie-fried-rice',              dish:'Veggie fried rice',                   emoji:'🍚', tags:['rice','veggie','quick'],                bucket:'veggie',  protein:'none',     isVeggie:true,  isHealthy:false },
 
-  // ── EXTRA 10 (rounds to 40 total) ─────────────────────────────────────────
-  { id:'chicken-soup-with-noodles', dish:'Chicken soup with noodles',            emoji:'🍜', tags:['comfort','soup','quick','kids'],  cost:2, bucket:'comfort', base:['chicken','noodles','onion','garlic','carrot'] },
-  { id:'minced-beef-with-pasta', dish:'Minced beef with pasta',               emoji:'🍝', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['minced beef','pasta','onion','garlic','tomato sauce'] },
-  { id:'pancakes-with-bacon-maple-syru', dish:'Pancakes with bacon & maple syrup',    emoji:'🥞', tags:['comfort','kids','quick','eggs'],  cost:1, bucket:'comfort', base:['flour','egg','milk','bacon','butter'] },
-  { id:'honey-garlic-chicken-with-rice', dish:'Honey garlic chicken with rice',       emoji:'🍗', tags:['twist','rice','quick'],           cost:2, bucket:'twist',   base:['chicken','rice','garlic','honey','soy sauce'] },
-  { id:'penne-arrabiata', dish:'Penne arrabiata',                      emoji:'🍝', tags:['twist','pasta','quick','veggie'], cost:1, bucket:'twist',   base:['pasta','tomato sauce','garlic','chilli','parmesan'] },
-  { id:'salmon-with-roasted-vegetables', dish:'Salmon with roasted vegetables',       emoji:'🐟', tags:['healthy','seafood'],              cost:3, bucket:'healthy', base:['salmon','courgette','pepper','garlic','olive oil'] },
-  { id:'greek-salad-with-grilled-chick', dish:'Greek salad with grilled chicken',     emoji:'🥗', tags:['healthy','quick','mediterranean'],cost:2, bucket:'healthy', base:['chicken','tomato','cucumber','feta','onion'] },
-  { id:'veggie-bolognese', dish:'Veggie bolognese',                     emoji:'🍝', tags:['veggie','pasta','kids','healthy'],cost:1, bucket:'veggie', base:['lentils','pasta','onion','garlic','tomato sauce'] },
-  { id:'shakshuka', dish:'Shakshuka',                            emoji:'🍳', tags:['veggie','quick','healthy','eggs'],cost:1, bucket:'veggie', base:['egg','tomato','pepper','onion','garlic'] },
-  { id:'quinoa-bowl-with-roasted-veg-f', dish:'Quinoa bowl with roasted veg & feta',  emoji:'🥙', tags:['healthy','veggie'],               cost:2, bucket:'healthy', base:['quinoa','pepper','courgette','feta','onion'] },
+  // ── FLEX / VARIETY (4) ────────────────────────────────────────────────────
+  { id:'coconut-chicken-curry',          dish:'Coconut chicken curry with jasmine rice',emoji:'🍛', tags:['curry','rice','quick'],              bucket:'flex',    protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'thai-green-curry',               dish:'Thai green curry with vegetables and rice',emoji:'🍛', tags:['curry','veggie','healthy'],       bucket:'flex',    protein:'none',     isVeggie:true,  isHealthy:true  },
+  { id:'noodles-with-chicken-veggies',   dish:'Noodles with chicken & veggies',      emoji:'🍜', tags:['noodles','quick'],                      bucket:'flex',    protein:'chicken',  isVeggie:false, isHealthy:false },
+  { id:'pizza-margherita',               dish:'Homemade pizza margherita with fresh basil',emoji:'🍕', tags:['pizza','veggie','kids'],         bucket:'flex',    protein:'none',     isVeggie:true,  isHealthy:false },
 ];
 
 const LABEL_META = {
@@ -1108,77 +1113,178 @@ function expandChips(group) {
 // ═══════════════════════════════════════════════════
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 
-function pickMenu(exclude = [], count = 5) {
-  const likes = getLikes();
-  const vetos = getVetos();
+// ═══════════════════════════════════════════════════
+// GENERATE — v2 (spec-based: hard filters + scoring + variety)
+// ═══════════════════════════════════════════════════
 
-  // STEP 1: Filter on dislikes + exclusions
-  const allowed = POOL.filter(d => {
-    if (exclude.includes(d.dish)) return false;
-    if (vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v))) return false;
+const MODE_CONFIG = {
+  tonight: { count: 3, mix: ['quick','safe','variety'] },
+  days:    { count: 5, mix: ['quick','quick','healthy','comfort','variety'] },
+  week:    { count: 7, mix: ['quick','quick','healthy','comfort','veggie','variety','variety'] },
+};
+
+// Avoid chip → ingredient keywords to block
+const AVOID_KEYWORDS = {
+  fish:      ['fish','salmon','cod','tuna','prawn','shrimp','anchovy'],
+  shellfish: ['prawn','shrimp','shellfish','crab','lobster'],
+  nuts:      ['nuts','peanut','peanut butter','pine nuts','almond','cashew'],
+  gluten:    ['pasta','bread','tortilla','wrap','noodles','flour','lasagne','tagliatelle','penne','spaghetti','linguine'],
+  lactose:   ['milk','cream','butter','mozzarella','parmesan','cheese','feta','ricotta','yoghurt','béchamel','cheddar'],
+  spicy:     ['chilli','sambal','curry paste','sriracha','jalapeño'],
+  pork:      ['pork','bacon','sausage','chorizo','pancetta','ham'],
+  beef:      ['beef','minced beef'],
+  eggs:      ['egg','eggs'],
+  mushroom:  ['mushroom','mushrooms'],
+  onion:     ['onion'],
+  garlic:    ['garlic'],
+};
+
+function passesAvoids(meal, avoids) {
+  const ings = (INGREDIENTS[meal.dish] || []).join(' ').toLowerCase();
+  for (const avoid of avoids) {
+    const kws = AVOID_KEYWORDS[avoid] || [];
+    if (kws.some(kw => ings.includes(kw))) return false;
+  }
+  return true;
+}
+
+function scoreMeal(meal, likes, mode) {
+  let score = 0;
+  const tags = meal.tags || [];
+
+  // Style preferences
+  const styleMap = ['pasta','rice','wraps','stir','soup','curry','noodles','mediterranean','pizza','seafood'];
+  styleMap.forEach(s => { if (likes.includes(s) && tags.includes(s)) score += 4; });
+
+  // Filter chips
+  if (likes.includes('quick')   && tags.includes('quick'))   score += 5;
+  if (likes.includes('kids')    && tags.includes('kids'))     score += 4;
+  if (likes.includes('healthy') && meal.isHealthy)            score += 4;
+  if (likes.includes('veggie')  && meal.isVeggie)             score += 6;
+
+  // No preference bias → familiar easy meals
+  if (likes.length === 0) {
+    if (tags.includes('quick')) score += 3;
+    if (tags.includes('kids'))  score += 2;
+    if (meal.bucket === 'comfort') score += 2;
+  }
+
+  // Mode bias
+  if (mode === 'tonight') {
+    if (tags.includes('quick'))         score += 3;
+    if (meal.bucket === 'comfort')      score += 2;
+  }
+  if (mode !== 'tonight') {
+    if (meal.isHealthy) score += 1;
+    if (meal.isVeggie)  score += 1;
+  }
+
+  // Small random jitter so ties don't always resolve the same way
+  score += Math.random() * 0.5;
+
+  return score;
+}
+
+function breaksVariety(meal, picked, mode) {
+  if (picked.length === 0) return false;
+  const last = picked[picked.length - 1];
+
+  // No duplicates
+  if (picked.some(p => p.dish === meal.dish)) return true;
+
+  // No same bucket two in a row (except flex — flex can go anywhere)
+  if (meal.bucket !== 'flex' && last.bucket !== 'flex' && last.bucket === meal.bucket) return true;
+
+  // Week: max 2 same bucket
+  if (mode === 'week' && meal.bucket !== 'flex') {
+    if (picked.filter(p => p.bucket === meal.bucket).length >= 2) return true;
+  }
+
+  // Days/week: max 2 chicken
+  if ((mode === 'days' || mode === 'week') && meal.protein === 'chicken') {
+    if (picked.filter(p => p.protein === 'chicken').length >= 2) return true;
+  }
+
+  // No same protein twice in a row (except none/veggie)
+  if (meal.protein && meal.protein !== 'none' && last.protein === meal.protein) return true;
+
+  return false;
+}
+
+function pickBestForSlot(pool, picked, slot, mode) {
+  for (const meal of pool) {
+    if (breaksVariety(meal, picked, mode)) continue;
+    if (slot === 'quick'   && (meal.tags.includes('quick') || meal.bucket === 'quick')) return meal;
+    if (slot === 'healthy' && meal.isHealthy)                return meal;
+    if (slot === 'comfort' && meal.bucket === 'comfort')     return meal;
+    if (slot === 'veggie'  && meal.isVeggie)                 return meal;
+    if (slot === 'safe'    && (meal.tags.includes('safe') || meal.tags.includes('kids'))) return meal;
+    if (slot === 'variety')                                  return meal;
+  }
+  return null;
+}
+
+function buildBalancedSet(pool, mode) {
+  const { count, mix } = MODE_CONFIG[mode] || MODE_CONFIG.days;
+  const result = [];
+
+  for (const slot of mix) {
+    const remaining = pool.filter(m => !result.some(r => r.dish === m.dish));
+    const pick = pickBestForSlot(remaining, result, slot, mode);
+    if (pick) result.push(pick);
+  }
+
+  // Fill any remaining gaps
+  for (const meal of pool) {
+    if (result.length >= count) break;
+    if (result.some(r => r.dish === meal.dish)) continue;
+    if (!breaksVariety(meal, result, mode)) result.push(meal);
+  }
+
+  // Hard fallback: ignore variety if still short
+  for (const meal of pool) {
+    if (result.length >= count) break;
+    if (!result.some(r => r.dish === meal.dish)) result.push(meal);
+  }
+
+  return result.slice(0, count);
+}
+
+function pickMenu(exclude = [], count = 5) {
+  const likes  = getLikes();
+  const avoids = getVetos();
+  const mode   = dinnerMode;
+
+  // 1. Hard filters
+  let pool = POOL.filter(m => {
+    if (exclude.includes(m.dish)) return false;
+    if (!passesAvoids(m, avoids)) return false;
+    if (likes.includes('veggie') && !m.isVeggie) return false;
     return true;
   });
 
-  // STEP 2: Score each meal on likes (+1 per matching tag)
-  const scored = allowed.map(d => ({
-    ...d,
-    score: likes.length
-      ? likes.reduce((n, l) => n + (d.tags.includes(l) || d.dish.toLowerCase().includes(l) ? 1 : 0), 0)
-      : 0
-  }));
+  // 2. Score + sort
+  pool = pool
+    .map(m => ({ ...m, score: scoreMeal(m, likes, mode) }))
+    .sort((a, b) => b.score - a.score);
 
-  // STEP 3: Sort within bucket by score desc, shuffle ties for variety
-  const byBucket = bucket =>
-    scored
-      .filter(d => d.bucket === bucket)
-      .sort((a, b) => b.score - a.score || Math.random() - 0.5);
+  // 3. Balanced selection with variety rules
+  const modeForBalance = count <= 3 ? 'tonight' : count <= 5 ? 'days' : 'week';
+  let result = buildBalancedSet(pool, modeForBalance);
 
-  const comfort = byBucket('comfort');
-  const twist   = byBucket('twist');
-  const healthy = byBucket('healthy');
-  const veggie  = byBucket('veggie');
-
-  // STEP 4: Build set — scale formula to count
-  // tonight(3): 1 twist, 1 comfort, 1 wildcard
-  // days(5):    2 twist, 1 comfort, 1 healthy, 1 wildcard
-  // week(7):    3 twist, 2 comfort, 1 healthy, 1 wildcard
-  const result = [];
-  const addUnique = d => { if (d && !result.find(r => r.dish === d.dish)) result.push(d); };
-
-  const twistCount   = count <= 3 ? 1 : count <= 5 ? 2 : 3;
-  const comfortCount = count <= 3 ? 1 : count <= 5 ? 1 : 2;
-  const healthyCount = count <= 3 ? 0 : 1;
-
-  twist.slice(0, twistCount).forEach(d => addUnique(d));
-  comfort.slice(0, comfortCount).forEach(d => addUnique(d));
-  healthy.slice(0, healthyCount).forEach(d => addUnique(d));
-
-  // STEP 5: Ingredient overlap boost for remaining slots
-  const ingCount = {};
-  result.forEach(d => (d.base || []).forEach(i => { ingCount[i] = (ingCount[i] || 0) + 1; }));
-  const used = new Set(result.map(d => d.dish));
-  const overlapScore = d => (d.base || []).reduce((n, i) => n + (ingCount[i] || 0), 0);
-
-  // Fill remaining slots with overlap-boosted candidates (veggie-first for wildcard)
-  const remaining = [...veggie, ...comfort.slice(comfortCount), ...twist.slice(twistCount), ...healthy.slice(healthyCount)]
-    .filter(d => !used.has(d.dish))
-    .sort((a, b) => (overlapScore(b) + b.score) - (overlapScore(a) + a.score));
-
-  remaining.forEach(d => { if (result.length < count) addUnique(d); });
-
-  // Fill any final gaps from full scored pool
-  scored
-    .filter(d => !result.find(r => r.dish === d.dish))
-    .sort((a, b) => overlapScore(b) - overlapScore(a))
-    .forEach(d => { if (result.length < count) addUnique(d); });
-
-  // Hard fallback: ignore vetos if still short
+  // 4. Fallback: ignore avoids if too few matches
   if (result.length < count) {
-    POOL.filter(d => !exclude.includes(d.dish) && !result.find(r => r.dish === d.dish))
-        .forEach(d => { if (result.length < count) addUnique(d); });
+    const fallbackPool = POOL
+      .filter(m => !exclude.includes(m.dish) && !result.some(r => r.dish === m.dish))
+      .map(m => ({ ...m, score: scoreMeal(m, likes, mode) }))
+      .sort((a, b) => b.score - a.score);
+    for (const m of fallbackPool) {
+      if (result.length >= count) break;
+      result.push(m);
+    }
   }
 
-  return shuffle(result);
+  return result;
 }
 
 function generate() {
@@ -1189,11 +1295,9 @@ function generate() {
   setTimeout(() => {
     document.getElementById('genBtn').disabled = false;
     currentMenu = pickMenu([], count);
-    // Pre-select ~60% of dishes (rounded), feels like a helpful default not a forced choice
-    const preSelectCount = Math.max(1, Math.round(count * 0.6));
-    const toSelect = pickNToPreselect(currentMenu, preSelectCount);
+    // Pre-select all — user deselects what they don't want
     currentMenu.forEach((item, i) => {
-      if (toSelect.includes(item.dish) && !shoppingList.has(item.dish)) {
+      if (!shoppingList.has(item.dish)) {
         const ings = INGREDIENTS[item.dish] || [];
         shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: i, ingredients: new Set(ings) });
       }
@@ -1203,16 +1307,7 @@ function generate() {
 }
 
 function pickNToPreselect(menu, n) {
-  // Spread across types: comfort, quick/twist, healthy
-  const comfort = menu.filter(d => d.tags.includes('kids') || d.bucket === 'comfort');
-  const twist   = menu.filter(d => (d.tags.includes('quick') || d.bucket === 'twist') && !comfort.includes(d));
-  const healthy = menu.filter(d => (d.tags.includes('healthy') || d.bucket === 'healthy') && !comfort.includes(d) && !twist.includes(d));
-  const picked  = new Set();
-  comfort.slice(0, Math.ceil(n/3)).forEach(d => picked.add(d.dish));
-  twist.forEach(d => { if (picked.size < Math.round(n*0.6)) picked.add(d.dish); });
-  healthy.forEach(d => { if (picked.size < n) picked.add(d.dish); });
-  menu.forEach(d => { if (picked.size < n) picked.add(d.dish); });
-  return [...picked].slice(0, n);
+  return menu.slice(0, n).map(d => d.dish);
 }
 
 // Keep for backward compat
@@ -1234,33 +1329,48 @@ function regenerate() {
 // RENDER MENU
 // ═══════════════════════════════════════════════════
 function renderMenu(scroll = true) {
-  // Pinned = EVERYTHING already in the shopping list
-  const pinned = [...shoppingList.entries()].map(([dish, val]) => {
-    // Enrich with tags from POOL if dish is also in currentMenu
-    const poolItem = currentMenu.find(m => m.dish === dish) || POOL.find(p => p.dish === dish);
-    return { dish, emoji: val.emoji, tags: poolItem ? poolItem.tags : [], _pinned: true };
-  });
+  // currentMenu is the single source of truth for cards
+  // shoppingList tracks what's selected (checked)
+  // pinned = items in shoppingList but NOT in currentMenu (from repeat/return hook)
+  const currentDishes = new Set(currentMenu.map(m => m.dish));
+  const pinnedExtras = [...shoppingList.entries()]
+    .filter(([dish]) => !currentDishes.has(dish))
+    .map(([dish, val]) => {
+      const poolItem = POOL.find(p => p.dish === dish);
+      return { dish, emoji: val.emoji, tags: poolItem ? poolItem.tags : [], _pinned: true };
+    });
 
-  // New suggestions = currentMenu dishes NOT yet in shoppingList
-  const newSuggestions = currentMenu.filter(item => !shoppingList.has(item.dish));
+  // All cards: currentMenu first (with proper index), then any extras
+  const allCards = [
+    ...currentMenu.map((item, i) => ({ item, globalIdx: i, isPinned: false })),
+    ...pinnedExtras.map((item, i) => ({ item, globalIdx: currentMenu.length + i, isPinned: true })),
+  ];
 
   const makeCard = (item, globalIdx, isPinned) => {
     const labels = (item.tags||[]).map(t=>{ const m=LABEL_META[t]; return m?`<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>`:''; }).join('');
     const inList = shoppingList.has(item.dish);
     const menuIdx = currentMenu.findIndex(m => m.dish === item.dish);
-    const clickable = menuIdx !== -1;
-    const poolItem = POOL.find(p => p.dish === item.dish);
-    const cost = poolItem ? '€'.repeat(poolItem.cost) : '';
+
+    // Always clickable — if not in currentMenu, add to it so openDetail works
     const cardClass = ['menu-card', isPinned?'pinned':'', !inList?'unselected':''].filter(Boolean).join(' ');
 
     const checkSVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
     const cartSVG  = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
 
+    // For pinned dishes not in currentMenu, clicking opens detail via dish name lookup
+    const clickHandler = menuIdx !== -1
+      ? `openDetail(${menuIdx})`
+      : `openDetailByDish('${escQ(item.dish)}')`;
+
+    const addHandler = menuIdx !== -1
+      ? `quickAddToList(${menuIdx})`
+      : `removePinned('${escQ(item.dish)}')`;
+
     return `
       <div class="${cardClass}" id="mc-g${globalIdx}" data-menuindex="${menuIdx}">
         <div class="mc-check-corner">${checkSVG}</div>
-        <div class="mc-clickable" style="position:relative;${!clickable?'cursor:default;':''}" onclick="${clickable?`openDetail(${menuIdx})`:'void(0)'}">
-          ${clickable ? '<span class="mc-hint">👁 View ingredients &amp; recipe</span>' : ''}
+        <div class="mc-clickable" style="position:relative;" onclick="${clickHandler}">
+          <span class="mc-hint">👁 View ingredients &amp; recipe</span>
           <span class="mc-emoji">${item.emoji}</span>
           <div class="mc-right">
             <div class="mc-dish">${item.dish}</div>
@@ -1268,23 +1378,15 @@ function renderMenu(scroll = true) {
           </div>
         </div>
         <div class="mc-add-btn ${inList?'added':''}"
-             onclick="${clickable ? `quickAddToList(${menuIdx})` : `removePinned('${escQ(item.dish)}')`}"
+             onclick="${addHandler}"
              title="${inList?'Remove from list':'Add to list'}">
           ${inList ? checkSVG : cartSVG}
         </div>
       </div>`;
   };
 
-  const pinnedCards   = pinned.map((item, i) => makeCard(item, i, true)).join('');
-  const newCards      = newSuggestions.map((item, i) => makeCard(item, pinned.length + i, false)).join('');
-  const selectedCount = shoppingList.size; // all added dishes, not just from current batch
-
-  const pinnedSection = pinned.length > 0 ? `
-    <div>
-      <div class="sec-label" style="margin-bottom:6px;">Already in your list</div>
-      <div class="menu-cards" style="margin-bottom:12px;position:relative;">${pinnedCards}</div>
-      ${newSuggestions.length > 0 ? `<div class="sec-label" style="margin-bottom:6px;margin-top:4px;">New suggestions</div>` : ''}
-    </div>` : '';
+  const cards = allCards.map(({ item, globalIdx, isPinned }) => makeCard(item, globalIdx, isPinned)).join('');
+  const selectedCount = shoppingList.size;
 
   // Build smart personalization subtitle
   const likes = getLikes();
@@ -1299,10 +1401,9 @@ function renderMenu(scroll = true) {
   document.getElementById('out').innerHTML = `
     <div class="result-wrap">
       <div class="result-title">Pick your meals</div>
-      <div class="result-sub" id="resultSub">Pick a few for your list · tap to add or remove</div>
+      <div class="result-sub" id="resultSub">Tap a meal to see ingredients · tap ✓ to add or remove</div>
       <div id="mealsSelectedBadge" style="font-size:13px;font-weight:500;color:var(--green-d);background:var(--green-l);border-radius:999px;padding:4px 14px;width:fit-content;margin-bottom:0.75rem;display:${selectedCount>0?'inline-block':'none'};">${selectedCount} meal${selectedCount!==1?'s':''} selected</div>
-      ${pinnedSection}
-      ${newCards ? `<div class="menu-cards">${newCards}</div>` : ''}
+      <div class="menu-cards">${cards}</div>
       <div class="select-cta-bar" id="selectCtaBar">
         <span class="select-cta-sub" id="selectCtaSub" style="flex:1;">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected` : 'Tap meals above to select'}</span>
         <button class="btn-create-list" id="createListBtn" onclick="show('shoppinglist')" ${selectedCount===0?'disabled':''}>
@@ -1381,6 +1482,18 @@ function refreshCtaBar() {
 // ═══════════════════════════════════════════════════
 // DETAIL SCREEN
 // ═══════════════════════════════════════════════════
+function openDetailByDish(dishName) {
+  // If dish is in currentMenu, use normal openDetail
+  const menuIdx = currentMenu.findIndex(m => m.dish === dishName);
+  if (menuIdx !== -1) { openDetail(menuIdx); return; }
+
+  // Otherwise add to currentMenu temporarily so openDetail works
+  const poolItem = POOL.find(p => p.dish === dishName);
+  if (!poolItem) return;
+  currentMenu.push(poolItem);
+  openDetail(currentMenu.length - 1);
+}
+
 function openDetail(index, tab='ingredients') {
   currentDetailIndex = index;
   const item = currentMenu[index];
