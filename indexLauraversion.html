@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinr — Dinner → shopping list in 30 seconds</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232D5A3D'/><text y='46' x='10' font-size='44'>🍽</text></svg>">
+<style>
+:root {
+  --bg:#F6F3EE; --surface:#FFF; --surface2:#EFEBE3;
+  --text:#1A1814; --text2:#6B6560; --text3:#A09890;
+  --green:#2D5A3D; --green-l:#EAF2EC; --green-d:#1B3D28;
+  --orange:#C4571A; --orange-l:#FDF0E8;
+  --border:rgba(26,24,20,0.1); --border2:rgba(26,24,20,0.18);
+  --r:14px; --r-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5;}
+
+/* ─── SCREENS ─── */
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ─── LANDING ─── */
+.lp-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 1.5rem;position:relative;overflow:hidden;background:var(--green);}
+.lp-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(168,213,181,0.18) 0%,transparent 70%);}
+.lp-logo{font-family:'Fraunces',serif;font-size:17px;color:rgba(255,255,255,0.55);font-style:italic;letter-spacing:-0.01em;margin-bottom:4rem;animation:fadeUp 0.6s ease both;}
+.lp-logo em{color:#A8D5B5;}
+.lp-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#A8D5B5;margin-bottom:1.25rem;animation:fadeUp 0.6s 0.1s ease both;}
+.lp-h1{font-family:'Fraunces',serif;font-size:clamp(2.5rem,7vw,5rem);line-height:1.05;letter-spacing:-0.03em;color:#fff;max-width:700px;margin-bottom:1.25rem;animation:fadeUp 0.6s 0.15s ease both;}
+.lp-h1 em{font-style:italic;color:#A8D5B5;}
+.lp-sub{font-size:1.0625rem;color:rgba(255,255,255,0.65);max-width:400px;line-height:1.65;margin-bottom:2.5rem;animation:fadeUp 0.6s 0.22s ease both;}
+.lp-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:#fff;color:var(--green);border-radius:999px;font-size:15px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 24px rgba(0,0,0,0.18);animation:fadeUp 0.6s 0.3s ease both;}
+.lp-cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25);}
+.lp-cta span{font-size:19px;}
+.lp-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:0.06em;text-transform:uppercase;animation:fadeUp 0.6s 0.6s ease both,bob 2.5s 1.5s ease-in-out infinite;}
+.lp-problem{padding:5rem 1.5rem;max-width:780px;margin:0 auto;text-align:center;}
+.lp-problem-q{font-family:'Fraunces',serif;font-size:clamp(1.5rem,4vw,2.5rem);line-height:1.25;letter-spacing:-0.02em;margin-bottom:1rem;}
+.lp-problem-q em{color:var(--orange);font-style:italic;}
+.lp-problem-body{font-size:1rem;color:var(--text2);max-width:440px;margin:0 auto;line-height:1.7;}
+.lp-how{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 1.5rem;}
+.lp-how-inner{max-width:820px;margin:0 auto;}
+.lp-section-label{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;text-align:center;}
+.lp-section-title{font-family:'Fraunces',serif;font-size:clamp(1.75rem,4vw,2.75rem);letter-spacing:-0.02em;text-align:center;margin-bottom:3.5rem;line-height:1.15;}
+.lp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.lp-step{text-align:center;}
+.lp-step-num{width:48px;height:48px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:22px;margin:0 auto 1rem;}
+.lp-step-title{font-weight:500;font-size:15px;margin-bottom:5px;}
+.lp-step-body{font-size:13px;color:var(--text2);line-height:1.6;}
+.lp-benefits{padding:5rem 1.5rem;max-width:780px;margin:0 auto;}
+.lp-benefit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3rem;}
+.lp-benefit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.lp-benefit-icon{font-size:28px;margin-bottom:0.75rem;}
+.lp-benefit-title{font-weight:500;font-size:15px;margin-bottom:4px;}
+.lp-benefit-body{font-size:13px;color:var(--text2);line-height:1.6;}
+.lp-bottom-cta{background:var(--green);padding:5rem 1.5rem;text-align:center;}
+.lp-bottom-cta h2{font-family:'Fraunces',serif;font-size:clamp(1.75rem,5vw,3rem);color:#fff;letter-spacing:-0.02em;margin-bottom:1rem;line-height:1.15;}
+.lp-bottom-cta p{color:rgba(255,255,255,0.65);margin-bottom:2rem;font-size:15px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ─── APP SHARED HEADER ─── */
+.app-header{background:var(--green);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;}
+.app-logo{font-family:'Fraunces',serif;font-size:19px;color:#fff;font-style:italic;letter-spacing:-0.02em;cursor:pointer;}
+.app-logo em{color:#A8D5B5;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.back-btn{font-size:13px;color:rgba(255,255,255,0.65);background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.12s;}
+.back-btn:hover{color:#fff;}
+.sl-badge-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.sl-badge-btn:hover{background:rgba(255,255,255,0.25);}
+.sl-badge-count{background:#fff;color:var(--green);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;}
+
+/* ─── MENU SCREEN ─── */
+.app-main{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.sec-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;}
+.chip-section{margin-bottom:1.75rem;}
+.chip-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:6px 14px;border-radius:999px;border:1.5px solid var(--border2);font-size:13px;cursor:pointer;color:var(--text2);background:var(--surface);transition:all 0.12s;user-select:none;font-family:'DM Sans',sans-serif;}
+.chip:hover{border-color:var(--green);color:var(--green);}
+.chip.on{background:var(--green);border-color:var(--green);color:#fff;}
+.chip.veto{background:var(--orange-l);border-color:var(--orange);color:var(--orange);}
+.gen-wrap{display:flex;justify-content:center;padding-top:0.5rem;}
+.btn-gen{padding:15px 40px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:16px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;box-shadow:0 4px 20px rgba(45,90,61,0.25);display:flex;align-items:center;gap:10px;}
+.btn-gen:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 6px 28px rgba(45,90,61,0.3);}
+.btn-gen:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+/* ─── MENU CARDS ─── */
+.result-wrap{margin-top:2.5rem;animation:fadeUp 0.3s ease both;}
+.result-title{font-family:'Fraunces',serif;font-size:20px;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.result-sub{font-size:12px;color:var(--text3);margin-bottom:1rem;}
+.menu-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
+
+.menu-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;transition:box-shadow 0.15s,border-color 0.15s;}
+.menu-card:hover{box-shadow:0 3px 14px rgba(0,0,0,0.07);}
+
+/* Clickable left area (emoji + title → ingredient detail) */
+.mc-clickable{display:flex;align-items:center;gap:0.85rem;flex:1;cursor:pointer;min-width:0;}
+.mc-emoji{font-size:26px;flex-shrink:0;line-height:1;}
+.mc-right{flex:1;min-width:0;}
+.mc-day{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
+.mc-dish{font-family:'Fraunces',serif;font-size:15px;line-height:1.3;color:var(--text);}
+.mc-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.lbl{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;}
+.lbl-snel{background:var(--orange-l);color:var(--orange);}
+.lbl-gezond{background:var(--green-l);color:var(--green-d);}
+.lbl-kids{background:#FEF3C7;color:#92400E;}
+.lbl-vega{background:#ECFDF5;color:#065F46;}
+
+/* ADD button right side */
+.mc-add-btn{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.mc-add-btn:hover{border-color:var(--green);color:var(--green);}
+.mc-add-btn.added{background:var(--green-l);border-color:var(--green);color:var(--green-d);}
+.mc-add-btn .add-icon{font-size:14px;font-weight:700;line-height:1;}
+
+.result-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-sec{padding:8px 18px;border-radius:999px;border:1.5px solid var(--border2);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);transition:all 0.12s;}
+.btn-sec:hover{border-color:var(--green);color:var(--green);}
+
+/* SKELETON */
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:8px;display:flex;align-items:center;gap:1rem;}
+.sk-dot{width:36px;height:36px;background:var(--surface2);border-radius:50%;flex-shrink:0;animation:pulse 1.2s ease-in-out infinite;}
+.sk-line{height:13px;background:var(--surface2);border-radius:4px;animation:pulse 1.2s ease-in-out infinite;}
+
+/* ─── INGREDIENT DETAIL SCREEN ─── */
+.detail-main{max-width:600px;margin:0 auto;padding:2rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.detail-hero{display:flex;align-items:flex-start;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.detail-emoji{font-size:52px;line-height:1;flex-shrink:0;}
+.detail-meta{}
+.detail-day{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+.detail-dish{font-family:'Fraunces',serif;font-size:clamp(1.25rem,4vw,1.75rem);letter-spacing:-0.02em;line-height:1.2;margin-bottom:0.5rem;}
+.detail-labels{display:flex;flex-wrap:wrap;gap:5px;}
+
+.detail-section-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;}
+.detail-select-all{font-size:12px;color:var(--green);cursor:pointer;font-weight:500;text-decoration:underline;}
+.detail-ing-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+
+.ing-list{display:flex;flex-direction:column;gap:6px;margin-bottom:2rem;}
+.ing-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all 0.12s;user-select:none;}
+.ing-item:hover{border-color:var(--border2);}
+.ing-item.checked{border-color:var(--green);background:var(--green-l);}
+.ing-item.unchecked{opacity:0.45;background:var(--surface2);border-color:var(--border);}
+.ing-cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--border2);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;}
+.ing-item.checked .ing-cb{background:var(--green);border-color:var(--green);}
+.ing-cb-icon{display:none;color:#fff;font-size:11px;font-weight:700;}
+.ing-item.checked .ing-cb-icon{display:block;}
+.ing-name{font-size:14px;color:var(--text);flex:1;}
+.ing-item.unchecked .ing-name{text-decoration:line-through;color:var(--text3);}
+
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-primary{padding:12px 24px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:7px;}
+.btn-primary:hover{background:var(--green-d);}
+.btn-ghost{padding:12px 20px;background:transparent;border:1.5px solid var(--border2);color:var(--text2);border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.12s;}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+
+/* ─── SHOPPING LIST SCREEN ─── */
+.sl-main{max-width:640px;margin:0 auto;padding:2rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.sl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.sl-heading{font-family:'Fraunces',serif;font-size:22px;letter-spacing:-0.02em;}
+.sl-export-row{display:flex;gap:8px;}
+.sl-export-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.sl-export-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* Filter tabs */
+.sl-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.sl-filter-tab{padding:5px 13px;border-radius:999px;border:1.5px solid var(--border2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text2);transition:all 0.12s;display:flex;align-items:center;gap:5px;}
+.sl-filter-tab:hover{border-color:var(--border2);color:var(--text);}
+.sl-filter-tab.active{background:var(--green);border-color:var(--green);color:#fff;}
+.sl-filter-emoji{font-size:13px;}
+
+/* Mode toggle */
+.sl-mode-toggle{display:flex;background:var(--surface2);border-radius:999px;padding:3px;margin-bottom:1.5rem;width:fit-content;}
+.sl-mode-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;}
+.sl-mode-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+
+/* Per-dish view */
+.sl-dish-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.sl-dish-hdr{padding:0.85rem 1.1rem;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+.sl-dish-hdr:hover{background:var(--surface2);}
+.sl-dish-emoji{font-size:20px;flex-shrink:0;}
+.sl-dish-name{font-family:'Fraunces',serif;font-size:14px;flex:1;}
+.sl-dish-ingcount{font-size:11px;color:var(--text3);background:var(--surface2);border-radius:999px;padding:2px 8px;}
+.sl-chevron{font-size:10px;color:var(--text3);transition:transform 0.2s;margin-left:4px;}
+.sl-dish-block.open .sl-chevron{transform:rotate(180deg);}
+.sl-dish-ings{display:none;padding:0 1.1rem 0.85rem;border-top:1px solid var(--border);}
+.sl-dish-block.open .sl-dish-ings{display:block;}
+.sl-dish-ing-item{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);}
+.sl-dish-ing-item:last-child{border-bottom:none;}
+.sl-ing-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+
+/* Smart/category view */
+.sl-category-block{margin-bottom:1.5rem;}
+.sl-cat-label{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem;display:flex;align-items:center;gap:7px;}
+.sl-cat-icon{font-size:14px;}
+.sl-cat-items{display:flex;flex-direction:column;gap:4px;}
+.sl-cat-item{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;color:var(--text);}
+.sl-cat-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.sl-cat-source{font-size:11px;color:var(--text3);margin-left:auto;}
+
+.sl-empty{text-align:center;padding:3rem 1rem;color:var(--text3);}
+.sl-empty-icon{font-size:36px;margin-bottom:0.75rem;}
+.sl-empty-text{font-family:'Fraunces',serif;font-size:17px;margin-bottom:0.4rem;color:var(--text2);}
+.sl-empty-sub{font-size:13px;}
+
+/* ─── FOOTER ─── */
+.site-footer{background:var(--green-d);padding:2.5rem 1.5rem;text-align:center;}
+.footer-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-style:italic;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.footer-logo em{color:#A8D5B5;}
+.footer-tagline{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;letter-spacing:0.02em;}
+.footer-links{display:flex;justify-content:center;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:12px;}
+.footer-links a{color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.12s;padding:4px 6px;}
+.footer-links a:hover{color:#fff;}
+.footer-sep{color:rgba(255,255,255,0.2);font-size:10px;}
+.footer-copy{margin-top:1.25rem;font-size:11px;color:rgba(255,255,255,0.25);}
+
+@media(max-width:600px){
+  .lp-steps{grid-template-columns:1fr;gap:2rem;}
+  .lp-benefit-grid{grid-template-columns:1fr;}
+  .app-main,.detail-main,.sl-main{padding:1.5rem 1rem 4rem;}
+  .detail-actions{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ SCREEN: LANDING ══════════════ -->
+<div id="screen-landing" class="screen active">
+  <section class="lp-hero">
+    <div class="lp-logo"><em>dinr</em></div>
+    <div class="lp-eyebrow">No planning required</div>
+    <h1 class="lp-h1">Dinner → shopping list<br><em>in 30 seconds</em></h1>
+    <p class="lp-sub">Pick a few dishes you feel like making. Skip what you hate. Get your shopping list instantly — no account, no fuss.</p>
+    <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinner ideas</button>
+    <div class="lp-scroll-hint">↓ more</div>
+  </section>
+  <section class="lp-problem">
+    <h2 class="lp-problem-q">It's 5pm. <em>"What's for dinner?"</em></h2>
+    <p class="lp-problem-body">You open the fridge, stare at nothing, and order pizza again. Dinr gives you a good idea and a ready shopping list in the time it takes to scroll Instagram.</p>
+  </section>
+  <section class="lp-how">
+    <div class="lp-how-inner">
+      <div class="lp-section-label">How it works</div>
+      <h2 class="lp-section-title">Three taps.<br>Done.</h2>
+      <div class="lp-steps">
+        <div class="lp-step"><div class="lp-step-num">1</div><div class="lp-step-title">Tell us what you like</div><p class="lp-step-body">Tap a few flavours you're into. Hate fish? Skip it. No forms, just chips.</p></div>
+        <div class="lp-step"><div class="lp-step-num">2</div><div class="lp-step-title">Pick your dishes</div><p class="lp-step-body">We suggest a handful of dinners. Like 3? Take 3. No pressure to plan a full week.</p></div>
+        <div class="lp-step"><div class="lp-step-num">3</div><div class="lp-step-title">Grab your list</div><p class="lp-step-body">Remove what you already have at home. Export or print — straight into the supermarket.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="lp-benefits">
+    <div class="lp-section-label" style="text-align:center;">Why it works</div>
+    <h2 class="lp-section-title">Good food.<br>Without the faff.</h2>
+    <div class="lp-benefit-grid">
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">⚡</div><div class="lp-benefit-title">30 seconds, start to list</div><p class="lp-benefit-body">No account. No sign-up. Open, tap, done. Faster than scrolling for recipes.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">🎯</div><div class="lp-benefit-title">As many as you need</div><p class="lp-benefit-body">Planning 2 nights or 5 — your call. Dinr doesn't force a full week on you.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">🛒</div><div class="lp-benefit-title">Smart shopping list</div><p class="lp-benefit-body">Tick off what's already in your cupboard. Everything else, neatly grouped by aisle.</p></div>
+      <div class="lp-benefit-card"><div class="lp-benefit-icon">🧠</div><div class="lp-benefit-title">Zero decision fatigue</div><p class="lp-benefit-body">We pick. You tweak. No more standing in the kitchen wondering what to cook.</p></div>
+    </div>
+  </section>
+  <section class="lp-bottom-cta">
+    <h2>Dinner sorted.<br>List ready. Let's go.</h2>
+    <p>Free. No account needed. Just pick and shop.</p>
+    <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinner ideas</button>
+  </section>
+  <footer class="site-footer">
+    <div class="footer-logo"><em>dinr</em></div>
+    <div class="footer-tagline">Dinner → shopping list in 30 seconds</div>
+    <div class="footer-links">
+      <a href="#" onclick="showModal('privacy')">Privacy Policy</a>
+      <span class="footer-sep">·</span>
+      <a href="#" onclick="showModal('terms')">Terms &amp; Conditions</a>
+      <span class="footer-sep">·</span>
+      <a href="mailto:hello@dinr.online">hello@dinr.online</a>
+    </div>
+    <div class="footer-copy">© 2025 Dinr. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ══════════════ SCREEN: MENU ══════════════ -->
+<div id="screen-menu" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <button class="sl-badge-btn" id="slBadgeBtn" onclick="show('shoppinglist')" style="display:none;">
+        🛒 Boodschappenlijst <span class="sl-badge-count" id="slBadgeCount">0</span>
+      </button>
+      <button class="back-btn" onclick="show('landing')">← Back</button>
+    </div>
+  </header>
+  <main class="app-main">
+    <div class="chip-section">
+      <div class="sec-label">What do you enjoy? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+      <div class="chip-wrap" id="likeChips">
+        <div class="chip" data-val="pasta"         onclick="toggleChip(this)">Pasta</div>
+        <div class="chip" data-val="soup"          onclick="toggleChip(this)">Soup</div>
+        <div class="chip" data-val="rice"          onclick="toggleChip(this)">Rice dishes</div>
+        <div class="chip" data-val="pizza"         onclick="toggleChip(this)">Pizza</div>
+        <div class="chip" data-val="wraps"         onclick="toggleChip(this)">Wraps & tacos</div>
+        <div class="chip" data-val="stir"          onclick="toggleChip(this)">Stir-fry</div>
+        <div class="chip" data-val="curry"         onclick="toggleChip(this)">Curry</div>
+        <div class="chip" data-val="noodles"       onclick="toggleChip(this)">Noodles</div>
+        <div class="chip" data-val="seafood"       onclick="toggleChip(this)">Seafood</div>
+        <div class="chip" data-val="veggie"        onclick="toggleChip(this)">Vegetarian</div>
+        <div class="chip" data-val="quick"         onclick="toggleChip(this)">Quick meals</div>
+        <div class="chip" data-val="healthy"       onclick="toggleChip(this)">Healthy</div>
+        <div class="chip" data-val="kids"          onclick="toggleChip(this)">Kid-friendly</div>
+        <div class="chip" data-val="mediterranean" onclick="toggleChip(this)">Mediterranean</div>
+      </div>
+    </div>
+    <div class="chip-section">
+      <div class="sec-label">Anything you'd rather avoid? <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+      <div class="chip-wrap" id="dislikeChips">
+        <div class="chip" data-val="fish"       onclick="toggleVeto(this)">Fish</div>
+        <div class="chip" data-val="shellfish"  onclick="toggleVeto(this)">Shellfish</div>
+        <div class="chip" data-val="mushroom"   onclick="toggleVeto(this)">Mushrooms</div>
+        <div class="chip" data-val="spicy"      onclick="toggleVeto(this)">Spicy</div>
+        <div class="chip" data-val="onion"      onclick="toggleVeto(this)">Onions</div>
+        <div class="chip" data-val="garlic"     onclick="toggleVeto(this)">Garlic</div>
+        <div class="chip" data-val="veggie"     onclick="toggleVeto(this)">Vegetarian only</div>
+        <div class="chip" data-val="gluten"     onclick="toggleVeto(this)">Gluten</div>
+        <div class="chip" data-val="nuts"       onclick="toggleVeto(this)">Nuts</div>
+        <div class="chip" data-val="lactose"    onclick="toggleVeto(this)">Lactose</div>
+        <div class="chip" data-val="pork"       onclick="toggleVeto(this)">Pork</div>
+        <div class="chip" data-val="beef"       onclick="toggleVeto(this)">Beef</div>
+        <div class="chip" data-val="eggs"       onclick="toggleVeto(this)">Eggs</div>
+      </div>
+    </div>
+    <div class="gen-wrap">
+      <button class="btn-gen" id="genBtn" onclick="generate()">✦ Show me dinner ideas</button>
+    </div>
+    <div id="out"></div>
+  </main>
+</div>
+
+<!-- ══════════════ SCREEN: INGREDIENT DETAIL ══════════════ -->
+<div id="screen-detail" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <button class="sl-badge-btn" id="slBadgeBtnDetail" onclick="show('shoppinglist')" style="display:none;">
+        🛒 <span class="sl-badge-count" id="slBadgeCountDetail">0</span>
+      </button>
+      <button class="back-btn" onclick="show('menu')">← Terug naar menu</button>
+    </div>
+  </header>
+  <div class="detail-main" id="detailContent"></div>
+</div>
+
+<!-- ══════════════ SCREEN: SHOPPING LIST ══════════════ -->
+<div id="screen-shoppinglist" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <button class="back-btn" onclick="show('menu')">← Terug naar menu</button>
+    </div>
+  </header>
+  <div class="sl-main" id="slContent"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+
+const CATEGORIES = {
+  '🥩 Vlees & vis':   ['chicken','beef','salmon','cod','prawn','shrimp','lamb','chorizo','bacon','sausage','minced','fish','tuna','anchovy'],
+  '🥦 Groenten':      ['tomato','onion','leek','carrot','pepper','courgette','broccoli','spinach','mushroom','pak choi','lettuce','cabbage','kale','edamame','avocado','cucumber'],
+  '🧀 Zuivel & ei':   ['egg','milk','cream','butter','mozzarella','parmesan','feta','ricotta','yoghurt','sour cream','cheddar','cheese','béchamel'],
+  '🌾 Pasta, graan & brood': ['pasta','spaghetti','lasagne','linguine','tagliatelle','penne','rice','noodle','couscous','bread','pita','tortilla','flatbread','taco','bun','shell','flour'],
+  '🥫 Blik & saus':   ['tomato sauce','passata','canned tomato','coconut milk','stock','broth','pesto','hummus','salsa','soy sauce','oyster sauce','teriyaki','BBQ sauce','fish sauce','tahini','kecap'],
+  '🧄 Kruiden & specerijen': ['garlic','ginger','cumin','coriander','paprika','turmeric','oregano','thyme','basil','mint','parsley','dill','cinnamon','chilli','pepper','salt','spice','herb'],
+  '🫙 Olie & overig': ['olive oil','sesame oil','vegetable oil','oil','maple syrup','honey','mustard','vinegar','lime','lemon','capers','olives'],
+};
+
+const INGREDIENTS = {
+  'Creamy spaghetti bolognese with fresh herbs':['500g spaghetti','400g minced beef','1 onion','2 garlic cloves','400ml tomato sauce','50ml cream','fresh basil','olive oil','salt & pepper'],
+  'Chicken satay with rice and cucumber salad':['4 chicken thighs','300g jasmine rice','4 tbsp peanut butter','2 tbsp soy sauce','1 lime','1 cucumber','fresh coriander','coconut milk'],
+  'Vegetable soup with crusty bread':['2 carrots','2 potatoes','1 leek','1 onion','1.2L vegetable stock','400g canned tomatoes','thyme','crusty bread','olive oil'],
+  'Oven-baked salmon with lemon potatoes':['4 salmon fillets','600g new potatoes','2 lemons','4 garlic cloves','fresh dill','olive oil','capers','salt & pepper'],
+  'Grilled chicken wraps with garlic sauce':['4 chicken breasts','8 flour tortillas','1 head lettuce','2 tomatoes','100ml garlic sauce','1 red onion','paprika','olive oil'],
+  'Coconut chicken curry with jasmine rice':['4 chicken thighs','400ml coconut milk','300g jasmine rice','1 onion','2 tbsp red curry paste','fish sauce','lime leaves','fresh coriander'],
+  'Pancakes with bacon and maple syrup':['200g plain flour','2 eggs','300ml milk','200g streaky bacon','maple syrup','butter','pinch of salt'],
+  'Mashed potato stew with smoked sausage':['1kg potatoes','4 smoked sausages','1 onion','200ml milk','butter','mustard','kale (optional)'],
+  'Lasagne with beef and béchamel sauce':['500g lasagne sheets','400g minced beef','700ml tomato sauce','500ml béchamel sauce','150g mozzarella','50g parmesan','1 onion','2 garlic cloves'],
+  'Nasi goreng with chicken and fried egg':['300g jasmine rice','2 chicken breasts','4 eggs','3 tbsp kecap manis','2 tbsp sambal','1 onion','2 garlic cloves','spring onions','cucumber'],
+  'Tofu stir-fry with pak choi and sesame':['400g firm tofu','2 pak choi','3 tbsp soy sauce','1 tbsp sesame oil','2 tbsp sesame seeds','2 garlic cloves','ginger','vegetable oil','noodles'],
+  'Mushroom risotto with parmesan':['300g arborio rice','400g mushrooms','1 onion','3 garlic cloves','1L vegetable stock','100ml white wine','60g parmesan','butter','fresh thyme'],
+  'Pesto pasta with cherry tomatoes and mozzarella':['400g pasta','200g cherry tomatoes','125g mozzarella','4 tbsp green pesto','olive oil','fresh basil','salt & pepper'],
+  'Honey-glazed chicken thighs with roasted veg':['6 chicken thighs','3 tbsp honey','2 tbsp soy sauce','2 tbsp Dijon mustard','2 bell peppers','1 courgette','red onion','olive oil'],
+  'Tomato lentil soup with sourdough':['200g red lentils','400g canned tomatoes','1 onion','2 garlic cloves','1L vegetable stock','cumin','turmeric','sourdough bread','olive oil'],
+  'Fish tacos with avocado and lime slaw':['4 white fish fillets','8 small tortillas','2 avocados','200g cabbage','2 limes','sour cream','cumin','coriander','chilli flakes'],
+  'Greek chicken with tzatziki and pita':['4 chicken breasts','4 pita breads','200ml tzatziki','200g cherry tomatoes','1 cucumber','100g feta','olives','lemon','oregano'],
+  'Beef stir-fry with broccoli and oyster sauce':['400g beef strips','1 head broccoli','3 tbsp oyster sauce','2 tbsp soy sauce','sesame oil','2 garlic cloves','ginger','noodles or rice'],
+  'Spinach and ricotta stuffed pasta shells':['20 jumbo pasta shells','250g ricotta','200g spinach','400ml tomato sauce','50g parmesan','1 egg','nutmeg','mozzarella'],
+  'Teriyaki salmon with steamed edamame':['4 salmon fillets','4 tbsp teriyaki sauce','200g edamame','300g rice','sesame seeds','spring onions','ginger'],
+  'Homemade pizza margherita with fresh basil':['pizza dough (2 balls)','400ml tomato passata','200g mozzarella','fresh basil','olive oil','sea salt','garlic'],
+  'Chorizo pasta with roasted peppers':['400g penne','200g chorizo','3 roasted peppers','400g canned tomatoes','1 onion','2 garlic cloves','smoked paprika','parmesan'],
+  'Thai green curry with vegetables and rice':['400ml coconut milk','2 tbsp green curry paste','300g mixed vegetables','300g jasmine rice','lime leaves','fish sauce','fresh basil','lime'],
+  'Baked cod with herb crust and mashed potato':['4 cod fillets','1kg potatoes','50g breadcrumbs','fresh parsley','lemon zest','butter','garlic','200ml milk'],
+  'Falafel bowl with hummus and flatbread':['400g canned chickpeas','1 onion','2 garlic cloves','cumin','coriander','flatbreads','200g hummus','tomatoes','cucumber','tahini'],
+  'BBQ pulled chicken with coleslaw and buns':['4 chicken breasts','150ml BBQ sauce','4 burger buns','200g cabbage','2 carrots','mayo','apple cider vinegar'],
+  'Creamy mushroom tagliatelle':['400g tagliatelle','400g mushrooms','200ml cream','1 onion','3 garlic cloves','thyme','parmesan','white wine','olive oil'],
+  'Spiced lamb meatballs with couscous':['500g minced lamb','200g couscous','cumin','coriander','garlic','400g canned tomatoes','mint yoghurt','red onion','lemon'],
+  'Vietnamese noodle soup with chicken':['2 chicken breasts','200g rice noodles','1.2L chicken stock','star anise','ginger','fish sauce','spring onions','bean sprouts','lime','fresh herbs'],
+  'Shakshuka with crusty bread':['6 eggs','400g canned tomatoes','1 onion','2 garlic cloves','2 bell peppers','cumin','paprika','chilli flakes','crusty bread','feta'],
+  'Prawn stir-fry with noodles and ginger':['400g prawns','200g egg noodles','3cm fresh ginger','3 garlic cloves','soy sauce','sesame oil','spring onions','pak choi','lime'],
+  'Mediterranean baked chicken with olives and feta':['4 chicken thighs','100g olives','100g feta','400g cherry tomatoes','1 red onion','oregano','lemon','olive oil'],
+  'Beef tacos with salsa and sour cream':['400g minced beef','8 taco shells','200ml salsa','150ml sour cream','1 avocado','1 onion','cumin','cheddar','lime','coriander'],
+  'Garlic butter shrimp with linguine':['400g linguine','400g raw shrimp','6 garlic cloves','100g butter','white wine','parsley','lemon','chilli flakes'],
+  'Ramen with soft-boiled egg and spring onion':['2 ramen noodle packs','4 eggs','1L chicken or pork stock','soy sauce','miso paste','spring onions','nori','sesame seeds','bamboo shoots'],
+};
+
+const POOL = [
+  { dish:'Creamy spaghetti bolognese with fresh herbs',emoji:'🍝',tags:['pasta','kids'] },
+  { dish:'Chicken satay with rice and cucumber salad',emoji:'🍗',tags:['rice','quick','kids'] },
+  { dish:'Vegetable soup with crusty bread',emoji:'🥣',tags:['soup','healthy','veggie'] },
+  { dish:'Oven-baked salmon with lemon potatoes',emoji:'🐟',tags:['fish','healthy','seafood'] },
+  { dish:'Grilled chicken wraps with garlic sauce',emoji:'🌯',tags:['wraps','quick'] },
+  { dish:'Coconut chicken curry with jasmine rice',emoji:'🍛',tags:['curry','rice','healthy'] },
+  { dish:'Pancakes with bacon and maple syrup',emoji:'🥞',tags:['kids','quick'] },
+  { dish:'Mashed potato stew with smoked sausage',emoji:'🥔',tags:['kids'] },
+  { dish:'Lasagne with beef and béchamel sauce',emoji:'🫕',tags:['pasta','kids','beef'] },
+  { dish:'Nasi goreng with chicken and fried egg',emoji:'🍚',tags:['rice','quick','eggs'] },
+  { dish:'Tofu stir-fry with pak choi and sesame',emoji:'🥢',tags:['stir','quick','veggie'] },
+  { dish:'Mushroom risotto with parmesan',emoji:'🍄',tags:['rice','veggie','mushroom'] },
+  { dish:'Pesto pasta with cherry tomatoes and mozzarella',emoji:'🍝',tags:['pasta','quick','veggie'] },
+  { dish:'Honey-glazed chicken thighs with roasted veg',emoji:'🍗',tags:['healthy'] },
+  { dish:'Tomato lentil soup with sourdough',emoji:'🥣',tags:['soup','healthy','veggie'] },
+  { dish:'Fish tacos with avocado and lime slaw',emoji:'🌮',tags:['fish','wraps','quick','seafood'] },
+  { dish:'Greek chicken with tzatziki and pita',emoji:'🫓',tags:['healthy','quick','mediterranean'] },
+  { dish:'Beef stir-fry with broccoli and oyster sauce',emoji:'🥦',tags:['stir','quick','beef'] },
+  { dish:'Spinach and ricotta stuffed pasta shells',emoji:'🍝',tags:['pasta','veggie'] },
+  { dish:'Teriyaki salmon with steamed edamame',emoji:'🐟',tags:['fish','healthy','quick','seafood'] },
+  { dish:'Homemade pizza margherita with fresh basil',emoji:'🍕',tags:['pizza','kids','veggie'] },
+  { dish:'Chorizo pasta with roasted peppers',emoji:'🍝',tags:['pasta','quick','pork'] },
+  { dish:'Thai green curry with vegetables and rice',emoji:'🍛',tags:['curry','rice','veggie','spicy'] },
+  { dish:'Baked cod with herb crust and mashed potato',emoji:'🐟',tags:['fish','healthy','seafood'] },
+  { dish:'Falafel bowl with hummus and flatbread',emoji:'🧆',tags:['veggie','healthy','mediterranean'] },
+  { dish:'BBQ pulled chicken with coleslaw and buns',emoji:'🍔',tags:['kids','quick'] },
+  { dish:'Creamy mushroom tagliatelle',emoji:'🍝',tags:['pasta','quick','veggie','mushroom'] },
+  { dish:'Spiced lamb meatballs with couscous',emoji:'🍖',tags:['healthy','spicy','mediterranean'] },
+  { dish:'Vietnamese noodle soup with chicken',emoji:'🍜',tags:['soup','noodles','healthy','quick'] },
+  { dish:'Shakshuka with crusty bread',emoji:'🍳',tags:['quick','veggie','spicy','mediterranean','eggs'] },
+  { dish:'Prawn stir-fry with noodles and ginger',emoji:'🍤',tags:['stir','noodles','quick','seafood'] },
+  { dish:'Mediterranean baked chicken with olives and feta',emoji:'🍗',tags:['healthy','mediterranean'] },
+  { dish:'Beef tacos with salsa and sour cream',emoji:'🌮',tags:['wraps','quick','kids','beef'] },
+  { dish:'Garlic butter shrimp with linguine',emoji:'🍝',tags:['pasta','quick','seafood'] },
+  { dish:'Ramen with soft-boiled egg and spring onion',emoji:'🍜',tags:['noodles','soup','eggs'] },
+];
+
+const LABEL_META = {
+  quick:  { cls:'lbl-snel',   icon:'⚡', text:'Quick' },
+  healthy:{ cls:'lbl-gezond', icon:'🥦', text:'Healthy' },
+  kids:   { cls:'lbl-kids',   icon:'⭐', text:'Kid-friendly' },
+  veggie: { cls:'lbl-vega',   icon:'🌿', text:'Vegetarian' },
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let currentMenu = []; // [{dish, emoji, tags}, …]
+// shoppingList: Map<dishKey, { dish, emoji, dayIndex, ingredients: Set<string> }>
+let shoppingList = new Map();
+let currentDetailIndex = -1; // which dish is open in detail screen
+
+// ═══════════════════════════════════════════════════
+// SCREEN ROUTING
+// ═══════════════════════════════════════════════════
+function show(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  window.scrollTo(0, 0);
+  if (screenId === 'shoppinglist') renderShoppingList();
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════════
+// BADGE
+// ═══════════════════════════════════════════════════
+function updateBadges() {
+  const count = shoppingList.size;
+  ['slBadgeBtn','slBadgeBtnDetail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = count > 0 ? 'flex' : 'none';
+  });
+  ['slBadgeCount','slBadgeCountDetail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count;
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// CHIPS
+// ═══════════════════════════════════════════════════
+function toggleChip(el){ el.classList.toggle('on'); }
+function toggleVeto(el){ el.classList.toggle('veto'); }
+function getLikes(){ return [...document.querySelectorAll('#likeChips .chip.on')].map(c=>c.dataset.val); }
+function getVetos(){ return [...document.querySelectorAll('#dislikeChips .chip.veto')].map(c=>c.dataset.val); }
+
+// ═══════════════════════════════════════════════════
+// GENERATE
+// ═══════════════════════════════════════════════════
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+function pickMenu() {
+  const likes = getLikes(), vetos = getVetos();
+  let cands = POOL.filter(d => !vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v)));
+  if (likes.length) {
+    const pref = cands.filter(d => likes.some(l => d.tags.includes(l) || d.dish.toLowerCase().includes(l)));
+    const rest = cands.filter(d => !pref.includes(d));
+    cands = [...shuffle(pref), ...shuffle(rest)];
+  } else { cands = shuffle(cands); }
+  return cands.slice(0, 5).length < 5 ? shuffle(POOL).slice(0, 5) : cands.slice(0, 5);
+}
+
+function generate() {
+  document.getElementById('genBtn').disabled = true;
+  showSkeleton();
+  setTimeout(() => {
+    document.getElementById('genBtn').disabled = false;
+    currentMenu = pickMenu();
+    renderMenu();
+  }, 900);
+}
+
+function regenerate() {
+  document.getElementById('genBtn').disabled = true;
+  showSkeleton();
+  setTimeout(() => {
+    document.getElementById('genBtn').disabled = false;
+    currentMenu = pickMenu();
+    renderMenu();
+  }, 900);
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER MENU
+// ═══════════════════════════════════════════════════
+function renderMenu() {
+  const cards = currentMenu.map((item, i) => {
+    const labels = (item.tags||[]).map(t=>{ const m=LABEL_META[t]; return m?`<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>`:''; }).join('');
+    const inList = shoppingList.has(item.dish);
+    return `
+      <div class="menu-card" id="mc-${i}">
+        <div class="mc-clickable" onclick="openDetail(${i})">
+          <span class="mc-emoji">${item.emoji}</span>
+          <div class="mc-right">
+            <div class="mc-day">${DAYS[i]}</div>
+            <div class="mc-dish">${item.dish}</div>
+            ${labels ? `<div class="mc-labels">${labels}</div>` : ''}
+          </div>
+        </div>
+        <button class="mc-add-btn ${inList?'added':''}" id="mc-addbtn-${i}" onclick="quickAddToList(${i})">
+          <span class="add-icon">${inList?'✓':'+'}</span> ${inList?'Toegevoegd':'Voeg toe'}
+        </button>
+      </div>`;
+  }).join('');
+
+  document.getElementById('out').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-title">Here's what you could make. 👇</div>
+      <div class="result-sub">Klik op een gerecht voor ingrediënten · + Voeg toe voor boodschappenlijst · pak er zoveel als je wil</div>
+      <div class="menu-cards">${cards}</div>
+      <div class="result-actions">
+        <button class="btn-sec" onclick="regenerate()">↻ Opnieuw genereren</button>
+      </div>
+    </div>`;
+  document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+  updateBadges();
+}
+
+// Quick-add entire dish with all ingredients selected
+function quickAddToList(index) {
+  const item = currentMenu[index];
+  if (!item) return;
+  const key = item.dish;
+  if (shoppingList.has(key)) {
+    // Toggle off
+    shoppingList.delete(key);
+  } else {
+    const ings = INGREDIENTS[key] || [];
+    shoppingList.set(key, { dish: item.dish, emoji: item.emoji, dayIndex: index, ingredients: new Set(ings) });
+  }
+  // Update button
+  const inList = shoppingList.has(key);
+  const btn = document.getElementById(`mc-addbtn-${index}`);
+  if (btn) {
+    btn.className = `mc-add-btn ${inList?'added':''}`;
+    btn.innerHTML = `<span class="add-icon">${inList?'✓':'+'}</span> ${inList?'Toegevoegd':'Voeg toe'}`;
+  }
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════════
+// DETAIL SCREEN
+// ═══════════════════════════════════════════════════
+function openDetail(index) {
+  currentDetailIndex = index;
+  const item = currentMenu[index];
+  const ings = INGREDIENTS[item.dish] || [];
+  const existing = shoppingList.get(item.dish);
+  // Which are currently selected in the list (or default all)
+  const selectedSet = existing ? existing.ingredients : new Set(ings);
+
+  const labels = (item.tags||[]).map(t=>{ const m=LABEL_META[t]; return m?`<span class="lbl ${m.cls}">${m.icon} ${m.text}</span>`:''; }).join('');
+  const inList = shoppingList.has(item.dish);
+
+  const ingItems = ings.map((ing, ii) => {
+    const checked = selectedSet.has(ing);
+    return `<div class="ing-item ${checked?'checked':'unchecked'}" id="ing-${ii}" onclick="toggleIng(${ii})">
+      <div class="ing-cb"><span class="ing-cb-icon">✓</span></div>
+      <span class="ing-name">${ing}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-emoji">${item.emoji}</div>
+      <div class="detail-meta">
+        <div class="detail-day">${DAYS[index]}</div>
+        <div class="detail-dish">${item.dish}</div>
+        ${labels ? `<div class="detail-labels" style="margin-top:6px;">${labels}</div>` : ''}
+      </div>
+    </div>
+    <div class="detail-ing-header">
+      <div class="detail-section-label">Ingrediënten</div>
+      <span class="detail-select-all" onclick="toggleAllIngs()">Alles aan/uit</span>
+    </div>
+    <div class="ing-list" id="ingList">${ingItems}</div>
+    <div class="detail-actions">
+      <button class="btn-primary" id="detailAddBtn" onclick="addFromDetail()">
+        ${inList ? '✓ Bijwerken in lijst' : '+ Voeg toe aan boodschappenlijst'}
+      </button>
+      <button class="btn-ghost" onclick="show('menu')">← Sluiten</button>
+    </div>`;
+
+  show('detail');
+}
+
+// Store temp ingredient state per detail view
+function getDetailSelectedIngs() {
+  const item = currentMenu[currentDetailIndex];
+  const ings = INGREDIENTS[item.dish] || [];
+  const selected = new Set();
+  ings.forEach((ing, ii) => {
+    const el = document.getElementById(`ing-${ii}`);
+    if (el && el.classList.contains('checked')) selected.add(ing);
+  });
+  return selected;
+}
+
+function toggleIng(ii) {
+  const el = document.getElementById(`ing-${ii}`);
+  if (!el) return;
+  el.classList.toggle('checked');
+  el.classList.toggle('unchecked');
+}
+
+function toggleAllIngs() {
+  const item = currentMenu[currentDetailIndex];
+  const ings = INGREDIENTS[item.dish] || [];
+  const allChecked = ings.every((_, ii) => document.getElementById(`ing-${ii}`)?.classList.contains('checked'));
+  ings.forEach((_, ii) => {
+    const el = document.getElementById(`ing-${ii}`);
+    if (!el) return;
+    if (allChecked) { el.classList.remove('checked'); el.classList.add('unchecked'); }
+    else { el.classList.add('checked'); el.classList.remove('unchecked'); }
+  });
+}
+
+function addFromDetail() {
+  const item = currentMenu[currentDetailIndex];
+  const selected = getDetailSelectedIngs();
+  if (selected.size === 0) {
+    shoppingList.delete(item.dish);
+  } else {
+    shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: currentDetailIndex, ingredients: selected });
+  }
+  // Update the add button on the menu card too
+  const inList = shoppingList.has(item.dish);
+  const menuBtn = document.getElementById(`mc-addbtn-${currentDetailIndex}`);
+  if (menuBtn) {
+    menuBtn.className = `mc-add-btn ${inList?'added':''}`;
+    menuBtn.innerHTML = `<span class="add-icon">${inList?'✓':'+'}</span> ${inList?'Toegevoegd':'Voeg toe'}`;
+  }
+  const btn = document.getElementById('detailAddBtn');
+  if (btn) btn.textContent = inList ? '✓ Bijgewerkt!' : '+ Voeg toe aan boodschappenlijst';
+  updateBadges();
+  setTimeout(() => show('menu'), 600);
+}
+
+// ═══════════════════════════════════════════════════
+// SHOPPING LIST SCREEN
+// ═══════════════════════════════════════════════════
+let slFilterDish = null; // null = all dishes
+let slMode = 'dishes'; // 'dishes' | 'smart'
+
+function renderShoppingList() {
+  const el = document.getElementById('slContent');
+  if (shoppingList.size === 0) {
+    el.innerHTML = `<div class="sl-main" style="padding-top:4rem;">
+      <div class="sl-empty">
+        <div class="sl-empty-icon">🛒</div>
+        <div class="sl-empty-text">Je lijst is leeg</div>
+        <div class="sl-empty-sub">Voeg gerechten toe via het weekmenu</div>
+      </div></div>`;
+    return;
+  }
+
+  // Filter tabs
+  const filterTabs = `<div class="sl-filter-tab ${slFilterDish===null?'active':''}" onclick="setSLFilter(null)">Alles</div>` +
+    [...shoppingList.values()].map(v =>
+      `<div class="sl-filter-tab ${slFilterDish===v.dish?'active':''}" onclick="setSLFilter('${escQ(v.dish)}')">
+        <span class="sl-filter-emoji">${v.emoji}</span>${v.dish.split(' ').slice(0,2).join(' ')}…
+      </div>`
+    ).join('');
+
+  // Mode toggle
+  const modeToggle = `<div class="sl-mode-toggle">
+    <button class="sl-mode-btn ${slMode==='dishes'?'active':''}" onclick="setSLMode('dishes')">📋 Per gerecht</button>
+    <button class="sl-mode-btn ${slMode==='smart'?'active':''}" onclick="setSLMode('smart')">✨ Slim samenvoegen</button>
+  </div>`;
+
+  // Content
+  let content = '';
+  const entries = [...shoppingList.entries()].filter(([k]) => slFilterDish === null || k === slFilterDish);
+
+  if (slMode === 'dishes') {
+    content = entries.map(([key, val]) => {
+      const ings = [...val.ingredients];
+      return `<div class="sl-dish-block" id="slb-${escId(key)}">
+        <div class="sl-dish-hdr" onclick="toggleSlBlock('${escQ(key)}')">
+          <span class="sl-dish-emoji">${val.emoji}</span>
+          <span class="sl-dish-name">${val.dish}</span>
+          <span class="sl-dish-ingcount">${ings.length} ingrediënt${ings.length!==1?'en':''}</span>
+          <span class="sl-chevron">▾</span>
+        </div>
+        <div class="sl-dish-ings">
+          ${ings.map(ing=>`<div class="sl-dish-ing-item"><span class="sl-ing-dot"></span>${ing}</div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    // Smart mode: categorize and deduplicate
+    content = buildSmartView(entries);
+  }
+
+  el.innerHTML = `
+    <div class="sl-top">
+      <h1 class="sl-heading">🛒 Boodschappenlijst</h1>
+      <div class="sl-export-row">
+        <button class="sl-export-btn" onclick="exportCSV()">⬇ CSV</button>
+        <button class="sl-export-btn" onclick="printList()">🖨 Print</button>
+      </div>
+    </div>
+    <div class="sl-filters">${filterTabs}</div>
+    ${modeToggle}
+    <div id="slBody">${content}</div>`;
+}
+
+function buildSmartView(entries) {
+  // Collect all ingredients + their source dishes, deduplicate by lowercased ingredient name
+  const seen = new Map(); // normalizedName -> { display, sources:[] }
+  entries.forEach(([key, val]) => {
+    [...val.ingredients].forEach(ing => {
+      const norm = ing.toLowerCase().replace(/^[\d\.]+ ?(g|kg|ml|l|tbsp?|tsp?|cups?|oz|lb|x|stuks?|bos|blik|pak|el|tl)?\s*/i,'').trim();
+      if (seen.has(norm)) {
+        seen.get(norm).sources.push(val.emoji + ' ' + val.dish.split(' ').slice(0,3).join(' '));
+      } else {
+        seen.set(norm, { display: ing, sources: [val.emoji + ' ' + val.dish.split(' ').slice(0,3).join(' ')] });
+      }
+    });
+  });
+
+  // Sort into categories
+  const cats = {};
+  Object.keys(CATEGORIES).forEach(c => cats[c] = []);
+  cats['🗂 Overig'] = [];
+
+  seen.forEach(({ display, sources }, norm) => {
+    let placed = false;
+    for (const [cat, kws] of Object.entries(CATEGORIES)) {
+      if (kws.some(kw => norm.includes(kw))) {
+        cats[cat].push({ display, sources });
+        placed = true; break;
+      }
+    }
+    if (!placed) cats['🗂 Overig'].push({ display, sources });
+  });
+
+  return Object.entries(cats).filter(([,items])=>items.length>0).map(([cat, items]) => `
+    <div class="sl-category-block">
+      <div class="sl-cat-label"><span class="sl-cat-icon">${cat.split(' ')[0]}</span>${cat.split(' ').slice(1).join(' ')}</div>
+      <div class="sl-cat-items">
+        ${items.map(({display,sources})=>`
+          <div class="sl-cat-item">
+            <span class="sl-cat-dot"></span>
+            <span>${display}</span>
+            ${sources.length>1?`<span class="sl-cat-source">${sources.length}×</span>`:`<span class="sl-cat-source">${sources[0]}</span>`}
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function setSLFilter(dish) { slFilterDish = dish; renderShoppingList(); }
+function setSLMode(mode) { slMode = mode; renderShoppingList(); }
+function toggleSlBlock(key) {
+  const el = document.getElementById('slb-' + escId(key));
+  if (el) el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT / PRINT
+// ═══════════════════════════════════════════════════
+function exportCSV() {
+  const rows = [['Ingrediënt','Gerecht']];
+  shoppingList.forEach(val => {
+    [...val.ingredients].forEach(ing => rows.push([ing, val.dish]));
+  });
+  const csv = rows.map(r => r.map(c => `"${c.replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'boodschappenlijst.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function printList() {
+  let html = '<html><head><title>Boodschappenlijst — Dinr</title>';
+  html += '<style>body{font-family:sans-serif;padding:2rem;max-width:600px;margin:0 auto;}h1{margin-bottom:1.5rem;font-size:1.4rem;}h2{font-size:1rem;margin:1.25rem 0 0.4rem;border-bottom:1px solid #ddd;padding-bottom:4px;}ul{list-style:disc;padding-left:1.5rem;}li{padding:3px 0;font-size:14px;}</style></head><body>';
+  html += '<h1>🛒 Boodschappenlijst</h1>';
+  if (slMode === 'smart') {
+    const entries = [...shoppingList.entries()];
+    const seen = new Map();
+    entries.forEach(([,val]) => {
+      [...val.ingredients].forEach(ing => {
+        const norm = ing.toLowerCase().replace(/^[\d\.]+ ?(g|kg|ml|l|tbsp?|tsp?|cups?|oz)?\s*/i,'').trim();
+        if (!seen.has(norm)) seen.set(norm, ing);
+      });
+    });
+    Object.entries(CATEGORIES).forEach(([cat, kws]) => {
+      const items = [...seen.entries()].filter(([norm])=>kws.some(kw=>norm.includes(kw)));
+      if (!items.length) return;
+      html += `<h2>${cat}</h2><ul>` + items.map(([,d])=>`<li>${d}</li>`).join('') + '</ul>';
+    });
+  } else {
+    shoppingList.forEach(val => {
+      html += `<h2>${val.emoji} ${val.dish}</h2><ul>` + [...val.ingredients].map(i=>`<li>${i}</li>`).join('') + '</ul>';
+    });
+  }
+  html += '</body></html>';
+  const w = window.open('','_blank');
+  w.document.write(html); w.document.close(); w.print();
+}
+
+// ═══════════════════════════════════════════════════
+// SKELETON
+// ═══════════════════════════════════════════════════
+function showSkeleton() {
+  document.getElementById('out').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-title" style="color:var(--text3);">👨‍🍳 Thinking…</div>
+      <div class="menu-cards">
+        ${DAYS.map((_,i)=>`<div class="skeleton-card">
+          <div class="sk-dot" style="animation-delay:${i*0.08}s"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <div class="sk-line" style="width:28%;animation-delay:${i*0.08}s"></div>
+            <div class="sk-line" style="width:${50+i*7}%;animation-delay:${i*0.08+0.08}s"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function escQ(s){ return s.replace(/'/g,"\\'"); }
+function escId(s){ return s.replace(/[^a-z0-9]/gi,'-'); }
+
+// ═══════════════════════════════════════════════════
+// LEGAL MODALS
+// ═══════════════════════════════════════════════════
+const LEGAL = {
+  privacy: {
+    title: 'Privacy Policy',
+    body: `<p><strong>Last updated: January 2025</strong></p>
+<p>Dinr ("we", "us") operates dinr.online. This page informs you of our policies regarding the collection, use, and disclosure of personal data.</p>
+<h4>Data we collect</h4>
+<p>Dinr is a fully client-side application. We do not collect, store, or process any personal data on our servers. Your preferences and shopping list exist only in your browser session and are not transmitted to us.</p>
+<h4>Analytics</h4>
+<p>We may use anonymous, aggregated analytics (such as page view counts) to understand how Dinr is used. No personally identifiable information is collected.</p>
+<h4>Cookies</h4>
+<p>Dinr does not use cookies or local storage to track you.</p>
+<h4>Third-party services</h4>
+<p>We use Google Fonts to serve typefaces. Google may collect data in accordance with their own privacy policy.</p>
+<h4>Contact</h4>
+<p>Questions about privacy? Email us at <a href="mailto:hello@dinr.online">hello@dinr.online</a>.</p>`
+  },
+  terms: {
+    title: 'Terms & Conditions',
+    body: `<p><strong>Last updated: January 2025</strong></p>
+<p>By using Dinr at dinr.online, you agree to these terms.</p>
+<h4>Use of service</h4>
+<p>Dinr is provided free of charge for personal, non-commercial use. You may not reproduce, distribute, or create derivative works from our content without permission.</p>
+<h4>No warranties</h4>
+<p>Dinr is provided "as is" without any warranties. Ingredient lists are suggestions only — always verify allergens and dietary requirements yourself before cooking or shopping.</p>
+<h4>Limitation of liability</h4>
+<p>Dinr is not liable for any damages arising from the use or inability to use this service, including but not limited to incorrect ingredient information.</p>
+<h4>Changes</h4>
+<p>We may update these terms at any time. Continued use of Dinr after changes constitutes acceptance of the new terms.</p>
+<h4>Contact</h4>
+<p>Questions? Email <a href="mailto:hello@dinr.online">hello@dinr.online</a>.</p>`
+  }
+};
+
+function showModal(type) {
+  const data = LEGAL[type];
+  if (!data) return;
+  const existing = document.getElementById('legalModal');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'legalModal';
+  div.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
+  div.innerHTML = `
+    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:80vh;overflow-y:auto;padding:2rem 1.75rem 3rem;animation:slideUp 0.25s ease;">
+      <div style="width:40px;height:4px;background:rgba(26,24,20,0.15);border-radius:2px;margin:0 auto 1.5rem;"></div>
+      <h2 style="font-family:'Fraunces',serif;font-size:1.4rem;letter-spacing:-0.02em;margin-bottom:1.25rem;">${data.title}</h2>
+      <div style="font-size:13px;color:#4a4540;line-height:1.75;">${data.body.replace(/<h4>/g,'<h4 style="font-size:13px;font-weight:600;margin:1rem 0 0.4rem;color:#1A1814;">').replace(/<p>/g,'<p style="margin-bottom:0.75rem;">').replace(/<a /g,'<a style="color:#2D5A3D;" ')}</div>
+      <button onclick="document.getElementById('legalModal').remove()" style="margin-top:1.5rem;padding:10px 24px;background:#2D5A3D;color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;">Sluiten</button>
+    </div>`;
+  div.addEventListener('click', e => { if (e.target === div) div.remove(); });
+  document.body.appendChild(div);
+  return false;
+}
+</script>
+</body>
+</html>

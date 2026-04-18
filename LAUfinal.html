@@ -247,14 +247,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* trust signal */
 .lp-trust{margin-top:1.5rem;font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:0.01em;animation:fadeUp 0.6s 0.45s ease both;font-style:italic;max-width:380px;text-align:center;line-height:1.5;}
 
-/* ─── STICKY CTA BAR ─── */
-.select-cta-bar{display:flex;align-items:center;gap:0.75rem;margin-top:1.25rem;padding:0.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);}
-.select-cta-text{font-size:13px;color:var(--text2);flex:1;line-height:1.4;}
-.select-cta-sub{display:block;font-size:11px;color:var(--text3);margin-top:2px;}
-.btn-create-list{padding:11px 22px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
-.btn-create-list:hover{background:var(--green-d);}
-.btn-create-list:disabled{opacity:0.45;cursor:not-allowed;}
-
 /* ─── DINNER MODE SELECTOR ─── */
 .mode-selector{display:flex;gap:8px;margin-bottom:1.5rem;background:var(--surface2);border-radius:999px;padding:4px;}
 .mode-btn{flex:1;padding:8px 4px;border:none;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;text-align:center;white-space:nowrap;}
@@ -1267,6 +1259,7 @@ function renderMenu(scroll = true) {
             ${labels ? `<div class="mc-labels">${labels}</div>` : ''}
           </div>
         </div>
+        ${cost ? `<span class="mc-cost">${cost}</span>` : ''}
         <div class="mc-add-btn ${inList?'added':''}"
              onclick="${clickable ? `quickAddToList(${menuIdx})` : `removePinned('${escQ(item.dish)}')`}"
              title="${inList?'Remove from list':'Add to list'}">
@@ -1304,7 +1297,10 @@ function renderMenu(scroll = true) {
       ${pinnedSection}
       ${newCards ? `<div class="menu-cards">${newCards}</div>` : ''}
       <div class="select-cta-bar" id="selectCtaBar">
-        <span class="select-cta-sub" id="selectCtaSub" style="flex:1;">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected` : 'Tap meals above to select'}</span>
+        <div class="select-cta-text" id="selectCtaText">
+          Get my shopping list →
+          <span class="select-cta-sub" id="selectCtaSub">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected · based on your choices` : 'Select meals above to build your list'}</span>
+        </div>
         <button class="btn-create-list" id="createListBtn" onclick="show('shoppinglist')" ${selectedCount===0?'disabled':''}>
           Get my shopping list →
         </button>
@@ -1369,8 +1365,8 @@ function refreshCtaBar() {
   if (btn) btn.disabled = selectedCount === 0;
   const sub = document.getElementById('selectCtaSub');
   if (sub) sub.textContent = selectedCount > 0
-    ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected`
-    : 'Tap meals above to select';
+    ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected · based on your choices`
+    : 'Select meals above to build your list';
   const badge = document.getElementById('mealsSelectedBadge');
   if (badge) {
     badge.style.display = selectedCount > 0 ? 'inline-block' : 'none';

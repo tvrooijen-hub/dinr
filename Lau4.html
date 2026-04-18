@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dinner Ideas + Grocery List Generator | dinr</title>
-<meta name="description" content="Stop wondering what's for dinner. Get dinner ideas and a ready grocery list in 30 seconds. No account needed.">
-<meta property="og:title" content="Dinner Ideas + Grocery List Generator | dinr">
+<title>Meal Planner with Shopping List | dinr</title>
+<meta name="description" content="Plan your meals and get a shopping list in seconds. No account needed. Pick dinner ideas, select your ingredients, export your grocery list.">
+<meta property="og:title" content="Meal Planner with Shopping List | dinr">
 <meta property="og:description" content="Pick meals, get your grocery list in 30 seconds. No sign-up. No stress.">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232D5A3D'/><text y='46' x='9' font-size='42' fill='white'>🍽</text></svg>">
@@ -99,29 +99,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .result-sub{font-size:12px;color:var(--text3);margin-bottom:1rem;}
 .menu-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
 
-/* ─── MENU CARD STATES ─── */
-/* Default = selected (subtle green tint) */
-.menu-card{background:#F6FBF7;border:1.5px solid rgba(45,90,61,0.18);border-radius:var(--r);padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;transition:box-shadow 0.15s,border-color 0.15s,background 0.15s,opacity 0.15s;position:relative;cursor:pointer;}
-.menu-card:hover{box-shadow:0 5px 18px rgba(0,0,0,0.09);border-color:rgba(45,90,61,0.35);background:#EEF8EF;}
+.menu-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:0.9rem 1rem;display:flex;align-items:center;gap:0.85rem;transition:box-shadow 0.15s,border-color 0.15s;position:relative;}
+.menu-card.pinned{opacity:0.85;}
+.menu-card:hover{box-shadow:0 3px 14px rgba(0,0,0,0.07);}
 
-/* Unselected = white, lighter border, slight fade */
-.menu-card.unselected{background:var(--surface);border-color:var(--border);opacity:0.75;}
-.menu-card.unselected:hover{opacity:1;box-shadow:0 3px 12px rgba(0,0,0,0.07);border-color:var(--border2);background:#FDFCFA;}
-
-/* Pinned (from previous generate) — always selected style */
-.menu-card.pinned{opacity:0.82;}
-
-/* Small checkmark badge top-right of selected card */
-.mc-check-corner{position:absolute;top:8px;right:46px;width:16px;height:16px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;transition:opacity 0.15s;}
-.mc-check-corner svg{display:block;}
-.menu-card.unselected .mc-check-corner{display:none;}
-
-/* Clickable left area */
+/* Clickable left area (emoji + title → ingredient detail) */
 .mc-clickable{display:flex;align-items:center;gap:0.85rem;flex:1;cursor:pointer;min-width:0;}
 .mc-emoji{font-size:26px;flex-shrink:0;line-height:1;}
 .mc-right{flex:1;min-width:0;}
+.mc-day{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;}
 .mc-dish{font-family:'Fraunces',serif;font-size:15px;line-height:1.3;color:var(--text);}
-.menu-card.unselected .mc-dish{color:var(--text2);}
 .mc-labels{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .lbl{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;}
 .lbl-snel{background:var(--orange-l);color:var(--orange);}
@@ -129,11 +116,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .lbl-kids{background:#FEF3C7;color:#92400E;}
 .lbl-vega{background:#ECFDF5;color:#065F46;}
 
-/* Toggle button — subtle circle, not dominant */
-.mc-add-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border2);background:rgba(255,255,255,0.7);color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
-.mc-add-btn:hover{border-color:var(--green);color:var(--green);background:#fff;}
+/* ADD button right side — icon only cart */
+.mc-add-btn{flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface);color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.mc-add-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-l);}
 .mc-add-btn.added{background:var(--green);border-color:var(--green);color:#fff;}
-.menu-card.unselected .mc-add-btn{background:var(--surface);border-color:var(--border);}
 .mc-add-btn svg{display:block;}
 
 .result-actions{display:flex;gap:8px;flex-wrap:wrap;}
@@ -183,8 +169,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .sl-export-row{display:flex;gap:8px;}
 .sl-export-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
 .sl-export-btn:hover{border-color:var(--green);color:var(--green);}
-.sl-whatsapp-btn{background:#25D366;border-color:#25D366;color:#fff;}
-.sl-whatsapp-btn:hover{background:#1da851;border-color:#1da851;color:#fff;}
 
 /* Filter tabs */
 .sl-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
@@ -247,54 +231,169 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* trust signal */
 .lp-trust{margin-top:1.5rem;font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:0.01em;animation:fadeUp 0.6s 0.45s ease both;font-style:italic;max-width:380px;text-align:center;line-height:1.5;}
 
+/* ─── PRO BADGE IN HEADER ─── */
+.pro-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;background:linear-gradient(135deg,#A8D5B5,#7BC99A);color:#1B3D28;letter-spacing:0.02em;}
+.upgrade-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.upgrade-btn:hover{background:rgba(255,255,255,0.22);}
+.upgrade-btn .spark{font-size:10px;}
+
+/* ─── DEV TOGGLE ─── */
+.dev-toggle{position:fixed;bottom:1.25rem;right:1.25rem;z-index:300;display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--green-d);color:#fff;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.dev-toggle:hover{background:#0f2a1a;transform:translateY(-1px);}
+.dev-toggle-dot{width:7px;height:7px;border-radius:50%;background:#A8D5B5;}
+
+/* ─── PRO GATE LOCK OVERLAY on feature ─── */
+.pro-gate{position:relative;}
+.pro-gate-overlay{position:absolute;inset:0;background:rgba(246,243,238,0.85);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;z-index:10;}
+.pro-gate-overlay:hover{background:rgba(246,243,238,0.75);}
+.pro-gate-icon{font-size:22px;}
+.pro-gate-text{font-size:13px;font-weight:500;color:var(--green-d);}
+.pro-gate-sub{font-size:11px;color:var(--text3);}
+
+/* ─── PRICING SCREEN ─── */
+.pricing-main{max-width:600px;margin:0 auto;padding:2.5rem 1.5rem 5rem;animation:fadeUp 0.25s ease both;}
+.pricing-hero{text-align:center;margin-bottom:2.5rem;}
+.pricing-hero h1{font-family:'Fraunces',serif;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.pricing-hero p{font-size:14px;color:var(--text2);}
+
+.billing-toggle{display:flex;background:var(--surface2);border-radius:999px;padding:3px;width:fit-content;margin:0 auto 2rem;}
+.billing-btn{padding:7px 20px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;display:flex;align-items:center;gap:7px;}
+.billing-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.save-pill{font-size:10px;font-weight:500;background:#EAF2EC;color:#1B3D28;padding:2px 7px;border-radius:999px;}
+
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem;}
+.plan-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem;position:relative;}
+.plan-card.featured{border-color:var(--green);border-width:2px;}
+.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:500;padding:3px 12px;border-radius:999px;white-space:nowrap;}
+.plan-name{font-size:13px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;}
+.plan-price{font-family:'Fraunces',serif;font-size:2.2rem;letter-spacing:-0.03em;line-height:1;margin-bottom:0.25rem;}
+.plan-price sup{font-size:1rem;vertical-align:top;margin-top:0.4rem;display:inline-block;}
+.plan-period{font-size:12px;color:var(--text3);margin-bottom:1.25rem;}
+.plan-period em{color:var(--green);font-style:normal;font-weight:500;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.5rem;}
+.plan-features li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:7px;line-height:1.4;}
+.plan-features li .fi{flex-shrink:0;margin-top:1px;}
+.fi-yes{color:var(--green);font-weight:700;}
+.fi-no{color:#E24B4A;font-weight:700;}
+.plan-cta{width:100%;padding:11px;border-radius:999px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);transition:all 0.15s;}
+.plan-cta:hover{border-color:var(--green);color:var(--green);}
+.plan-cta.primary{background:var(--green);border-color:var(--green);color:#fff;}
+.plan-cta.primary:hover{background:var(--green-d);}
+.plan-cta.active-plan{background:var(--green-l);border-color:var(--green);color:var(--green-d);cursor:default;}
+
+.pricing-footer{text-align:center;font-size:12px;color:var(--text3);line-height:1.7;}
+.pricing-footer a{color:var(--green);text-decoration:none;}
+
+/* ─── UPGRADE MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;}
+.upgrade-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:1.75rem 1.75rem 2.5rem;animation:slideUp 0.28s ease;max-height:90vh;overflow-y:auto;}
+.sheet-drag{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1.5rem;}
+
+.upgrade-step{display:none;}
+.upgrade-step.active{display:block;animation:fadeUp 0.2s ease both;}
+
+.step-badge{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.09em;color:var(--text3);margin-bottom:0.5rem;}
+.sheet-title{font-family:'Fraunces',serif;font-size:1.5rem;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.sheet-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;}
+
+.plan-select-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem;}
+.plan-select-card{border:1.5px solid var(--border2);border-radius:var(--r);padding:1rem;cursor:pointer;transition:all 0.15s;}
+.plan-select-card:hover{border-color:var(--green);}
+.plan-select-card.chosen{border-color:var(--green);background:var(--green-l);}
+.psc-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;}
+.psc-price{font-family:'Fraunces',serif;font-size:1.5rem;letter-spacing:-0.02em;color:var(--text);}
+.psc-price.chosen{color:var(--green-d);}
+.psc-period{font-size:11px;color:var(--text3);margin-top:2px;}
+.psc-save{display:inline-block;font-size:10px;background:#EAF2EC;color:#1B3D28;padding:2px 7px;border-radius:999px;margin-top:4px;}
+
+.perks-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;}
+.perk-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);}
+.perk-icon{width:28px;height:28px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+
+.payment-form{margin-bottom:1.5rem;}
+.form-row{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px;}
+.mock-field{height:42px;border:1.5px solid var(--border2);border-radius:var(--r-sm);background:var(--surface2);display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--text3);gap:8px;}
+.mock-field.focus{border-color:var(--green);}
+.mock-field-icon{font-size:14px;opacity:0.5;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+.contact-box{background:var(--surface2);border-radius:var(--r);padding:1.25rem;text-align:center;}
+.contact-box p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:0.75rem;}
+.contact-box a{color:var(--green);font-weight:500;text-decoration:none;}
+.contact-box a:hover{text-decoration:underline;}
+.contact-note{font-size:11px;color:var(--text3);margin-top:0.5rem;line-height:1.5;}
+
+.sheet-btn{width:100%;padding:13px;border-radius:999px;font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:var(--green);color:#fff;transition:all 0.15s;margin-bottom:8px;}
+.sheet-btn:hover{background:var(--green-d);}
+.sheet-btn.outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2);}
+.sheet-btn.outline:hover{border-color:var(--green);color:var(--green);}
+
+.success-wrap{text-align:center;padding:1.5rem 0;}
+.success-icon{font-size:52px;margin-bottom:1rem;}
+.success-title{font-family:'Fraunces',serif;font-size:1.75rem;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.success-sub{font-size:14px;color:var(--text2);line-height:1.65;max-width:320px;margin:0 auto 1.75rem;}
+.success-perks{display:flex;flex-direction:column;gap:8px;margin-bottom:1.75rem;text-align:left;}
+
+.trust-row{display:flex;align-items:center;justify-content:center;gap:1rem;font-size:11px;color:var(--text3);margin-top:10px;}
+.trust-item{display:flex;align-items:center;gap:4px;}
+
+@media(max-width:480px){
+  .plan-grid{grid-template-columns:1fr;}
+  .plan-select-row{grid-template-columns:1fr;}
+}
+
+/* SEO section */
+.lp-seo{padding:4rem 1.5rem;background:var(--surface2);}
+.lp-seo-inner{max-width:680px;margin:0 auto;text-align:center;}
+.lp-seo-body{font-size:14px;color:var(--text2);line-height:1.75;max-width:560px;margin:0 auto 1.5rem;}
+.lp-seo-kws{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+.lp-seo-kws span{font-size:11px;font-weight:500;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--border2);color:var(--text3);}
+
+/* post-generation select+CTA bar */
+/* cost indicator */
+.mc-cost{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:0.02em;flex-shrink:0;margin-right:6px;min-width:28px;text-align:right;}
+
 /* ─── STICKY CTA BAR ─── */
-.select-cta-bar{display:flex;align-items:center;gap:0.75rem;margin-top:1.25rem;padding:0.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);}
-.select-cta-text{font-size:13px;color:var(--text2);flex:1;line-height:1.4;}
-.select-cta-sub{display:block;font-size:11px;color:var(--text3);margin-top:2px;}
-.btn-create-list{padding:11px 22px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
-.btn-create-list:hover{background:var(--green-d);}
-.btn-create-list:disabled{opacity:0.45;cursor:not-allowed;}
+.select-cta-bar{position:sticky;bottom:1.25rem;background:var(--green);border-radius:16px;padding:1.1rem 1.25rem 1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.25rem;flex-wrap:wrap;box-shadow:0 8px 32px rgba(45,90,61,0.4),0 2px 8px rgba(0,0,0,0.12);z-index:50;}
+.select-cta-text{color:#fff;font-size:16px;font-weight:500;line-height:1.3;flex:1;}
+.select-cta-sub{display:block;font-size:12px;font-weight:400;opacity:0.65;margin-top:3px;}
+.btn-create-list{padding:13px 26px;background:#fff;color:var(--green);border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;flex-shrink:0;letter-spacing:-0.01em;}
+.btn-create-list:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.18);}
+.btn-create-list:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
 
-/* ─── DINNER MODE SELECTOR ─── */
-.mode-selector{display:flex;gap:8px;margin-bottom:1.5rem;background:var(--surface2);border-radius:999px;padding:4px;}
-.mode-btn{flex:1;padding:8px 4px;border:none;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text3);transition:all 0.15s;text-align:center;white-space:nowrap;}
-.mode-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
-.mode-btn:hover:not(.active){color:var(--text2);}
+/* ─── REVIEWS ─── */
+.lp-reviews{padding:4rem 1.5rem;background:var(--surface);}
+.lp-reviews-inner{max-width:820px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.review-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem 1.25rem;}
+.review-stars{font-size:15px;color:#F59E0B;margin-bottom:0.6rem;letter-spacing:0.05em;}
+.review-text{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:0.75rem;font-style:italic;}
+.review-author{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+@media(max-width:640px){.lp-reviews-inner{grid-template-columns:1fr;}}
 
-/* ─── RETURN HOOK ─── */
-.return-hook{background:var(--green);border-radius:var(--r);padding:1.1rem 1.25rem;margin-bottom:1.5rem;animation:fadeUp 0.3s ease both;}
-.return-hook-title{color:rgba(255,255,255,0.75);font-size:13px;font-weight:500;margin-bottom:0.6rem;}
-.rh-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:0.85rem;}
-.rh-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;border:1.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;user-select:none;}
-.rh-pill:hover{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.55);color:#fff;}
-.rh-pill.rh-pill-on{background:#fff;border-color:#fff;color:var(--green);}
-.rh-pill.rh-pill-on:hover{background:var(--green-l);}
-.return-hook-btn{padding:9px 20px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:all 0.12s;white-space:nowrap;}
-.return-hook-btn.primary{background:#fff;color:var(--green);}
-.return-hook-btn.primary:hover{background:var(--green-l);color:var(--green-d);}
-.return-hook-btn.rh-btn-dim{opacity:0.5;}
-/* ─── PREFS EDITING BAR ─── */
-.prefs-editing-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:1.25rem;}
-.prefs-editing-label{font-size:13px;font-weight:500;color:var(--text2);}
+.site-footer{background:var(--green-d);padding:2.5rem 1.5rem;text-align:center;}
+.footer-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-style:italic;letter-spacing:-0.02em;margin-bottom:0.35rem;}
+.footer-logo em{color:#A8D5B5;}
+.footer-tagline{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem;letter-spacing:0.02em;}
+.footer-links{display:flex;justify-content:center;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:12px;}
+.footer-links a{color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.12s;padding:4px 6px;}
+.footer-links a:hover{color:#fff;}
+.footer-sep{color:rgba(255,255,255,0.2);font-size:10px;}
+.footer-copy{margin-top:1.25rem;font-size:11px;color:rgba(255,255,255,0.25);}
 
+/* progressive disclosure chips */
+.chip-secondary{display:none;}
+.chip-secondary.visible{display:inline-flex;animation:fadeUp 0.2s ease both;}
+.chip-more{background:var(--surface);border-color:var(--border2);color:var(--green);font-weight:500;border-style:dashed;transition:all 0.15s;}
+.chip-more:hover{background:var(--green-l);border-color:var(--green);color:var(--green-d);}
 
-/* ─── COLLAPSED PREFS BANNER ─── */
-.prefs-collapsed{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:1.25rem;}
-.prefs-collapsed-left{display:flex;flex-direction:column;gap:2px;}
-.prefs-collapsed-label{font-size:13px;font-weight:500;color:var(--text);}
-.prefs-collapsed-summary{font-size:11px;color:var(--text3);}
-.prefs-edit-btn{font-size:12px;font-weight:500;padding:5px 14px;border-radius:999px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all 0.12s;flex-shrink:0;}
-.prefs-edit-btn:hover{border-color:var(--green);color:var(--green);}
-.chip-group-label{width:100%;font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;margin-top:2px;}
-
-/* avoid section — low-key, not a chore */
-.avoid-section{margin-bottom:1.25rem;}
+/* avoid section — subtler visual weight */
 .avoid-section .sec-label{color:var(--text3);font-size:10px;}
-.avoid-section .chip{font-size:12px;color:var(--text3);border-color:var(--border);padding:5px 12px;}
-.avoid-section .chip:hover{border-color:rgba(180,50,50,0.4);color:#991B1B;}
-.avoid-section .chip.veto{background:#FEF2F2;border-color:rgba(180,50,50,0.3);color:#991B1B;}
-.avoid-section .chip-more{color:var(--text3);border-color:var(--border);font-size:12px;}
-.avoid-section .chip-more:hover{color:#991B1B;border-color:rgba(180,50,50,0.35);background:#FEF2F2;}
+.avoid-section .chip{font-size:12px;color:var(--text3);border-color:var(--border);}
+.avoid-section .chip:hover{border-color:var(--orange);color:var(--orange);}
+.avoid-section .chip.veto{background:var(--orange-l);border-color:var(--orange);color:var(--orange);}
+.avoid-section .chip-more{color:var(--text3);border-color:var(--border);}
+.avoid-section .chip-more:hover{color:var(--orange);border-color:var(--orange);background:var(--orange-l);}
 
 /* card hover — view ingredients hint */
 .mc-hint{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--green-d);color:#fff;font-size:11px;padding:4px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;margin-bottom:6px;}
@@ -309,6 +408,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .chip.custom{background:var(--surface2);border-color:var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;}
 .chip.custom .chip-x{font-size:11px;opacity:0.5;cursor:pointer;line-height:1;}
 .chip.custom .chip-x:hover{opacity:1;}
+.pro-gate-label{font-size:10px;font-weight:500;background:#1B3D28;color:#A8D5B5;padding:2px 8px;border-radius:999px;cursor:pointer;}
+.pro-gate-locked{display:flex;flex-direction:column;border:1.5px dashed var(--border2);border-radius:var(--r);padding:12px 16px;cursor:pointer;transition:border-color 0.15s;color:var(--green-d);}
+.pro-gate-locked:hover{border-color:var(--green);}
 
 /* ─── RECIPE / INGREDIENT TABS on detail screen ─── */
 .detail-tabs{display:flex;background:var(--surface2);border-radius:999px;padding:3px;margin-bottom:1.25rem;width:fit-content;}
@@ -324,10 +426,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   .lp-steps{grid-template-columns:1fr;gap:2rem;}
   .lp-benefit-grid{grid-template-columns:1fr;}
   .app-main,.detail-main,.sl-main{padding:1.5rem 1rem 4rem;}
-/* ─── COMING SOON HINT ─── */
-.sl-coming-soon{margin-top:1.5rem;padding:10px 14px;border-radius:var(--r-sm);border:1.5px dashed var(--border2);font-size:13px;color:var(--text3);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
-.sl-coming-soon:hover{border-color:var(--green);color:var(--text2);}
-.sl-coming-pill{font-size:10px;font-weight:500;background:var(--surface2);border-radius:999px;padding:2px 8px;color:var(--text3);margin-left:auto;}
+  .detail-actions{flex-direction:column;}
 }
 </style>
 </head>
@@ -338,11 +437,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <section class="lp-hero">
     <div class="lp-logo"><em>dinr</em></div>
     <div class="lp-eyebrow">Meal planner + grocery list generator</div>
-    <h1 class="lp-h1">Stop thinking<br>about <em>dinner.</em></h1>
-    <p class="lp-sub">Meals + grocery list in 30 seconds. No account, no faff.</p>
+    <h1 class="lp-h1">Dinner decisions, <em>done.</em></h1>
+    <p class="lp-sub">Get meals and your shopping list in 30 seconds.</p>
     <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinners</button>
-    <div class="lp-trust">Used by busy households who just want dinner sorted.</div>
-    <p style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:1rem;animation:fadeUp 0.6s 0.45s ease both;">Most people get their list in under a minute</p>
+    <div class="lp-trust">For busy households who want a bit of structure — without overplanning.</div>
     <div class="lp-scroll-hint">↓ more</div>
   </section>
   <section class="lp-problem">
@@ -350,6 +448,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <p class="lp-problem-body">From idea → shopping list in seconds.</p>
   </section>
 
+  <section class="lp-reviews">
+    <div class="lp-reviews-inner">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Finally something that just works. I pick 3 meals on Sunday, list is ready in under a minute. Game changer for our family."</p>
+        <div class="review-author">— Martijn V., Amsterdam</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★<span style="opacity:0.3;">★</span></div>
+        <p class="review-text">"Really useful and dead simple. Would give 5 stars if it could automatically order the groceries online — maybe next version? 😄"</p>
+        <div class="review-author">— Emma R., London</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I used to spend 20 minutes every week figuring out what to eat. Now it takes 30 seconds. Genuinely love this."</p>
+        <div class="review-author">— Sarah K., Den Haag</div>
+      </div>
+    </div>
+  </section>
   <section class="lp-how">
     <div class="lp-how-inner">
       <div class="lp-section-label">How it works</div>
@@ -386,7 +503,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <p>Free. No account needed.</p>
     <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinners</button>
     <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.15);">
-      <p style="font-size:13px;color:rgba(255,255,255,0.5);">More features coming soon — <a href="mailto:hello@dinr.online" style="color:rgba(255,255,255,0.6);">hello@dinr.online</a></p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Want more? Save preferences, AI-powered suggestions &amp; more.</p>
+      <button onclick="show('pricing')" style="background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.75);padding:8px 22px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.7)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.35)';this.style.color='rgba(255,255,255,0.75)'">✦ View Pro plans</button>
     </div>
   </section>
   <footer class="site-footer">
@@ -411,74 +529,64 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="sl-badge-btn" id="slBadgeBtn" onclick="show('shoppinglist')" style="display:none;">
         🛒 Shopping list <span class="sl-badge-count" id="slBadgeCount">0</span>
       </button>
+      <span id="hdrProBadge" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button id="hdrUpgradeBtn" class="upgrade-btn" onclick="show('pricing')"><span class="spark">✦</span> Upgrade</button>
       <button class="back-btn" onclick="show('landing')">← Back</button>
     </div>
   </header>
   <main class="app-main">
-    <!-- RETURN HOOK (shown on return visits) -->
-    <div id="returnHook" style="display:none;"></div>
-
-    <!-- PREFS AREA: collapsed for returning users, expanded for new users -->
-    <div id="prefsArea"></div>
-    <div class="chip-section" id="chipSectionLikes" style="display:none;">
-      <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>What sounds good? <span style="font-weight:400;color:var(--text3);">Optional</span></span>
-      </div>
+    <div style="background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:1.5rem;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;">
+      <span style="font-size:16px;">💡</span>
+      <span>Optional — we'll suggest great meals either way</span>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:1.25rem;margin-top:-0.5rem;">Most people just click and go ↓</p>
+    <div class="chip-section">
+      <div class="sec-label">What do you enjoy?</div>
       <div class="chip-wrap" id="likeChips">
-
-        <!-- Group 1: Style of food -->
-        <div class="chip-group-label">Style</div>
+        <!-- Primary (always visible) -->
         <div class="chip" data-val="pasta"  onclick="toggleChip(this)">Pasta 🍝</div>
         <div class="chip" data-val="rice"   onclick="toggleChip(this)">Rice 🍚</div>
-        <div class="chip" data-val="wraps"  onclick="toggleChip(this)">Wraps 🌮</div>
-        <div class="chip" data-val="stir"   onclick="toggleChip(this)">Stir-fry 🥢</div>
-        <!-- Secondary style chips (hidden until expanded) -->
-        <div class="chip chip-secondary" data-val="soup"          onclick="toggleChip(this)">Soup 🍲</div>
-        <div class="chip chip-secondary" data-val="curry"         onclick="toggleChip(this)">Curry 🍛</div>
-        <div class="chip chip-secondary" data-val="noodles"       onclick="toggleChip(this)">Noodles 🍜</div>
-        <div class="chip chip-secondary" data-val="seafood"       onclick="toggleChip(this)">Seafood 🐟</div>
-        <div class="chip chip-secondary" data-val="mediterranean" onclick="toggleChip(this)">Mediterranean 🫒</div>
-        <div class="chip chip-secondary" data-val="pizza"         onclick="toggleChip(this)">Pizza 🍕</div>
-        <!-- More trigger — always last in style group -->
-        <button class="chip chip-more" id="likeMoreBtn" onclick="expandChips('like')">+ More</button>
-
-        <!-- Group 2: Filters — visually separated -->
-        <div class="chip-group-label" style="margin-top:10px;">Filters</div>
         <div class="chip" data-val="quick"  onclick="toggleChip(this)">Quick ⚡</div>
         <div class="chip" data-val="veggie" onclick="toggleChip(this)">Vegetarian 🌿</div>
         <div class="chip" data-val="kids"   onclick="toggleChip(this)">Kids ⭐</div>
-        <div class="chip" data-val="healthy" onclick="toggleChip(this)">Healthy 🥗</div>
-
+        <!-- More trigger -->
+        <button class="chip chip-more" id="likeMoreBtn" onclick="expandChips('like')">+ More</button>
+        <!-- Secondary (hidden until expanded) -->
+        <div class="chip chip-secondary" data-val="soup"          onclick="toggleChip(this)">Soup 🥣</div>
+        <div class="chip chip-secondary" data-val="curry"         onclick="toggleChip(this)">Curry 🍛</div>
+        <div class="chip chip-secondary" data-val="noodles"       onclick="toggleChip(this)">Noodles 🍜</div>
+        <div class="chip chip-secondary" data-val="seafood"       onclick="toggleChip(this)">Seafood 🦐</div>
+        <div class="chip chip-secondary" data-val="mediterranean" onclick="toggleChip(this)">Mediterranean 🫒</div>
+        <div class="chip chip-secondary" data-val="pizza"         onclick="toggleChip(this)">Pizza 🍕</div>
+        <div class="chip chip-secondary" data-val="stir"          onclick="toggleChip(this)">Stir-fry 🥢</div>
+        <div class="chip chip-secondary" data-val="healthy"       onclick="toggleChip(this)">Healthy 🥗</div>
+        <div class="chip chip-secondary" data-val="wraps"         onclick="toggleChip(this)">Wraps & tacos</div>
       </div>
     </div>
 
-    <div class="chip-section avoid-section" id="chipSectionAvoid" style="display:none;">
-      <div class="sec-label">Anything to avoid?</div>
+    <div class="chip-section avoid-section">
+      <div class="sec-label">Anything you'd rather avoid?</div>
       <div class="chip-wrap" id="dislikeChips">
+        <!-- Primary (always visible) -->
         <div class="chip" data-val="fish"    onclick="toggleVeto(this)">Fish</div>
         <div class="chip" data-val="nuts"    onclick="toggleVeto(this)">Nuts</div>
         <div class="chip" data-val="gluten"  onclick="toggleVeto(this)">Gluten</div>
         <div class="chip" data-val="lactose" onclick="toggleVeto(this)">Lactose</div>
         <div class="chip" data-val="spicy"   onclick="toggleVeto(this)">Spicy</div>
+        <!-- More trigger -->
+        <button class="chip chip-more" id="avoidMoreBtn" onclick="expandChips('avoid')">+ More</button>
+        <!-- Secondary (hidden until expanded) -->
         <div class="chip chip-secondary" data-val="shellfish" onclick="toggleVeto(this)">Shellfish</div>
         <div class="chip chip-secondary" data-val="mushroom"  onclick="toggleVeto(this)">Mushrooms</div>
         <div class="chip chip-secondary" data-val="onion"     onclick="toggleVeto(this)">Onions</div>
         <div class="chip chip-secondary" data-val="garlic"    onclick="toggleVeto(this)">Garlic</div>
+        <div class="chip chip-secondary" data-val="veggie"    onclick="toggleVeto(this)">Vegetarian only</div>
         <div class="chip chip-secondary" data-val="pork"      onclick="toggleVeto(this)">Pork</div>
         <div class="chip chip-secondary" data-val="beef"      onclick="toggleVeto(this)">Beef</div>
         <div class="chip chip-secondary" data-val="eggs"      onclick="toggleVeto(this)">Eggs</div>
-        <!-- More trigger — always at end -->
-        <button class="chip chip-more" id="avoidMoreBtn" onclick="expandChips('avoid')">+ More</button>
       </div>
     </div>
 
-    <div class="mode-selector" id="modeSelectorWrap">
-      <button class="mode-btn active" id="modeTonight" onclick="setDinnerMode('tonight', this)">⚡ Just tonight</button>
-      <button class="mode-btn" id="modeWeek" onclick="setDinnerMode('days', this)">🗓 2–3 days</button>
-      <button class="mode-btn" id="modeFull" onclick="setDinnerMode('week', this)">📅 Full week</button>
-    </div>
-
-    <p style="font-size:11px;color:var(--text3);margin-bottom:0.6rem;text-align:center;">No preference? Just click below</p>
     <div class="gen-wrap">
       <button class="btn-gen" id="genBtn" onclick="generate()">✦ Get my dinners</button>
     </div>
@@ -494,6 +602,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="sl-badge-btn" id="slBadgeBtnDetail" onclick="show('shoppinglist')" style="display:none;">
         🛒 <span class="sl-badge-count" id="slBadgeCountDetail">0</span>
       </button>
+      <span id="hdrProBadgeDetail" class="pro-badge" style="display:none;">✦ Pro</span>
       <button class="back-btn" onclick="show('menu')">← Back to menu</button>
     </div>
   </header>
@@ -505,44 +614,158 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <header class="app-header">
     <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
     <div class="hdr-right">
+      <span id="hdrProBadgeSL" class="pro-badge" style="display:none;">✦ Pro</span>
       <button class="back-btn" onclick="show('menu')">← Back to menu</button>
     </div>
   </header>
   <div class="sl-main" id="slContent"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-  ANALYTICS — Plausible (privacy-first, no cookies, GDPR compliant)
-  To activate: replace 'dinr.online' with your domain at dinr.online
-  Key events tracked:
-    generate_click       → CTA "Get my dinners" clicked
-    meal_added           → user taps 🛒 on a card
-    meal_removed         → user removes a meal
-    view_shopping_list   → user opens shopping list
-    upgrade_click        → user clicks Upgrade / Pro CTA
-    upgrade_complete     → Pro demo activated
-    preferences_expanded → user clicks "+ More"
-  Track CTR: generate_click / page_view = landing conversion rate
-  ════════════════════════════════════════════════════ -->
-<!-- Plausible analytics — only loads on production domain, silent on localhost/file:// -->
-<script>
-  (function() {
-    var isLocal = location.hostname === 'localhost' || location.hostname === '' || location.protocol === 'file:';
-    if (!isLocal) {
-      var s = document.createElement('script');
-      s.defer = true;
-      s.setAttribute('data-domain', 'dinr.online');
-      s.src = 'https://plausible.io/js/script.tagged-events.js';
-      document.head.appendChild(s);
-    }
-  })();
-  function track(event, props) {
-    if (typeof window.plausible === 'function') {
-      window.plausible(event, { props: props || {} });
-    }
-    // Silent no-op on localhost — no console noise
-  }
-</script>
+<!-- ══════════════ SCREEN: PRICING ══════════════ -->
+<div id="screen-pricing" class="screen">
+  <header class="app-header">
+    <div class="app-logo" onclick="show('landing')"><em>dinr</em></div>
+    <div class="hdr-right">
+      <span id="hdrProBadgePricing" class="pro-badge" style="display:none;">✦ Pro</span>
+      <button class="back-btn" onclick="history.go(-1)||show('menu')">← Back</button>
+    </div>
+  </header>
+  <div class="pricing-main">
+    <div class="pricing-hero">
+      <h1>Simple.<br>Honestly priced.</h1>
+      <p>Start free. Upgrade whenever you want more.</p>
+    </div>
+    <div class="billing-toggle">
+      <button class="billing-btn active" id="billMonthBtn" onclick="setBilling('month')">Monthly</button>
+      <button class="billing-btn" id="billYearBtn" onclick="setBilling('year')">Yearly <span class="save-pill">save 16%</span></button>
+    </div>
+    <div class="plan-grid">
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><sup>€</sup>0</div>
+        <div class="plan-period"></div>
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Generate dinner ideas</li>
+          <li><span class="fi fi-yes">✓</span> ~70 curated dishes</li>
+          <li><span class="fi fi-yes">✓</span> Shopping list</li>
+          <li><span class="fi fi-yes">✓</span> Tick off in-store</li>
+          <li><span class="fi fi-yes">✓</span> CSV / print export</li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Save your profile</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">AI-powered suggestions</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Smart shopping list</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Favourites &amp; blocked dishes</span></li>
+          <li><span class="fi fi-no">✕</span> <span style="color:var(--text3);">Share with family</span></li>
+        </ul>
+        <button class="plan-cta" id="freePlanCta" onclick="handleFreeCta()">Current plan</button>
+      </div>
+      <!-- PRO -->
+      <div class="plan-card featured">
+        <div class="plan-badge">Recommended</div>
+        <div class="plan-name">Pro ✦</div>
+        <div class="plan-price" id="proPrice"><sup>€</sup>2,99</div>
+        <div class="plan-period" id="proPeriod">per maand · <em id="proSaveLine"></em></div>
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Everything in Free</li>
+          <li><span class="fi fi-yes">✓</span> <strong>Save your profile</strong></li>
+          <li><span class="fi fi-yes">✓</span> <strong>AI suggestions</strong> via Claude</li>
+          <li><span class="fi fi-yes">✓</span> <strong>Smart shopping list</strong></li>
+          <li><span class="fi fi-yes">✓</span> Seasonal menus</li>
+          <li><span class="fi fi-yes">✓</span> Favourites &amp; blocked dishes</li>
+          <li><span class="fi fi-yes">✓</span> Share with family <em style="font-size:10px;color:var(--text3);font-style:normal;">(coming soon)</em></li>
+          <li><span class="fi fi-yes">✓</span> "What's in my pantry?" <em style="font-size:10px;color:var(--text3);font-style:normal;">(coming soon)</em></li>
+        </ul>
+        <button class="plan-cta primary" id="proPlanCta" onclick="handleProCta()">Start Pro →</button>
+      </div>
+    </div>
+    <div class="pricing-footer">
+      <p>No hidden costs. Cancel anytime.</p>
+      <p style="margin-top:6px;">Questions? <a href="mailto:hello@dinr.online">hello@dinr.online</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ UPGRADE MODAL ══════════════ -->
+<div id="upgradeModal" style="display:none;">
+  <div class="modal-overlay" onclick="closeUpgradeModal(event)">
+    <div class="upgrade-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-drag"></div>
+
+      <!-- STEP 1: Plan kiezen -->
+      <div class="upgrade-step active" id="upgradeStep1">
+        <div class="step-badge">Step 1 of 2</div>
+        <div class="sheet-title">Choose your plan</div>
+        <div class="sheet-sub">Cancel anytime. No hassle.</div>
+        <div class="plan-select-row">
+          <div class="plan-select-card" id="pscMonth" onclick="selectPlan('month')">
+            <div class="psc-label">Monthly</div>
+            <div class="psc-price" id="pscMonthPrice">€2.99</div>
+            <div class="psc-period">per month</div>
+          </div>
+          <div class="plan-select-card chosen" id="pscYear" onclick="selectPlan('year')">
+            <div class="psc-label">Yearly</div>
+            <div class="psc-price chosen" id="pscYearPrice">€29.99</div>
+            <div class="psc-period">per year</div>
+            <span class="psc-save">save 16%</span>
+          </div>
+        </div>
+        <div class="perks-list">
+          <div class="perk-item"><div class="perk-icon">🧠</div> Profiel opslaan — nooit meer opnieuw instellen</div>
+          <div class="perk-item"><div class="perk-icon">✨</div> AI-powered suggestions via Claude</div>
+          <div class="perk-item"><div class="perk-icon">❤️</div> Favorieten & geblokkeerde gerechten</div>
+          <div class="perk-item"><div class="perk-icon">🔒</div> Cancel anytime</div>
+        </div>
+        <button class="sheet-btn" onclick="goUpgradeStep(2)">Continue to payment →</button>
+        <button class="sheet-btn outline" onclick="closeUpgradeModal()">Maybe later</button>
+      </div>
+
+      <!-- STEP 2: Betaling -->
+      <div class="upgrade-step" id="upgradeStep2">
+        <div class="step-badge">Step 2 of 2</div>
+        <div class="sheet-title">Betaling</div>
+        <div class="sheet-sub" id="paymentSubline">Yearly plan · €29.99/year</div>
+
+        <div class="contact-box">
+          <p>Payment is coming soon.<br>Want to be one of our first Pro users?</p>
+          <a href="mailto:hello@dinr.online?subject=Dinr%20Pro%20interest&body=Hi%2C%20I%27m%20interested%20in%20Dinr%20Pro!">📩 Get in touch via hello@dinr.online</a>
+          <div class="contact-note">We'll activate your account manually and notify you<br>when payment goes live. First 7 days free.</div>
+        </div>
+
+        <div style="height:1rem;"></div>
+        <button class="sheet-btn" onclick="activateProDemo()">✦ Activeer Pro (demo)</button>
+        <button class="sheet-btn outline" onclick="goUpgradeStep(1)">← Back</button>
+        <div class="trust-row">
+          <span class="trust-item">🔒 Secure payment</span>
+          <span class="trust-item">✓ Cancel anytime</span>
+          <span class="trust-item">🇳🇱 EU company</span>
+        </div>
+      </div>
+
+      <!-- STEP 3: Succes -->
+      <div class="upgrade-step" id="upgradeStep3">
+        <div class="success-wrap">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Welcome to Pro!</div>
+          <div class="success-sub">You now have access to all Pro features. Enjoy!</div>
+          <div class="success-perks">
+            <div class="perk-item"><div class="perk-icon">🧠</div> Your profile is saved going forward</div>
+            <div class="perk-item"><div class="perk-icon">✨</div> AI suggestions are now active</div>
+            <div class="perk-item"><div class="perk-icon">❤️</div> Favorieten & blokkeren beschikbaar</div>
+          </div>
+          <button class="sheet-btn" onclick="closeUpgradeModal();show('menu');">Get started →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DEV TOGGLE -->
+<button class="dev-toggle" id="devToggle" onclick="devTogglePro()">
+  <span class="dev-toggle-dot" id="devDot"></span>
+  <span id="devToggleLabel">Free mode · click for Pro</span>
+</button>
+
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
@@ -550,13 +773,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 
 const CATEGORIES = {
-  '🥩 Meat & fish':   ['chicken','beef','salmon','cod','prawn','shrimp','lamb','chorizo','bacon','sausage','minced','fish','tuna','anchovy'],
-  '🥦 Vegetables':      ['tomato','onion','leek','carrot','pepper','courgette','broccoli','spinach','mushroom','pak choi','lettuce','cabbage','kale','edamame','avocado','cucumber'],
-  '🧀 Dairy & eggs':   ['egg','milk','cream','butter','mozzarella','parmesan','feta','ricotta','yoghurt','sour cream','cheddar','cheese','béchamel'],
-  '🌾 Pasta, grains & bread': ['pasta','spaghetti','lasagne','linguine','tagliatelle','penne','rice','noodle','couscous','bread','pita','tortilla','flatbread','taco','bun','shell','flour'],
-  '🥫 Tins & sauces':   ['tomato sauce','passata','canned tomato','coconut milk','stock','broth','pesto','hummus','salsa','soy sauce','oyster sauce','teriyaki','BBQ sauce','fish sauce','tahini','kecap'],
-  '🧄 Herbs & spices': ['garlic','ginger','cumin','coriander','paprika','turmeric','oregano','thyme','basil','mint','parsley','dill','cinnamon','chilli','pepper','salt','spice','herb'],
-  '🫙 Oils & other': ['olive oil','sesame oil','vegetable oil','oil','maple syrup','honey','mustard','vinegar','lime','lemon','capers','olives'],
+  '🥩 Vlees & vis':   ['chicken','beef','salmon','cod','prawn','shrimp','lamb','chorizo','bacon','sausage','minced','fish','tuna','anchovy'],
+  '🥦 Groenten':      ['tomato','onion','leek','carrot','pepper','courgette','broccoli','spinach','mushroom','pak choi','lettuce','cabbage','kale','edamame','avocado','cucumber'],
+  '🧀 Zuivel & ei':   ['egg','milk','cream','butter','mozzarella','parmesan','feta','ricotta','yoghurt','sour cream','cheddar','cheese','béchamel'],
+  '🌾 Pasta, graan & brood': ['pasta','spaghetti','lasagne','linguine','tagliatelle','penne','rice','noodle','couscous','bread','pita','tortilla','flatbread','taco','bun','shell','flour'],
+  '🥫 Blik & saus':   ['tomato sauce','passata','canned tomato','coconut milk','stock','broth','pesto','hummus','salsa','soy sauce','oyster sauce','teriyaki','BBQ sauce','fish sauce','tahini','kecap'],
+  '🧄 Kruiden & specerijen': ['garlic','ginger','cumin','coriander','paprika','turmeric','oregano','thyme','basil','mint','parsley','dill','cinnamon','chilli','pepper','salt','spice','herb'],
+  '🫙 Olie & overig': ['olive oil','sesame oil','vegetable oil','oil','maple syrup','honey','mustard','vinegar','lime','lemon','capers','olives'],
 };
 
 const INGREDIENTS = {
@@ -595,38 +818,6 @@ const INGREDIENTS = {
   'Beef tacos with salsa and sour cream':['400g minced beef','8 taco shells','200ml salsa','150ml sour cream','1 avocado','1 onion','cumin','cheddar','lime','coriander'],
   'Garlic butter shrimp with linguine':['400g linguine','400g raw shrimp','6 garlic cloves','100g butter','white wine','parsley','lemon','chilli flakes'],
   'Ramen with soft-boiled egg and spring onion':['2 ramen noodle packs','4 eggs','1L chicken or pork stock','soy sauce','miso paste','spring onions','nori','sesame seeds','bamboo shoots'],
-  // ── New curated dishes ────────────────────────────────────────────────────
-  'Spaghetti bolognese':['400g spaghetti','400g minced beef','1 onion','2 garlic cloves','400ml tomato sauce','olive oil','salt & pepper','fresh basil'],
-  'Chicken with rice':['4 chicken thighs','300g rice','1 onion','2 garlic cloves','500ml chicken stock','paprika','olive oil','salt & pepper'],
-  'Mashed potatoes with smoked sausage':['1kg potatoes','4 smoked sausages','1 onion','200ml milk','butter','mustard'],
-  'Pasta carbonara':['400g spaghetti','150g pancetta or bacon','3 eggs','50g parmesan','2 garlic cloves','black pepper','salt'],
-  'Mac & cheese':['400g macaroni','300ml milk','100g cheddar','50g parmesan','30g butter','2 tbsp flour','mustard','salt & pepper'],
-  'Chicken wraps':['4 chicken breasts','8 flour tortillas','1 head lettuce','2 tomatoes','sour cream','1 red onion','paprika','olive oil'],
-  'Fried rice with chicken':['300g cooked rice','2 chicken breasts','3 eggs','soy sauce','sesame oil','2 garlic cloves','spring onions','frozen peas'],
-  'Chicken stir-fry with broccoli':['3 chicken breasts','1 head broccoli','3 tbsp soy sauce','2 tbsp oyster sauce','2 garlic cloves','ginger','sesame oil','rice or noodles'],
-  'Beef tacos with salsa':['400g minced beef','8 taco shells','200ml salsa','sour cream','1 avocado','1 onion','cumin','cheddar','lime'],
-  'Pasta pesto with chicken':['400g pasta','2 chicken breasts','4 tbsp pesto','cherry tomatoes','parmesan','olive oil','salt & pepper'],
-  'Teriyaki chicken bowl':['4 chicken thighs','300g rice','4 tbsp teriyaki sauce','sesame seeds','spring onions','cucumber','sesame oil'],
-  'Creamy chicken pasta':['400g pasta','3 chicken breasts','200ml cream','1 onion','2 garlic cloves','parmesan','olive oil','salt & pepper'],
-  'Sweet chilli chicken with rice':['4 chicken thighs','300g rice','4 tbsp sweet chilli sauce','1 red pepper','spring onions','sesame oil','garlic'],
-  'Chicken fajitas':['3 chicken breasts','6 flour tortillas','2 bell peppers','1 red onion','sour cream','cumin','paprika','olive oil'],
-  'Noodles with chicken & veggies':['200g egg noodles','2 chicken breasts','2 bell peppers','1 courgette','3 tbsp soy sauce','sesame oil','garlic','ginger'],
-  'Rice bowl with minced beef':['300g rice','400g minced beef','1 onion','2 garlic cloves','3 tbsp soy sauce','sesame oil','spring onions','ginger'],
-  'Wraps with chicken & veggies':['3 chicken breasts','6 flour tortillas','2 bell peppers','lettuce','hummus','1 red onion','paprika','olive oil'],
-  'Chicken salad bowl':['3 chicken breasts','200g mixed greens','cherry tomatoes','cucumber','1 avocado','lemon','olive oil','salt & pepper'],
-  'Veggie stir-fry':['2 bell peppers','1 courgette','1 head broccoli','200g pak choi','3 tbsp soy sauce','sesame oil','2 garlic cloves','ginger','rice or noodles'],
-  'Rice bowl with roasted vegetables':['300g rice','2 bell peppers','1 courgette','1 red onion','cherry tomatoes','olive oil','cumin','paprika'],
-  'Grilled chicken with veggies':['4 chicken breasts','2 bell peppers','1 courgette','cherry tomatoes','olive oil','garlic','oregano','lemon'],
-  'Pasta with spinach & tomatoes':['400g pasta','200g spinach','400g cherry tomatoes','3 garlic cloves','olive oil','parmesan','salt & pepper'],
-  'Lentil curry (mild)':['300g red lentils','400ml coconut milk','400g canned tomatoes','1 onion','2 garlic cloves','cumin','turmeric','coriander','rice'],
-  'Couscous with roasted vegetables':['300g couscous','2 bell peppers','1 courgette','1 red onion','cherry tomatoes','olive oil','cumin','fresh herbs'],
-  'Pasta pesto':['400g pasta','5 tbsp pesto','cherry tomatoes','parmesan','olive oil','pine nuts','fresh basil'],
-  'Veggie tacos':['8 taco shells','2 bell peppers','1 courgette','400g canned black beans','1 avocado','salsa','cumin','lime','cheddar'],
-  'Tofu stir-fry with veggies':['400g firm tofu','2 bell peppers','1 head broccoli','3 tbsp soy sauce','sesame oil','garlic','ginger','rice'],
-  'Veggie fried rice':['300g cooked rice','3 eggs','frozen peas','2 carrots','soy sauce','sesame oil','2 garlic cloves','spring onions'],
-  'Tomato pasta':['400g pasta','500ml tomato passata','3 garlic cloves','olive oil','fresh basil','salt & pepper','parmesan'],
-  'Wraps with hummus & grilled veggies':['6 flour tortillas','200g hummus','2 bell peppers','1 courgette','feta','rocket','olive oil','lemon'],
-  'Veggie curry (mild)':['400ml coconut milk','2 tbsp mild curry paste','mixed vegetables','400g canned tomatoes','300g rice','fresh coriander','lime'],
 };
 
 const RECIPES = {
@@ -665,96 +856,46 @@ const RECIPES = {
   'Beef tacos with salsa and sour cream':{time:'20 min',steps:['Brown minced beef with diced onion in a hot pan 8 minutes.','Season with cumin, salt, and chilli to taste.','Warm taco shells in the oven 3 minutes.','Slice avocado, grate cheddar.','Fill shells with beef, salsa, avocado, and a spoonful of sour cream.','Finish with fresh coriander and a squeeze of lime.']},
   'Garlic butter shrimp with linguine':{time:'20 min',steps:['Cook linguine in salted boiling water until al dente, reserving a cup of water.','Peel shrimp. Mince garlic, chop parsley.','Melt butter in a wide pan. Add garlic and chilli flakes, cook 1 minute.','Add shrimp, cook 2 minutes per side until just pink.','Add white wine, let it bubble. Add drained pasta and pasta water to make a glossy sauce.','Serve immediately with lemon and parsley.']},
   'Ramen with soft-boiled egg and spring onion':{time:'25 min',steps:['Soft-boil eggs: lower into boiling water for 6.5 minutes, then plunge into ice water. Peel.','Bring stock to a simmer. Season with soy sauce and miso — stir miso in at the end off the heat.','Cook ramen noodles according to packet, drain.','Halve the eggs. Slice spring onions.','Divide noodles into deep bowls, pour over hot broth.','Top with egg, spring onions, nori, sesame seeds, and bamboo shoots.']},
-  // ── New curated dishes ────────────────────────────────────────────────────
-  'Spaghetti bolognese':{time:'35 min',steps:['Finely dice the onion and garlic. Heat olive oil in a large pan over medium heat.','Add onion and fry 5 minutes until soft. Add garlic and cook 1 minute more.','Add minced beef and brown well, breaking it up, about 8 minutes.','Pour in tomato sauce, season well with salt and pepper. Simmer 15 minutes.','Cook spaghetti in well-salted boiling water until al dente. Drain.','Toss pasta with the sauce and serve with fresh basil.']},
-  'Chicken with rice':{time:'30 min',steps:['Season chicken thighs with paprika, salt, and pepper.','Heat olive oil in a wide pan over medium-high heat. Brown chicken on both sides, about 6 minutes.','Add diced onion and garlic, cook 2 minutes.','Pour in chicken stock, bring to a simmer, cover and cook 15 minutes.','Meanwhile, cook rice according to packet. Fluff with a fork.','Serve chicken over rice, spooning the pan juices over the top.']},
-  'Mashed potatoes with smoked sausage':{time:'30 min',steps:['Peel and cube potatoes. Boil in salted water until tender, about 15 minutes.','Meanwhile, slice sausages and fry with diced onion until browned.','Drain potatoes and mash with warm milk and butter until smooth. Season well.','Serve mash in bowls topped with the sausage and onions.','Add a spoonful of mustard on the side.']},
-  'Pasta carbonara':{time:'20 min',steps:['Cook spaghetti in well-salted boiling water until al dente. Reserve a mug of pasta water before draining.','Fry pancetta or bacon in a dry pan until crispy. Set aside.','Whisk eggs with grated parmesan and a generous grind of black pepper.','Take the pan off the heat. Add drained pasta and toss. Pour in egg mixture and toss quickly — the residual heat cooks it.','Add pasta water a splash at a time to make it silky, not scrambled.','Serve immediately with extra parmesan and black pepper.']},
-  'Mac & cheese':{time:'25 min',steps:['Cook macaroni in salted boiling water until al dente. Drain and set aside.','Melt butter in a pan, whisk in flour, cook 1 minute.','Gradually add warm milk, whisking constantly until smooth and thickened.','Remove from heat. Stir in cheddar, parmesan, and a pinch of mustard until melted.','Add pasta to the sauce and stir to coat. Season well.','Serve immediately — or top with breadcrumbs and grill until golden.']},
-  'Chicken wraps':{time:'20 min',steps:['Slice chicken breasts into strips. Season with paprika, salt, and pepper.','Fry in a little oil over high heat, 3–4 minutes per side until golden.','Warm tortillas in a dry pan for 30 seconds each side.','Slice tomatoes, shred lettuce, thinly slice the red onion.','Spread sour cream on each wrap, layer with chicken and salad.','Roll tightly, cut in half, and serve.']},
-  'Fried rice with chicken':{time:'20 min',steps:['Dice chicken and fry in a hot wok until cooked through. Set aside.','Beat eggs and scramble in the same wok until just set. Push to one side.','Add cold cooked rice and stir-fry on high heat 2–3 minutes until slightly crispy.','Add the chicken back. Pour in soy sauce and sesame oil. Toss everything together.','Add frozen peas and toss 1 more minute until warmed through.','Scatter spring onions on top and serve immediately.']},
-  'Chicken stir-fry with broccoli':{time:'20 min',steps:['Slice chicken into strips. Blanch broccoli florets in boiling water 2 minutes, drain.','Heat a wok until very hot. Stir-fry chicken in batches until golden, about 4 minutes.','Add garlic and fry 30 seconds.','Add broccoli back to the wok. Pour in soy sauce and oyster sauce.','Toss everything together on high heat for 1–2 minutes.','Serve over rice or noodles with a drizzle of sesame oil.']},
-  'Beef tacos with salsa':{time:'20 min',steps:['Brown minced beef with diced onion in a hot pan, about 8 minutes.','Season with cumin, salt, and chilli to taste.','Warm taco shells in the oven 3 minutes.','Slice avocado, grate cheddar.','Fill shells with beef, salsa, avocado, and a spoonful of sour cream.','Finish with a squeeze of lime.']},
-  'Pasta pesto with chicken':{time:'20 min',steps:['Cook pasta in well-salted boiling water until al dente. Reserve a splash of pasta water.','Slice chicken breasts and fry in olive oil until golden, about 4 minutes per side.','Halve cherry tomatoes.','Drain pasta. Toss with pesto, pasta water to loosen, and tomatoes.','Slice rested chicken and lay on top.','Serve with grated parmesan.']},
-  'Teriyaki chicken bowl':{time:'25 min',steps:['Cook rice according to packet. Keep warm.','Slice chicken thighs. Season with a little salt.','Fry chicken in a hot pan skin-down 5 minutes until golden. Flip.','Pour teriyaki sauce over, cook 2 more minutes basting the chicken.','Slice cucumber and spring onions.','Serve chicken over rice with cucumber, spring onions, and sesame seeds.']},
-  'Creamy chicken pasta':{time:'25 min',steps:['Cook pasta in well-salted boiling water until al dente.','Dice chicken and fry in olive oil until golden, about 5 minutes. Set aside.','In the same pan, fry diced onion and garlic until soft.','Pour in cream, simmer 3 minutes until slightly thickened. Season.','Return chicken to the pan. Drain pasta and toss through.','Serve with grated parmesan and black pepper.']},
-  'Sweet chilli chicken with rice':{time:'25 min',steps:['Cook rice according to packet.','Slice chicken thighs and fry in a hot pan until cooked through, about 6 minutes.','Add diced pepper and onion, cook 3 more minutes.','Pour in sweet chilli sauce and a splash of water. Toss to coat.','Add sliced garlic in the last minute.','Serve over rice, scattered with spring onions.']},
-  'Chicken fajitas':{time:'20 min',steps:['Slice chicken into strips. Season with cumin, paprika, salt, and pepper.','Fry chicken in olive oil on high heat 4–5 minutes until cooked.','Add sliced peppers and onion. Cook 3–4 minutes until just softened.','Warm tortillas in a dry pan or microwave.','Fill tortillas with chicken and vegetables.','Serve with sour cream, salsa, or guacamole.']},
-  'Noodles with chicken & veggies':{time:'20 min',steps:['Cook noodles according to packet. Drain and toss with a little sesame oil.','Slice chicken and fry in a hot wok until cooked through.','Add sliced pepper, garlic, and ginger. Stir-fry 2 minutes.','Add noodles back to the wok. Pour in soy sauce and toss everything together.','Cook on high heat 1–2 more minutes.','Serve with spring onions on top.']},
-  'Rice bowl with minced beef':{time:'20 min',steps:['Cook rice according to packet.','Brown minced beef with diced onion in a hot pan, about 8 minutes.','Add garlic and ginger, cook 1 minute.','Pour in soy sauce and a splash of water. Simmer 3 minutes.','Drizzle with sesame oil.','Serve over rice with sliced spring onions.']},
-  'Wraps with chicken & veggies':{time:'20 min',steps:['Slice chicken and fry in olive oil with paprika until cooked through.','Slice peppers and onion. Cook in the same pan 3 minutes until just softened.','Warm tortillas in a dry pan.','Shred lettuce. Slice avocado or spread hummus on each wrap.','Fill with chicken, peppers, and lettuce.','Roll, cut in half, and serve.']},
-  'Chicken salad bowl':{time:'15 min',steps:['Season chicken breasts. Grill or pan-fry 5 minutes each side until cooked through.','Rest the chicken 3 minutes, then slice.','Halve cherry tomatoes. Slice cucumber. Dice avocado.','Arrange leaves in a bowl with tomatoes, cucumber, and avocado.','Place sliced chicken on top.','Dress with lemon, olive oil, salt, and pepper.']},
-  'Veggie stir-fry':{time:'15 min',steps:['Cook rice or noodles according to packet.','Heat a wok until very hot. Add a little oil.','Stir-fry broccoli and pepper on high heat 3 minutes.','Add garlic and ginger, cook 30 seconds.','Pour in soy sauce. Toss well and cook 1 more minute.','Serve over rice or noodles with a drizzle of sesame oil.']},
-  'Rice bowl with roasted vegetables':{time:'35 min',steps:['Preheat oven to 200°C. Dice pepper, courgette, and red onion into chunks.','Toss with olive oil, cumin, paprika, salt, and pepper.','Spread on a baking tray and roast 25 minutes until golden.','Cook rice according to packet.','Serve vegetables over rice.','Drizzle with a little extra olive oil or tahini if you have it.']},
-  'Grilled chicken with veggies':{time:'25 min',steps:['Slice chicken breasts. Season with garlic, oregano, olive oil, and lemon juice.','Slice peppers and courgette.','Grill or fry chicken 4–5 minutes per side until cooked through.','In the same pan, fry the vegetables until just tender, about 5 minutes.','Slice rested chicken and arrange with the vegetables.','Finish with a squeeze of lemon.']},
-  'Pasta with spinach & tomatoes':{time:'15 min',steps:['Cook pasta in well-salted boiling water until al dente. Reserve a splash of pasta water.','Halve cherry tomatoes. Mince garlic.','Heat olive oil in a wide pan. Fry garlic 30 seconds until fragrant.','Add tomatoes and cook 3 minutes until just softened.','Add spinach and wilt in 1 minute.','Drain pasta, toss through the pan with pasta water and parmesan.']},
-  'Lentil curry (mild)':{time:'30 min',steps:['Finely dice onion and garlic. Fry in olive oil 5 minutes.','Add cumin and turmeric. Stir and cook 1 minute.','Add lentils, canned tomatoes, and coconut milk. Stir well.','Simmer 20 minutes until lentils are completely soft and sauce has thickened. Season.','Cook rice according to packet.','Serve curry over rice with fresh coriander if you have it.']},
-  'Couscous with roasted vegetables':{time:'30 min',steps:['Preheat oven to 200°C. Dice pepper, courgette, and onion.','Toss with olive oil, cumin, salt, and pepper. Roast 22 minutes.','Pour boiling water over couscous in a 1:1 ratio. Cover and rest 5 minutes.','Fluff with a fork and season with olive oil and lemon.','Mix roasted vegetables through the couscous.','Scatter fresh herbs on top if available.']},
-  'Pasta pesto':{time:'12 min',steps:['Cook pasta in well-salted boiling water until al dente.','Halve cherry tomatoes.','Drain pasta, reserving a splash of cooking water.','Toss pasta with pesto and a splash of water to make it silky.','Add cherry tomatoes and toss.','Serve with grated parmesan and a drizzle of olive oil.']},
-  'Veggie tacos':{time:'20 min',steps:['Drain and rinse black beans. Season with cumin and a pinch of salt.','Slice peppers and courgette. Fry in olive oil 5 minutes until just soft.','Warm taco shells in the oven 3 minutes.','Slice avocado.','Fill shells with beans, peppers, and avocado.','Top with salsa, a squeeze of lime, and grated cheddar.']},
-  'Tofu stir-fry with veggies':{time:'20 min',steps:['Press tofu dry and cut into cubes. Slice pepper and broccoli into florets.','Fry tofu in hot oil until golden all over, about 6 minutes. Set aside.','Stir-fry broccoli and pepper in the same pan 3 minutes.','Add garlic and ginger, cook 30 seconds.','Return tofu, add soy sauce and sesame oil. Toss.','Serve over rice with sesame seeds.']},
-  'Veggie fried rice':{time:'20 min',steps:['Beat the eggs and season with a pinch of salt.','Heat oil in a wok. Scramble eggs until just set, push to one side.','Add cold cooked rice and stir-fry on high heat 2–3 minutes.','Add frozen peas and diced carrot. Toss 2 minutes until warmed.','Add garlic, soy sauce, and sesame oil. Toss everything together.','Serve with sliced spring onions on top.']},
-  'Tomato pasta':{time:'15 min',steps:['Cook pasta in well-salted boiling water until al dente.','Mince garlic and fry in olive oil 30 seconds until fragrant.','Pour in tomato passata. Season well and simmer 8 minutes.','Tear in fresh basil if you have it.','Drain pasta and toss through the sauce.','Serve with parmesan and a drizzle of olive oil.']},
-  'Wraps with hummus & grilled veggies':{time:'20 min',steps:['Slice peppers and courgette. Toss with olive oil and seasoning.','Grill or fry vegetables 5 minutes until tender and slightly charred.','Warm tortillas in a dry pan.','Spread hummus generously on each tortilla.','Top with grilled vegetables and crumbled feta.','Roll, cut in half, and serve with a squeeze of lemon.']},
-  'Veggie curry (mild)':{time:'25 min',steps:['Finely dice onion and garlic. Fry in oil 5 minutes.','Add curry paste and stir-fry 1 minute until fragrant.','Add mixed vegetables and stir to coat.','Pour in coconut milk and canned tomatoes. Simmer 15 minutes.','Season with salt. Cook rice according to packet.','Serve curry over rice with fresh coriander.']},
 };
 
 // ── CUSTOM PREFERENCES STATE ──
 
-// POOL — curated 30-dish MVP set
-// Buckets: comfort | twist | healthy | veggie
-// Generator mixes: 2× twist, 1× comfort, 1× healthy, 1× wildcard (veggie or comfort)
 const POOL = [
-  // ── COMFORT ──────────────────────────────────────────────────────────────
-  { id:'spaghetti-bolognese', dish:'Spaghetti bolognese',                  emoji:'🍝', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['minced beef','pasta','onion','garlic','tomato sauce'] },
-  { id:'chicken-with-rice', dish:'Chicken with rice',                    emoji:'🍗', tags:['comfort','rice','kids','quick'],  cost:2, bucket:'comfort', base:['chicken','rice','onion','garlic'] },
-  { id:'mashed-potatoes-with-smoked-sa', dish:'Mashed potatoes with smoked sausage',  emoji:'🥔', tags:['comfort','kids'],                 cost:1, bucket:'comfort', base:['potatoes','sausage','onion','butter'] },
-  { id:'pasta-carbonara', dish:'Pasta carbonara',                      emoji:'🍝', tags:['comfort','pasta','quick','eggs'], cost:1, bucket:'comfort', base:['pasta','bacon','egg','parmesan','garlic'] },
-  { id:'mac-cheese', dish:'Mac & cheese',                         emoji:'🧀', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['pasta','cheddar','butter','milk'] },
-  { id:'chicken-wraps', dish:'Chicken wraps',                        emoji:'🌯', tags:['comfort','wraps','quick','kids'], cost:2, bucket:'comfort', base:['chicken','tortilla','onion','pepper','lettuce'] },
-  { id:'fried-rice-with-chicken', dish:'Fried rice with chicken',              emoji:'🍚', tags:['comfort','rice','quick','eggs'],  cost:2, bucket:'comfort', base:['rice','chicken','egg','garlic','onion'] },
-
-  // ── FAMILIAR + TWIST ──────────────────────────────────────────────────────
-  { id:'chicken-stir-fry-with-broccoli', dish:'Chicken stir-fry with broccoli',       emoji:'🥦', tags:['twist','stir','quick'],           cost:2, bucket:'twist', base:['chicken','broccoli','garlic','soy sauce','rice'] },
-  { id:'beef-tacos-with-salsa', dish:'Beef tacos with salsa',                emoji:'🌮', tags:['twist','wraps','quick','beef'],   cost:2, bucket:'twist', base:['minced beef','tortilla','onion','garlic','salsa'] },
-  { id:'pasta-pesto-with-chicken', dish:'Pasta pesto with chicken',             emoji:'🍝', tags:['twist','pasta','quick'],          cost:2, bucket:'twist', base:['chicken','pasta','pesto','garlic','parmesan'] },
-  { id:'teriyaki-chicken-bowl', dish:'Teriyaki chicken bowl',                emoji:'🍱', tags:['twist','rice','quick'],           cost:2, bucket:'twist', base:['chicken','rice','garlic','ginger','soy sauce'] },
-  { id:'creamy-chicken-pasta', dish:'Creamy chicken pasta',                 emoji:'🍝', tags:['twist','pasta','quick'],          cost:2, bucket:'twist', base:['chicken','pasta','cream','garlic','onion'] },
-  { id:'sweet-chilli-chicken-with-rice', dish:'Sweet chilli chicken with rice',       emoji:'🍗', tags:['twist','rice','quick'],           cost:2, bucket:'twist', base:['chicken','rice','pepper','garlic','onion'] },
-  { id:'chicken-fajitas', dish:'Chicken fajitas',                      emoji:'🌮', tags:['twist','wraps','quick'],          cost:2, bucket:'twist', base:['chicken','tortilla','pepper','onion','garlic'] },
-  { id:'noodles-with-chicken-veggies', dish:'Noodles with chicken & veggies',       emoji:'🍜', tags:['twist','noodles','quick'],        cost:2, bucket:'twist', base:['chicken','noodles','pepper','garlic','soy sauce'] },
-  { id:'rice-bowl-with-minced-beef', dish:'Rice bowl with minced beef',           emoji:'🍚', tags:['twist','rice','beef','quick'],    cost:2, bucket:'twist', base:['minced beef','rice','garlic','onion','soy sauce'] },
-  { id:'wraps-with-chicken-veggies', dish:'Wraps with chicken & veggies',         emoji:'🌯', tags:['twist','wraps','quick'],          cost:2, bucket:'twist', base:['chicken','tortilla','pepper','onion','lettuce'] },
-
-  // ── HEALTHY ────────────────────────────────────────────────────────────────
-  { id:'chicken-salad-bowl', dish:'Chicken salad bowl',                   emoji:'🥗', tags:['healthy','quick'],                cost:2, bucket:'healthy', base:['chicken','lettuce','tomato','cucumber','onion'] },
-  { id:'veggie-stir-fry', dish:'Veggie stir-fry',                      emoji:'🥦', tags:['healthy','stir','quick','veggie'],cost:1, bucket:'healthy', base:['broccoli','pepper','garlic','soy sauce','rice'] },
-  { id:'rice-bowl-with-roasted-vegetab', dish:'Rice bowl with roasted vegetables',    emoji:'🍚', tags:['healthy','rice','veggie'],        cost:1, bucket:'healthy', base:['rice','pepper','courgette','onion','garlic'] },
-  { id:'grilled-chicken-with-veggies', dish:'Grilled chicken with veggies',         emoji:'🍗', tags:['healthy','quick'],                cost:2, bucket:'healthy', base:['chicken','pepper','courgette','garlic','olive oil'] },
-  { id:'pasta-with-spinach-tomatoes', dish:'Pasta with spinach & tomatoes',        emoji:'🍝', tags:['healthy','pasta','quick','veggie'],cost:1, bucket:'healthy', base:['pasta','spinach','tomato','garlic','parmesan'] },
-  { id:'lentil-curry-mild', dish:'Lentil curry (mild)',                  emoji:'🍛', tags:['healthy','curry','veggie'],       cost:1, bucket:'healthy', base:['lentils','onion','garlic','tomato','rice'] },
-  { id:'couscous-with-roasted-vegetabl', dish:'Couscous with roasted vegetables',     emoji:'🫙', tags:['healthy','veggie'],               cost:1, bucket:'healthy', base:['couscous','pepper','courgette','onion','garlic'] },
-
-  // ── VEGETARIAN ────────────────────────────────────────────────────────────
-  { id:'pasta-pesto', dish:'Pasta pesto',                          emoji:'🍝', tags:['veggie','pasta','quick'],         cost:1, bucket:'veggie', base:['pasta','pesto','garlic','parmesan','tomato'] },
-  { id:'veggie-tacos', dish:'Veggie tacos',                         emoji:'🌮', tags:['veggie','wraps','quick'],         cost:1, bucket:'veggie', base:['tortilla','pepper','onion','garlic','beans'] },
-  { id:'tofu-stir-fry-with-veggies', dish:'Tofu stir-fry with veggies',           emoji:'🥢', tags:['veggie','stir','quick'],          cost:1, bucket:'veggie', base:['tofu','broccoli','pepper','garlic','soy sauce'] },
-  { id:'veggie-fried-rice', dish:'Veggie fried rice',                    emoji:'🍚', tags:['veggie','rice','quick'],          cost:1, bucket:'veggie', base:['rice','egg','garlic','onion','peas'] },
-  { id:'tomato-pasta', dish:'Tomato pasta',                         emoji:'🍝', tags:['veggie','pasta','quick','kids'],  cost:1, bucket:'veggie', base:['pasta','tomato sauce','garlic','onion','basil'] },
-  { id:'wraps-with-hummus-grilled-vegg', dish:'Wraps with hummus & grilled veggies',  emoji:'🌯', tags:['veggie','wraps','healthy'],       cost:1, bucket:'veggie', base:['tortilla','hummus','pepper','courgette','onion'] },
-  { id:'veggie-curry-mild', dish:'Veggie curry (mild)',                  emoji:'🍛', tags:['veggie','curry','healthy'],       cost:1, bucket:'veggie', base:['onion','garlic','tomato','coconut milk','rice'] },
-
-  // ── EXTRA 10 (rounds to 40 total) ─────────────────────────────────────────
-  { id:'chicken-soup-with-noodles', dish:'Chicken soup with noodles',            emoji:'🍜', tags:['comfort','soup','quick','kids'],  cost:2, bucket:'comfort', base:['chicken','noodles','onion','garlic','carrot'] },
-  { id:'minced-beef-with-pasta', dish:'Minced beef with pasta',               emoji:'🍝', tags:['comfort','pasta','kids'],         cost:1, bucket:'comfort', base:['minced beef','pasta','onion','garlic','tomato sauce'] },
-  { id:'pancakes-with-bacon-maple-syru', dish:'Pancakes with bacon & maple syrup',    emoji:'🥞', tags:['comfort','kids','quick','eggs'],  cost:1, bucket:'comfort', base:['flour','egg','milk','bacon','butter'] },
-  { id:'honey-garlic-chicken-with-rice', dish:'Honey garlic chicken with rice',       emoji:'🍗', tags:['twist','rice','quick'],           cost:2, bucket:'twist',   base:['chicken','rice','garlic','honey','soy sauce'] },
-  { id:'penne-arrabiata', dish:'Penne arrabiata',                      emoji:'🍝', tags:['twist','pasta','quick','veggie'], cost:1, bucket:'twist',   base:['pasta','tomato sauce','garlic','chilli','parmesan'] },
-  { id:'salmon-with-roasted-vegetables', dish:'Salmon with roasted vegetables',       emoji:'🐟', tags:['healthy','seafood'],              cost:3, bucket:'healthy', base:['salmon','courgette','pepper','garlic','olive oil'] },
-  { id:'greek-salad-with-grilled-chick', dish:'Greek salad with grilled chicken',     emoji:'🥗', tags:['healthy','quick','mediterranean'],cost:2, bucket:'healthy', base:['chicken','tomato','cucumber','feta','onion'] },
-  { id:'veggie-bolognese', dish:'Veggie bolognese',                     emoji:'🍝', tags:['veggie','pasta','kids','healthy'],cost:1, bucket:'veggie', base:['lentils','pasta','onion','garlic','tomato sauce'] },
-  { id:'shakshuka', dish:'Shakshuka',                            emoji:'🍳', tags:['veggie','quick','healthy','eggs'],cost:1, bucket:'veggie', base:['egg','tomato','pepper','onion','garlic'] },
-  { id:'quinoa-bowl-with-roasted-veg-f', dish:'Quinoa bowl with roasted veg & feta',  emoji:'🥙', tags:['healthy','veggie'],               cost:2, bucket:'healthy', base:['quinoa','pepper','courgette','feta','onion'] },
+  { dish:'Creamy spaghetti bolognese with fresh herbs',emoji:'🍝',tags:['pasta','kids'],cost:1 },
+  { dish:'Chicken satay with rice and cucumber salad',emoji:'🍗',tags:['rice','quick','kids'],cost:2 },
+  { dish:'Vegetable soup with crusty bread',emoji:'🥣',tags:['soup','healthy','veggie'],cost:1 },
+  { dish:'Oven-baked salmon with lemon potatoes',emoji:'🐟',tags:['fish','healthy','seafood'],cost:3 },
+  { dish:'Grilled chicken wraps with garlic sauce',emoji:'🌯',tags:['wraps','quick'],cost:2 },
+  { dish:'Coconut chicken curry with jasmine rice',emoji:'🍛',tags:['curry','rice','healthy'],cost:2 },
+  { dish:'Pancakes with bacon and maple syrup',emoji:'🥞',tags:['kids','quick'],cost:1 },
+  { dish:'Mashed potato stew with smoked sausage',emoji:'🥔',tags:['kids'],cost:1 },
+  { dish:'Lasagne with beef and béchamel sauce',emoji:'🫕',tags:['pasta','kids','beef'],cost:2 },
+  { dish:'Nasi goreng with chicken and fried egg',emoji:'🍚',tags:['rice','quick','eggs'],cost:1 },
+  { dish:'Tofu stir-fry with pak choi and sesame',emoji:'🥢',tags:['stir','quick','veggie'],cost:1 },
+  { dish:'Mushroom risotto with parmesan',emoji:'🍄',tags:['rice','veggie','mushroom'],cost:2 },
+  { dish:'Pesto pasta with cherry tomatoes and mozzarella',emoji:'🍝',tags:['pasta','quick','veggie'],cost:1 },
+  { dish:'Honey-glazed chicken thighs with roasted veg',emoji:'🍗',tags:['healthy'],cost:2 },
+  { dish:'Tomato lentil soup with sourdough',emoji:'🥣',tags:['soup','healthy','veggie'],cost:1 },
+  { dish:'Fish tacos with avocado and lime slaw',emoji:'🌮',tags:['fish','wraps','quick','seafood'],cost:2 },
+  { dish:'Greek chicken with tzatziki and pita',emoji:'🫓',tags:['healthy','quick','mediterranean'],cost:2 },
+  { dish:'Beef stir-fry with broccoli and oyster sauce',emoji:'🥦',tags:['stir','quick','beef'],cost:2 },
+  { dish:'Spinach and ricotta stuffed pasta shells',emoji:'🍝',tags:['pasta','veggie'],cost:2 },
+  { dish:'Teriyaki salmon with steamed edamame',emoji:'🐟',tags:['fish','healthy','quick','seafood'],cost:3 },
+  { dish:'Homemade pizza margherita with fresh basil',emoji:'🍕',tags:['pizza','kids','veggie'],cost:1 },
+  { dish:'Chorizo pasta with roasted peppers',emoji:'🍝',tags:['pasta','quick','pork'],cost:2 },
+  { dish:'Thai green curry with vegetables and rice',emoji:'🍛',tags:['curry','rice','veggie','spicy'],cost:2 },
+  { dish:'Baked cod with herb crust and mashed potato',emoji:'🐟',tags:['fish','healthy','seafood'],cost:3 },
+  { dish:'Falafel bowl with hummus and flatbread',emoji:'🧆',tags:['veggie','healthy','mediterranean'],cost:1 },
+  { dish:'BBQ pulled chicken with coleslaw and buns',emoji:'🍔',tags:['kids','quick'],cost:2 },
+  { dish:'Creamy mushroom tagliatelle',emoji:'🍝',tags:['pasta','quick','veggie','mushroom'],cost:1 },
+  { dish:'Spiced lamb meatballs with couscous',emoji:'🍖',tags:['healthy','spicy','mediterranean'],cost:3 },
+  { dish:'Vietnamese noodle soup with chicken',emoji:'🍜',tags:['soup','noodles','healthy','quick'],cost:2 },
+  { dish:'Shakshuka with crusty bread',emoji:'🍳',tags:['quick','veggie','spicy','mediterranean','eggs'],cost:1 },
+  { dish:'Prawn stir-fry with noodles and ginger',emoji:'🍤',tags:['stir','noodles','quick','seafood'],cost:3 },
+  { dish:'Mediterranean baked chicken with olives and feta',emoji:'🍗',tags:['healthy','mediterranean'],cost:2 },
+  { dish:'Beef tacos with salsa and sour cream',emoji:'🌮',tags:['wraps','quick','kids','beef'],cost:2 },
+  { dish:'Garlic butter shrimp with linguine',emoji:'🍝',tags:['pasta','quick','seafood'],cost:3 },
+  { dish:'Ramen with soft-boiled egg and spring onion',emoji:'🍜',tags:['noodles','soup','eggs'],cost:2 },
 ];
 
 const LABEL_META = {
@@ -774,11 +915,10 @@ let shoppingList = new Map();
 let checkedOff = new Set();
 let currentDetailIndex = -1; // which dish is open in detail screen
 
-// ─── PRO TIER STATE (removed — all features free for now) ───
-const isPro = true; // smart merge and all features unlocked
-const hasSeenShoppingList = false;
-
-function updateProUI() {} // no-op
+// ─── PRO TIER STATE ───
+let isPro = false;
+let selectedBilling = 'year'; // 'month' | 'year'
+let selectedUpgradePlan = 'year';
 
 // ═══════════════════════════════════════════════════
 // SCREEN ROUTING
@@ -787,13 +927,36 @@ function show(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screenId).classList.add('active');
   window.scrollTo(0, 0);
-  if (screenId === 'shoppinglist') { renderShoppingList(); track('view_shopping_list', { meals: shoppingList.size }); }
+  if (screenId === 'shoppinglist') renderShoppingList();
+  if (screenId === 'pricing') renderPricing();
   updateBadges();
+  updateProUI();
 }
 
-// ── STUBS (pro tier removed) ──
-function closeUpgradeModal() {}
-function requirePro() { return true; }
+// ═══════════════════════════════════════════════════
+// PRO TIER LOGIC
+// ═══════════════════════════════════════════════════
+function updateProUI() {
+  const badges = ['hdrProBadge','hdrProBadgeDetail','hdrProBadgeSL','hdrProBadgePricing'];
+  badges.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isPro ? 'inline-flex' : 'none';
+  });
+  const upgradeBtn = document.getElementById('hdrUpgradeBtn');
+  if (upgradeBtn) upgradeBtn.style.display = isPro ? 'none' : 'flex';
+  // Dev toggle label
+  const lbl = document.getElementById('devToggleLabel');
+  const dot = document.getElementById('devDot');
+  if (lbl) lbl.textContent = isPro ? 'Pro active · click for Free' : 'Free mode · click for Pro';
+  if (dot) dot.style.background = isPro ? '#A8D5B5' : 'rgba(255,255,255,0.4)';
+}
+
+function devTogglePro() {
+  isPro = !isPro;
+  updateProUI();
+  if (isPro) showToast('✦ Pro active — enjoy!');
+  else showToast('Back to Free mode');
+}
 
 function showToast(msg) {
   const t = document.createElement('div');
@@ -803,147 +966,99 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2200);
 }
 
-function showNotifyPopup() {
-  const existing = document.getElementById('notifyPopup');
-  if (existing) return;
-  const el = document.createElement('div');
-  el.id = 'notifyPopup';
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:400;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
-  el.innerHTML = `
-    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:540px;padding:2rem 1.75rem 3rem;animation:slideUp 0.25s ease;">
-      <div style="width:40px;height:4px;background:rgba(26,24,20,0.15);border-radius:2px;margin:0 auto 1.5rem;"></div>
-      <div style="font-size:22px;margin-bottom:0.6rem;">📲</div>
-      <div style="font-family:'Fraunces',serif;font-size:1.2rem;letter-spacing:-0.02em;margin-bottom:0.4rem;">Share list with your partner</div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:1.25rem;line-height:1.6;">We're working on this. Want to know when it's ready?</div>
-      <div style="display:flex;gap:8px;">
-        <input id="notifyEmail" type="email" placeholder="your@email.com" style="flex:1;height:40px;border:1.5px solid var(--border2);border-radius:999px;padding:0 14px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border2)'">
-        <button onclick="submitNotify()" style="padding:0 20px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Notify me</button>
-      </div>
-      <button onclick="document.getElementById('notifyPopup').remove()" style="margin-top:1rem;width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;">Maybe later</button>
-    </div>`;
-  el.addEventListener('click', e => { if (e.target === el) el.remove(); });
-  document.body.appendChild(el);
-  setTimeout(() => document.getElementById('notifyEmail')?.focus(), 300);
+// Pricing screen
+function setBilling(mode) {
+  selectedBilling = mode;
+  document.getElementById('billMonthBtn').classList.toggle('active', mode === 'month');
+  document.getElementById('billYearBtn').classList.toggle('active', mode === 'year');
+  renderPricing();
 }
 
-function submitNotify() {
-  const email = document.getElementById('notifyEmail')?.value?.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('notifyEmail').style.borderColor = 'var(--orange)';
-    return;
+function renderPricing() {
+  const yearly = selectedBilling === 'year';
+  const monthlyPrice = 2.99;
+  const yearlyTotal = 29.99;
+  const yearlyMonthly = (yearlyTotal / 12).toFixed(2);
+  const savingPct = Math.round((1 - yearlyTotal / (monthlyPrice * 12)) * 100);
+  document.getElementById('proPrice').innerHTML = yearly
+    ? `<sup>€</sup>${yearlyMonthly}`
+    : `<sup>€</sup>${monthlyPrice.toFixed(2).replace('.',',')}`;
+  document.getElementById('proPeriod').innerHTML = yearly
+    ? `per month · <em>€${yearlyTotal.toFixed(2).replace('.',',')} billed yearly — save ${savingPct}%</em>`
+    : 'per month · <em>cancel anytime</em>';
+  const freeCta = document.getElementById('freePlanCta');
+  const proCta = document.getElementById('proPlanCta');
+  if (freeCta) {
+    freeCta.textContent = isPro ? 'Downgrade to Free' : 'Current plan';
+    freeCta.className = isPro ? 'plan-cta' : 'plan-cta active-plan';
   }
-  track('notify_signup', { feature: 'share_partner', email });
-  document.getElementById('notifyPopup').remove();
-  showToast('✓ We\'ll let you know!');
-}
-// ═══════════════════════════════════════════════════
-// RECENT MEALS
-// ═══════════════════════════════════════════════════
-const LS_RECENT = 'dinr_recent_v1';
-const LS_SAVED_PLAN = 'dinr_saved_plan_v1';
-
-function saveRecentMeals(meals) {
-  try {
-    const recent = meals.slice(0, 5).map(m => ({ dish: m.dish, emoji: m.emoji, id: m.id || m.dish }));
-    localStorage.setItem(LS_RECENT, JSON.stringify(recent));
-  } catch(e) {}
-}
-
-function loadRecentMeals() {
-  try {
-    return JSON.parse(localStorage.getItem(LS_RECENT) || 'null');
-  } catch(e) { return null; }
-}
-
-// ═══════════════════════════════════════════════════
-// DINNER MODE — tonight / 2-3 days / full week
-// ═══════════════════════════════════════════════════
-let dinnerMode = 'tonight'; // 'tonight' | 'days' | 'week'
-const DINNER_MODE_COUNT = { tonight: 3, days: 5, week: 7 };
-
-function setDinnerMode(mode, btn) {
-  dinnerMode = mode;
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  // Update CTA button label to feel responsive
-  const labels = { tonight: '✦ Get tonight\'s dinner', days: '✦ Get my dinners', week: '✦ Plan my week' };
-  const genBtn = document.getElementById('genBtn');
-  if (genBtn) genBtn.textContent = labels[mode] || '✦ Find my meals';
-}
-
-// ═══════════════════════════════════════════════════
-// RETURN HOOK
-// ═══════════════════════════════════════════════════
-// Surprise me — zero friction, skip all chips, just generate immediately
-function surpriseMe() {
-  track('surprise_me');
-  const genBtn = document.getElementById('genBtn');
-  if (genBtn) { genBtn.disabled = true; }
-  showSkeleton();
-  const count = DINNER_MODE_COUNT[dinnerMode] || 5;
-  setTimeout(() => {
-    if (genBtn) genBtn.disabled = false;
-    currentMenu = pickMenu([], count);
-    // Pre-select all for surprise — no friction at all
-    currentMenu.forEach((item, i) => {
-      const ings = INGREDIENTS[item.dish] || [];
-      shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: i, ingredients: new Set(ings) });
-    });
-    renderMenu();
-  }, 700);
-}
-
-function renderReturnHook() {
-  const hook = document.getElementById('returnHook');
-  if (!hook) return;
-  const recent = loadRecentMeals();
-  if (!recent || recent.length === 0) { hook.style.display = 'none'; return; }
-
-  // Default: none selected — user picks what they want to repeat
-  const sel = new Set();
-
-  function buildHTML() {
-    const pills = recent.map(m => {
-      const on = sel.has(m.dish);
-      return `<button class="rh-pill${on ? ' rh-pill-on' : ''}" onclick="rhToggle('${escQ(m.dish)}')" title="${m.dish}">
-        ${m.emoji} ${m.dish.split(' ').slice(0,3).join(' ')}
-      </button>`;
-    }).join('');
-    const anyOn = sel.size > 0;
-    return `
-      <div class="return-hook">
-        <div class="return-hook-title">👋 Back again? Your last dinners:</div>
-        <div class="rh-pills">${pills}</div>
-        <button class="return-hook-btn primary${anyOn ? '' : ' rh-btn-dim'}" onclick="rhRepeat()">↻ Repeat this plan</button>
-      </div>`;
+  if (proCta) {
+    proCta.textContent = isPro ? '✓ Current plan' : 'Start Pro →';
+    proCta.className = isPro ? 'plan-cta active-plan' : 'plan-cta primary';
   }
-
-  window.rhToggle = function(dish) {
-    sel.has(dish) ? sel.delete(dish) : sel.add(dish);
-    hook.innerHTML = buildHTML();
-  };
-
-  window.rhRepeat = function() {
-    const toAdd = sel.size > 0
-      ? recent.filter(m => sel.has(m.dish))
-      : recent; // fallback: all if nothing picked
-    track('repeat_plan', { count: toAdd.length });
-    const matched = toAdd.map(r => POOL.find(p => p.id === r.id || p.dish === r.dish)).filter(Boolean);
-    if (!matched.length) return;
-    currentMenu = matched;
-    matched.forEach((item, i) => {
-      const ings = INGREDIENTS[item.dish] || [];
-      shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: i, ingredients: new Set(ings) });
-    });
-    showSkeleton();
-    setTimeout(() => { renderMenu(); hook.style.display = 'none'; }, 400);
-  };
-
-  hook.style.display = 'block';
-  hook.innerHTML = buildHTML();
 }
 
-// checkReturningVisitor removed — banner was premature complexity
+function handleFreeCta() {
+  if (isPro) { isPro = false; updateProUI(); showToast('Switched back to Free'); renderPricing(); }
+}
+
+function handleProCta() {
+  if (isPro) return;
+  selectedUpgradePlan = selectedBilling;
+  openUpgradeModal();
+}
+
+// Upgrade modal
+function openUpgradeModal(triggerFeature) {
+  selectedUpgradePlan = 'year';
+  document.getElementById('upgradeModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  goUpgradeStep(1);
+  updateModalPlanUI();
+}
+
+function closeUpgradeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('upgradeModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function goUpgradeStep(n) {
+  document.querySelectorAll('.upgrade-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('upgradeStep' + n).classList.add('active');
+  if (n === 2) {
+    const yearly = selectedUpgradePlan === 'year';
+    document.getElementById('paymentSubline').textContent = yearly
+      ? 'Yearly plan · €29.99/year (€2.50/month)'
+      : 'Monthly plan · €2.99/month';
+  }
+}
+
+function selectPlan(plan) {
+  selectedUpgradePlan = plan;
+  updateModalPlanUI();
+}
+
+function updateModalPlanUI() {
+  document.getElementById('pscMonth').classList.toggle('chosen', selectedUpgradePlan === 'month');
+  document.getElementById('pscYear').classList.toggle('chosen', selectedUpgradePlan === 'year');
+  document.getElementById('pscMonthPrice').className = 'psc-price' + (selectedUpgradePlan === 'month' ? ' chosen' : '');
+  document.getElementById('pscYearPrice').className = 'psc-price' + (selectedUpgradePlan === 'year' ? ' chosen' : '');
+}
+
+function activateProDemo() {
+  isPro = true;
+  updateProUI();
+  goUpgradeStep(3);
+  renderPricing();
+}
+
+// Trigger upgrade modal from Pro-gated feature clicks
+function requirePro(featureName) {
+  if (isPro) return true;
+  openUpgradeModal(featureName);
+  return false;
+}
 
 // ═══════════════════════════════════════════════════
 // BADGE
@@ -964,119 +1079,9 @@ function updateBadges() {
 // ═══════════════════════════════════════════════════
 // CHIPS
 // ═══════════════════════════════════════════════════
-// ── LOCALSTORAGE PREFERENCES ──
-const LS_KEY = 'dinr_prefs_v1';
-
-function savePrefs() {
-  try {
-    const prefs = {
-      likes: getLikes(),
-      vetos: getVetos(),
-      likeExpanded: document.getElementById('likeMoreBtn')?.dataset?.expanded === 'true',
-      avoidExpanded: document.getElementById('avoidMoreBtn')?.dataset?.expanded === 'true',
-    };
-    localStorage.setItem(LS_KEY, JSON.stringify(prefs));
-  } catch(e) {}
-}
-
-function loadPrefs() {
-  // First render the prefs area (decides if chips show or collapse)
-  renderPrefsArea();
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return;
-    const prefs = JSON.parse(raw);
-
-    // Restore likes
-    if (prefs.likes?.length) {
-      prefs.likes.forEach(val => {
-        const el = document.querySelector(`#likeChips .chip[data-val="${val}"]`);
-        if (el) {
-          el.classList.add('on');
-          // If it's a secondary chip, make it visible
-          if (el.classList.contains('chip-secondary')) el.classList.add('visible');
-        }
-      });
-    }
-    // Restore vetos
-    if (prefs.vetos?.length) {
-      prefs.vetos.forEach(val => {
-        const el = document.querySelector(`#dislikeChips .chip[data-val="${val}"]`);
-        if (el) {
-          el.classList.add('veto');
-          if (el.classList.contains('chip-secondary')) el.classList.add('visible');
-        }
-      });
-    }
-    // Restore expanded state (only if chips are visible)
-    if (prefs.likeExpanded) expandChips('like');
-    if (prefs.avoidExpanded) expandChips('avoid');
-  } catch(e) {}
-}
-
-// ─── PREFS AREA: collapsed for returning users, expanded for new ───
-function renderPrefsArea() {
-  const area = document.getElementById('prefsArea');
-  if (!area) return;
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    const prefs = raw ? JSON.parse(raw) : {};
-    const hasPrefs = (prefs.likes?.length > 0) || (prefs.vetos?.length > 0);
-
-    if (hasPrefs) {
-      // Build a short summary of active prefs
-      const likeLabels = { pasta:'Pasta',rice:'Rice',wraps:'Wraps',stir:'Stir-fry',soup:'Soup',curry:'Curry',noodles:'Noodles',seafood:'Seafood',quick:'Quick',veggie:'Vegetarian',kids:'Kid-friendly',healthy:'Healthy',mediterranean:'Mediterranean',pizza:'Pizza' };
-      const likes = (prefs.likes||[]).map(l => likeLabels[l]||l);
-      const vetos = (prefs.vetos||[]);
-      let summary = likes.slice(0,3).join(', ');
-      if (vetos.length) summary += (summary ? ' · ' : '') + 'avoiding ' + vetos.slice(0,2).join(', ');
-
-      area.innerHTML = `
-        <div class="prefs-collapsed">
-          <div class="prefs-collapsed-left">
-            <span class="prefs-collapsed-label">Using your preferences</span>
-            ${summary ? `<span class="prefs-collapsed-summary">${summary}</span>` : ''}
-          </div>
-          <button class="prefs-edit-btn" onclick="expandPrefsArea()">Edit</button>
-        </div>`;
-      // Keep chip sections hidden
-      document.getElementById('chipSectionLikes').style.display = 'none';
-      document.getElementById('chipSectionAvoid').style.display = 'none';
-    } else {
-      // New user — show chips directly, no banner
-      area.innerHTML = '';
-      document.getElementById('chipSectionLikes').style.display = 'block';
-      document.getElementById('chipSectionAvoid').style.display = 'block';
-    }
-  } catch(e) {
-    area.innerHTML = '';
-    document.getElementById('chipSectionLikes').style.display = 'block';
-    document.getElementById('chipSectionAvoid').style.display = 'block';
-  }
-}
-
-function expandPrefsArea() {
-  const area = document.getElementById('prefsArea');
-  if (area) area.innerHTML = `
-    <div class="prefs-editing-bar">
-      <span class="prefs-editing-label">Edit preferences</span>
-      <button class="prefs-edit-btn" onclick="renderPrefsArea()">Done</button>
-    </div>`;
-  document.getElementById('chipSectionLikes').style.display = 'block';
-  document.getElementById('chipSectionAvoid').style.display = 'block';
-  document.getElementById('chipSectionLikes').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function toggleChip(el) {
-  el.classList.toggle('on');
-  savePrefs();
-}
-function toggleVeto(el) {
-  el.classList.toggle('veto');
-  savePrefs();
-}
+function toggleChip(el){ el.classList.toggle('on'); }
+function toggleVeto(el){ el.classList.toggle('veto'); }
 function getLikes(){ return [...document.querySelectorAll('#likeChips .chip.on')].map(c=>c.dataset.val); }
-function getVetos(){ return [...document.querySelectorAll('#dislikeChips .chip.veto')].map(c=>c.dataset.val); }
 function getVetos(){ return [...document.querySelectorAll('#dislikeChips .chip.veto')].map(c=>c.dataset.val); }
 
 // ── PROGRESSIVE DISCLOSURE ──
@@ -1085,22 +1090,28 @@ function expandChips(group) {
   const wrapId = group === 'like' ? 'likeChips'   : 'dislikeChips';
   const btn    = document.getElementById(btnId);
   const wrap   = document.getElementById(wrapId);
-  if (!btn || !wrap) return;
   const expanded = btn.dataset.expanded === 'true';
+
   const secondary = wrap.querySelectorAll('.chip-secondary');
   if (!expanded) {
-    track('preferences_expanded', { group });
-    secondary.forEach((chip, i) => { chip.style.animationDelay = (i*0.04)+'s'; chip.classList.add('visible'); });
+    // Expand
+    secondary.forEach((chip, i) => {
+      chip.style.animationDelay = `${i * 0.04}s`;
+      chip.classList.add('visible');
+    });
     btn.textContent = '– Less';
     btn.dataset.expanded = 'true';
-    btn.style.cssText = 'border-style:solid;color:var(--text3);background:transparent;';
+    btn.style.borderStyle = 'solid';
   } else {
-    secondary.forEach(chip => { if (!chip.classList.contains('on') && !chip.classList.contains('veto')) chip.classList.remove('visible'); });
+    // Collapse — but keep any selected ones visible
+    secondary.forEach(chip => {
+      const isSelected = chip.classList.contains('on') || chip.classList.contains('veto');
+      if (!isSelected) chip.classList.remove('visible');
+    });
     btn.textContent = '+ More';
     btn.dataset.expanded = 'false';
-    btn.style.cssText = '';
+    btn.style.borderStyle = 'dashed';
   }
-  savePrefs();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1108,124 +1119,43 @@ function expandChips(group) {
 // ═══════════════════════════════════════════════════
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
 
-function pickMenu(exclude = [], count = 5) {
-  const likes = getLikes();
-  const vetos = getVetos();
-
-  // STEP 1: Filter on dislikes + exclusions
-  const allowed = POOL.filter(d => {
+function pickMenu(exclude = []) {
+  const likes = getLikes(), vetos = getVetos();
+  let cands = POOL.filter(d => {
     if (exclude.includes(d.dish)) return false;
     if (vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v))) return false;
     return true;
   });
-
-  // STEP 2: Score each meal on likes (+1 per matching tag)
-  const scored = allowed.map(d => ({
-    ...d,
-    score: likes.length
-      ? likes.reduce((n, l) => n + (d.tags.includes(l) || d.dish.toLowerCase().includes(l) ? 1 : 0), 0)
-      : 0
-  }));
-
-  // STEP 3: Sort within bucket by score desc, shuffle ties for variety
-  const byBucket = bucket =>
-    scored
-      .filter(d => d.bucket === bucket)
-      .sort((a, b) => b.score - a.score || Math.random() - 0.5);
-
-  const comfort = byBucket('comfort');
-  const twist   = byBucket('twist');
-  const healthy = byBucket('healthy');
-  const veggie  = byBucket('veggie');
-
-  // STEP 4: Build set — scale formula to count
-  // tonight(3): 1 twist, 1 comfort, 1 wildcard
-  // days(5):    2 twist, 1 comfort, 1 healthy, 1 wildcard
-  // week(7):    3 twist, 2 comfort, 1 healthy, 1 wildcard
-  const result = [];
-  const addUnique = d => { if (d && !result.find(r => r.dish === d.dish)) result.push(d); };
-
-  const twistCount   = count <= 3 ? 1 : count <= 5 ? 2 : 3;
-  const comfortCount = count <= 3 ? 1 : count <= 5 ? 1 : 2;
-  const healthyCount = count <= 3 ? 0 : 1;
-
-  twist.slice(0, twistCount).forEach(d => addUnique(d));
-  comfort.slice(0, comfortCount).forEach(d => addUnique(d));
-  healthy.slice(0, healthyCount).forEach(d => addUnique(d));
-
-  // STEP 5: Ingredient overlap boost for remaining slots
-  const ingCount = {};
-  result.forEach(d => (d.base || []).forEach(i => { ingCount[i] = (ingCount[i] || 0) + 1; }));
-  const used = new Set(result.map(d => d.dish));
-  const overlapScore = d => (d.base || []).reduce((n, i) => n + (ingCount[i] || 0), 0);
-
-  // Fill remaining slots with overlap-boosted candidates (veggie-first for wildcard)
-  const remaining = [...veggie, ...comfort.slice(comfortCount), ...twist.slice(twistCount), ...healthy.slice(healthyCount)]
-    .filter(d => !used.has(d.dish))
-    .sort((a, b) => (overlapScore(b) + b.score) - (overlapScore(a) + a.score));
-
-  remaining.forEach(d => { if (result.length < count) addUnique(d); });
-
-  // Fill any final gaps from full scored pool
-  scored
-    .filter(d => !result.find(r => r.dish === d.dish))
-    .sort((a, b) => overlapScore(b) - overlapScore(a))
-    .forEach(d => { if (result.length < count) addUnique(d); });
-
-  // Hard fallback: ignore vetos if still short
-  if (result.length < count) {
-    POOL.filter(d => !exclude.includes(d.dish) && !result.find(r => r.dish === d.dish))
-        .forEach(d => { if (result.length < count) addUnique(d); });
+  if (likes.length) {
+    const pref = cands.filter(d => likes.some(l => d.tags.includes(l) || d.dish.toLowerCase().includes(l)));
+    const rest = cands.filter(d => !pref.includes(d));
+    cands = [...shuffle(pref), ...shuffle(rest)];
+  } else { cands = shuffle(cands); }
+  if (cands.length < 5) {
+    const fallback = POOL.filter(d => !vetos.some(v => d.tags.includes(v) || d.dish.toLowerCase().includes(v)) && !exclude.includes(d.dish));
+    cands = shuffle(fallback);
   }
-
-  return shuffle(result);
+  return cands.slice(0, 5);
 }
 
 function generate() {
-  track('generate_click');
   document.getElementById('genBtn').disabled = true;
   showSkeleton();
-  const count = DINNER_MODE_COUNT[dinnerMode] || 5;
   setTimeout(() => {
     document.getElementById('genBtn').disabled = false;
-    currentMenu = pickMenu([], count);
-    // Pre-select ~60% of dishes (rounded), feels like a helpful default not a forced choice
-    const preSelectCount = Math.max(1, Math.round(count * 0.6));
-    const toSelect = pickNToPreselect(currentMenu, preSelectCount);
-    currentMenu.forEach((item, i) => {
-      if (toSelect.includes(item.dish) && !shoppingList.has(item.dish)) {
-        const ings = INGREDIENTS[item.dish] || [];
-        shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: i, ingredients: new Set(ings) });
-      }
-    });
+    currentMenu = pickMenu();
     renderMenu();
   }, 900);
 }
 
-function pickNToPreselect(menu, n) {
-  // Spread across types: comfort, quick/twist, healthy
-  const comfort = menu.filter(d => d.tags.includes('kids') || d.bucket === 'comfort');
-  const twist   = menu.filter(d => (d.tags.includes('quick') || d.bucket === 'twist') && !comfort.includes(d));
-  const healthy = menu.filter(d => (d.tags.includes('healthy') || d.bucket === 'healthy') && !comfort.includes(d) && !twist.includes(d));
-  const picked  = new Set();
-  comfort.slice(0, Math.ceil(n/3)).forEach(d => picked.add(d.dish));
-  twist.forEach(d => { if (picked.size < Math.round(n*0.6)) picked.add(d.dish); });
-  healthy.forEach(d => { if (picked.size < n) picked.add(d.dish); });
-  menu.forEach(d => { if (picked.size < n) picked.add(d.dish); });
-  return [...picked].slice(0, n);
-}
-
-// Keep for backward compat
-function pickThreeToPreselect(menu) { return pickNToPreselect(menu, 3); }
-
 function regenerate() {
   document.getElementById('genBtn').disabled = true;
   showSkeleton();
-  const count = DINNER_MODE_COUNT[dinnerMode] || 5;
+  // Exclude dishes already in the shopping list
   const alreadyAdded = [...shoppingList.keys()];
   setTimeout(() => {
     document.getElementById('genBtn').disabled = false;
-    currentMenu = pickMenu(alreadyAdded, count);
+    currentMenu = pickMenu(alreadyAdded);
     renderMenu();
   }, 900);
 }
@@ -1251,27 +1181,26 @@ function renderMenu(scroll = true) {
     const clickable = menuIdx !== -1;
     const poolItem = POOL.find(p => p.dish === item.dish);
     const cost = poolItem ? '€'.repeat(poolItem.cost) : '';
-    const cardClass = ['menu-card', isPinned?'pinned':'', !inList?'unselected':''].filter(Boolean).join(' ');
-
-    const checkSVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-    const cartSVG  = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
 
     return `
-      <div class="${cardClass}" id="mc-g${globalIdx}" data-menuindex="${menuIdx}">
-        <div class="mc-check-corner">${checkSVG}</div>
-        <div class="mc-clickable" style="position:relative;${!clickable?'cursor:default;':''}" onclick="${clickable?`openDetail(${menuIdx})`:'void(0)'}">
-          ${clickable ? '<span class="mc-hint">👁 View ingredients &amp; recipe</span>' : ''}
+      <div class="menu-card${isPinned?' pinned':''}" id="mc-g${globalIdx}" data-menuindex="${menuIdx}" style="${inList?'border-color:var(--green);background:var(--green-l);':''}">
+        <span class="mc-added-badge" style="font-size:10px;font-weight:500;color:var(--green-d);background:var(--green-l);padding:2px 8px;border-radius:999px;position:absolute;top:-9px;left:12px;border:1px solid var(--green);display:${inList?'inline':'none'};">✓ Added</span>
+        <div class="mc-clickable" style="position:relative;${!clickable?'cursor:default;':''}" ${clickable?`onclick="openDetail(${menuIdx})"`:''}>
+          ${clickable ? '<span class="mc-hint">View ingredients &amp; recipe</span>' : ''}
           <span class="mc-emoji">${item.emoji}</span>
           <div class="mc-right">
-            <div class="mc-dish">${item.dish}</div>
+            <div class="mc-dish" style="${inList?'color:var(--green-d);':''}">${item.dish}</div>
             ${labels ? `<div class="mc-labels">${labels}</div>` : ''}
           </div>
         </div>
-        <div class="mc-add-btn ${inList?'added':''}"
-             onclick="${clickable ? `quickAddToList(${menuIdx})` : `removePinned('${escQ(item.dish)}')`}"
-             title="${inList?'Remove from list':'Add to list'}">
-          ${inList ? checkSVG : cartSVG}
-        </div>
+        ${cost ? `<span class="mc-cost">${cost}</span>` : ''}
+        <button class="mc-add-btn ${inList?'added':''}" id="mc-addbtn-g${globalIdx}"
+          onclick="${isPinned && !clickable ? `removePinned('${escQ(item.dish)}')` : `quickAddToList(${menuIdx})`}"
+          title="${inList?'Remove from list':'Add to shopping list'}">
+          ${inList
+            ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+            : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`}
+        </button>
       </div>`;
   };
 
@@ -1286,27 +1215,19 @@ function renderMenu(scroll = true) {
       ${newSuggestions.length > 0 ? `<div class="sec-label" style="margin-bottom:6px;margin-top:4px;">New suggestions</div>` : ''}
     </div>` : '';
 
-  // Build smart personalization subtitle
-  const likes = getLikes();
-  const modeLabel = { tonight: 'tonight', days: 'the next few days', week: 'the week' }[dinnerMode] || 'the week';
-  let subText = `For ${modeLabel}`;
-  if (likes.length > 0) {
-    const likeLabels = { pasta:'pasta', rice:'rice', wraps:'wraps', stir:'stir-fry', soup:'soup', curry:'curry', noodles:'noodles', seafood:'seafood', quick:'quick meals', veggie:'vegetarian', kids:'kid-friendly', healthy:'healthy', mediterranean:'mediterranean', pizza:'pizza' };
-    const likeNames = likes.slice(0, 2).map(l => likeLabels[l] || l).join(' & ');
-    subText = `Based on your taste for ${likeNames}`;
-  }
-
   document.getElementById('out').innerHTML = `
     <div class="result-wrap">
-      <div class="result-title">Pick your meals</div>
-      <div class="result-sub" id="resultSub">Pick a few for your list · tap to add or remove</div>
-      <div id="mealsSelectedBadge" style="font-size:13px;font-weight:500;color:var(--green-d);background:var(--green-l);border-radius:999px;padding:4px 14px;width:fit-content;margin-bottom:0.75rem;display:${selectedCount>0?'inline-block':'none'};">${selectedCount} meal${selectedCount!==1?'s':''} selected</div>
+      <div class="result-title">Your dinners</div>
+      <div class="result-sub">Select meals → view your shopping list</div>
       ${pinnedSection}
       ${newCards ? `<div class="menu-cards">${newCards}</div>` : ''}
       <div class="select-cta-bar" id="selectCtaBar">
-        <span class="select-cta-sub" id="selectCtaSub" style="flex:1;">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected` : 'Tap meals above to select'}</span>
+        <div class="select-cta-text" id="selectCtaText">
+          View your shopping list →
+          <span class="select-cta-sub" id="selectCtaSub">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected · ready in one click` : 'Ready in one click'}</span>
+        </div>
         <button class="btn-create-list" id="createListBtn" onclick="show('shoppinglist')" ${selectedCount===0?'disabled':''}>
-          Get my shopping list →
+          See my shopping list →
         </button>
       </div>
       <div class="result-actions" style="margin-top:0.75rem;">
@@ -1319,11 +1240,6 @@ function renderMenu(scroll = true) {
     const offsetTop = outEl.getBoundingClientRect().top + window.scrollY - 70;
     window.scrollTo({ top: offsetTop, behavior: 'smooth' });
   }
-  // Save selected meals as "recent" for next visit
-  if (shoppingList.size > 0) {
-    const selectedDishes = currentMenu.filter(m => shoppingList.has(m.dish));
-    if (selectedDishes.length > 0) saveRecentMeals(selectedDishes);
-  }
   updateBadges();
 }
 
@@ -1333,33 +1249,18 @@ function removePinned(dish) {
   updateBadges();
 }
 
-// Toggle meal selection — card stays in place, CSS class flips
+// Quick-add entire dish — card moves to "Already in your list" immediately
 function quickAddToList(index) {
   const item = currentMenu[index];
   if (!item) return;
   const key = item.dish;
   if (shoppingList.has(key)) {
     shoppingList.delete(key);
-    track('meal_removed', { dish: key });
   } else {
     const ings = INGREDIENTS[key] || [];
     shoppingList.set(key, { dish: item.dish, emoji: item.emoji, dayIndex: index, ingredients: new Set(ings) });
-    track('meal_added', { dish: key });
   }
-  const inList = shoppingList.has(key);
-  // Toggle CSS class on card — no full re-render
-  const card = document.querySelector(`.menu-card[data-menuindex="${index}"]`);
-  if (card) {
-    card.classList.toggle('unselected', !inList);
-    const btn = card.querySelector('.mc-add-btn');
-    if (btn) {
-      btn.className = `mc-add-btn ${inList ? 'added' : ''}`;
-      const checkSVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-      const cartSVG  = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
-      btn.innerHTML = inList ? checkSVG : cartSVG;
-    }
-  }
-  refreshCtaBar();
+  renderMenu(false); // re-render without scrolling — card moves sections
   updateBadges();
 }
 
@@ -1369,13 +1270,8 @@ function refreshCtaBar() {
   if (btn) btn.disabled = selectedCount === 0;
   const sub = document.getElementById('selectCtaSub');
   if (sub) sub.textContent = selectedCount > 0
-    ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected`
-    : 'Tap meals above to select';
-  const badge = document.getElementById('mealsSelectedBadge');
-  if (badge) {
-    badge.style.display = selectedCount > 0 ? 'inline-block' : 'none';
-    badge.textContent = `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected`;
-  }
+    ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected · ready in one click`
+    : 'Ready in one click';
 }
 
 // ═══════════════════════════════════════════════════
@@ -1540,7 +1436,7 @@ function renderShoppingList() {
   // Mode toggle
   const modeToggle = `<div class="sl-mode-toggle">
     <button class="sl-mode-btn ${slMode==='dishes'?'active':''}" onclick="setSLMode('dishes')">📋 By dish</button>
-    <button class="sl-mode-btn ${slMode==='smart'?'active':''}" onclick="trySmartMode()">✨ Smart merge</button>
+    <button class="sl-mode-btn ${slMode==='smart'?'active':''}" onclick="trySmartMode()">✨ Smart merge ${isPro?'':'✦'}</button>
   </div>`;
 
   // Content
@@ -1581,32 +1477,23 @@ function renderShoppingList() {
     <div class="sl-top">
       <div>
         <h1 class="sl-heading">Your shopping list</h1>
-        <p style="font-size:14px;color:var(--green);font-weight:500;margin-top:4px;">✓ You're ready to shop</p>
         <p style="font-size:13px;color:var(--text3);margin-top:3px;">Based on your selected meals</p>
       </div>
       <div class="sl-export-row">
-        <button class="sl-export-btn sl-whatsapp-btn" onclick="shareWhatsApp()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Share
-        </button>
-        <button class="sl-export-btn" onclick="copyShoppingList()" title="Copy list to clipboard">📋 Copy list</button>
-        <button class="sl-export-btn" onclick="copyShareLink()" title="Copy shareable link">🔗 Link</button>
+        <button class="sl-export-btn" onclick="exportCSV()">⬇ CSV</button>
         <button class="sl-export-btn" onclick="printList()">🖨 Print</button>
       </div>
     </div>
     <div class="sl-progress-wrap">
       <div class="sl-progress-label">
-        <span>${doneCount === totalCount && totalCount > 0 ? '🎉 All done! Ready to shop.' : `${doneCount} of ${totalCount} in the basket`}</span>
+        <span>${doneCount === totalCount && totalCount > 0 ? '🎉 Alles in the basket!' : `${doneCount} of ${totalCount} in the basket`}</span>
         ${clearDoneBtn}
       </div>
       <div class="sl-progress-bar"><div class="sl-progress-fill" style="width:${pct}%"></div></div>
     </div>
     <div class="sl-filters">${filterTabs}</div>
     ${modeToggle}
-    <div id="slBody">${content}</div>
-    <div class="sl-coming-soon" onclick="showNotifyPopup()">
-      📲 Share list with your partner <span class="sl-coming-pill">coming soon</span>
-    </div>`;
+    <div id="slBody">${content}</div>`;
 }
 
 function buildSmartView(entries) {
@@ -1698,7 +1585,10 @@ function buildSmartView(entries) {
 
 function setSLFilter(dish) { slFilterDish = dish; renderShoppingList(); }
 function setSLMode(mode) { slMode = mode; renderShoppingList(); }
-function trySmartMode() { setSLMode('smart'); }
+function trySmartMode() {
+  if (!requirePro('Smart merge')) return;
+  setSLMode('smart');
+}
 
 function toggleCheckedOff(ing) {
   if (checkedOff.has(ing)) {
@@ -1721,114 +1611,6 @@ function toggleSlBlock(key) {
 // ═══════════════════════════════════════════════════
 // EXPORT / PRINT
 // ═══════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════
-// URL STATE SHARING
-// ═══════════════════════════════════════════════════
-
-// Encode selected meals into a shareable URL
-function buildShareURL() {
-  if (shoppingList.size === 0) return window.location.href.split('?')[0];
-  // Use a short slug: first 3 words of dish name, lowercased, hyphenated
-  const slugs = [...shoppingList.keys()].map(dish => {
-    const poolItem = POOL.find(p => p.dish === dish);
-    return poolItem ? poolItem.id : dish.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().split(' ').slice(0, 3).join('-');
-  });
-  const base = window.location.href.split('?')[0].split('#')[0];
-  return `${base}?meals=${encodeURIComponent(slugs.join(','))}`;
-}
-
-// Match a URL slug back to a POOL dish
-function slugToDish(slug) {
-  // Match by id field first (stable), then fall back to name-based slug
-  return POOL.find(d => d.id === slug) ||
-    POOL.find(d => {
-      const dishSlug = d.dish.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().split(' ').slice(0, 3).join('-');
-      return dishSlug === slug;
-    }) || null;
-}
-
-// On page load: check for ?meals= param and restore state
-function loadFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const mealsParam = params.get('meals');
-  if (!mealsParam) return;
-
-  const slugs = mealsParam.split(',').map(s => s.trim()).filter(Boolean);
-  const matched = slugs.map(slugToDish).filter(Boolean);
-  if (matched.length === 0) return;
-
-  // Restore: set currentMenu to matched dishes + add to shopping list
-  currentMenu = matched;
-  matched.forEach((item, i) => {
-    const ings = INGREDIENTS[item.dish] || [];
-    shoppingList.set(item.dish, { dish: item.dish, emoji: item.emoji, dayIndex: i, ingredients: new Set(ings) });
-  });
-
-  // Skip landing, go straight to menu with results showing
-  show('menu');
-  renderMenu(false);
-
-  // Show a friendly banner
-  const banner = document.createElement('div');
-  banner.style.cssText = 'background:var(--green-l);border:1px solid var(--green);border-radius:var(--r-sm);padding:10px 14px;font-size:13px;color:var(--green-d);margin-bottom:1rem;display:flex;align-items:center;gap:8px;';
-  banner.innerHTML = `<span style="font-size:16px;">👋</span> <span>Someone shared this dinner list with you. Add or remove meals, then view your shopping list.</span>`;
-  const out = document.getElementById('out');
-  if (out) out.insertAdjacentElement('beforebegin', banner);
-
-  // Clean URL so sharing again works fresh
-  window.history.replaceState({}, '', window.location.pathname);
-}
-
-// WhatsApp share
-function shareWhatsApp() {
-  const url = buildShareURL();
-  const count = shoppingList.size;
-  const names = [...shoppingList.keys()].slice(0, 3).join(', ');
-  const more  = count > 3 ? ` + ${count - 3} more` : '';
-  const text  = `🍽️ Here's our dinner list this week:\n${names}${more}\n\nOpen to see the full shopping list: ${url}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-  track('share_whatsapp', { meals: count });
-}
-
-// Copy link to clipboard (fallback / extra)
-function copyShareLink() {
-  const url = buildShareURL();
-  navigator.clipboard.writeText(url).then(() => showToast('📋 Link copied!')).catch(() => {
-    prompt('Copy this link:', url);
-  });
-  track('share_copy_link', { meals: shoppingList.size });
-}
-
-// Copy shopping list as plain text to clipboard
-function copyShoppingList() {
-  let text = '🛒 Shopping list — dinr\n\n';
-  if (slMode === 'smart') {
-    text += 'Smart list (by category):\n';
-    // Build from smart view data
-    const entries = [...shoppingList.entries()];
-    const seen = new Map();
-    entries.forEach(([,val]) => {
-      [...val.ingredients].forEach(ing => {
-        const norm = ing.toLowerCase().replace(/^[\d\.]+ ?(g|kg|ml|l|tbsp?|tsp?|cups?|oz)?\s*/i,'').trim();
-        if (!seen.has(norm)) seen.set(norm, ing);
-      });
-    });
-    seen.forEach((display) => { text += `• ${display}\n`; });
-  } else {
-    shoppingList.forEach((val) => {
-      text += `${val.emoji} ${val.dish}\n`;
-      [...val.ingredients].forEach(ing => { text += `  • ${ing}\n`; });
-      text += '\n';
-    });
-  }
-  navigator.clipboard.writeText(text.trim()).then(() => {
-    showToast('📋 List copied to clipboard!');
-    track('copy_list');
-  }).catch(() => {
-    prompt('Copy your shopping list:', text);
-  });
-}
-
 function exportCSV() {
   const rows = [['Ingrediënt','Gerecht']];
   shoppingList.forEach(val => {
@@ -1954,14 +1736,11 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const lm = document.getElementById('legalModal');
     if (lm) lm.remove();
-    const np = document.getElementById('notifyPopup');
-    if (np) np.remove();
+    closeUpgradeModal();
   }
 });
 
-loadPrefs();
-loadFromURL();
-renderReturnHook();
+updateProUI();
 </script>
 </body>
 </html>
