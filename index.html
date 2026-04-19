@@ -518,35 +518,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 <!-- ═══════════════════════════════════════════════════
-  ANALYTICS — Plausible (privacy-first, no cookies, GDPR compliant)
-  To activate: replace 'dinr.online' with your domain at dinr.online
-  Key events tracked:
-    generate_click       → CTA "Get my dinners" clicked
-    meal_added           → user taps 🛒 on a card
-    meal_removed         → user removes a meal
-    view_shopping_list   → user opens shopping list
-    upgrade_click        → user clicks Upgrade / Pro CTA
-    upgrade_complete     → Pro demo activated
-    preferences_expanded → user clicks "+ More"
-  Track CTR: generate_click / page_view = landing conversion rate
+  ANALYTICS — Vercel Analytics (free, no account needed beyond Vercel)
+  Tracks: pageviews, unique visitors, referrers, countries, devices
+  Silent on localhost automatically via Vercel's script.
   ════════════════════════════════════════════════════ -->
-<!-- Plausible analytics — only loads on production domain, silent on localhost/file:// -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <script>
-  (function() {
-    var isLocal = location.hostname === 'localhost' || location.hostname === '' || location.protocol === 'file:';
-    if (!isLocal) {
-      var s = document.createElement('script');
-      s.defer = true;
-      s.setAttribute('data-domain', 'dinr.online');
-      s.src = 'https://plausible.io/js/script.tagged-events.js';
-      document.head.appendChild(s);
-    }
-  })();
   function track(event, props) {
-    if (typeof window.plausible === 'function') {
-      window.plausible(event, { props: props || {} });
-    }
-    // Silent no-op on localhost — no console noise
+    // No-op stub — custom events not used with Vercel Analytics free tier
+    // Upgrade to Plausible later if you need generate_click / view_shopping_list etc.
   }
 </script>
 <script>
