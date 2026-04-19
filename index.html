@@ -393,9 +393,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <h2>Dinner sorted.<br>List ready. Let's go.</h2>
     <p>Free. No account needed.</p>
     <button class="lp-cta" onclick="show('menu')"><span>🍽️</span> Get my dinners</button>
-    <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.15);">
-      <p style="font-size:13px;color:rgba(255,255,255,0.5);">More features coming soon — <a href="mailto:hello@dinr.online" style="color:rgba(255,255,255,0.6);">hello@dinr.online</a></p>
-    </div>
+
   </section>
   <footer class="site-footer">
     <div class="footer-logo"><em>dinr</em></div>
@@ -1152,13 +1150,15 @@ function scoreMeal(meal, likes, mode) {
   let score = 0;
   const tags = meal.tags || [];
 
-  // Style preferences
-  const styleMap = ['pasta','rice','wraps','stir','soup','curry','noodles','mediterranean','pizza','seafood'];
-  styleMap.forEach(s => { if (likes.includes(s) && tags.includes(s)) score += 4; });
+  // Style preferences — give bonus if meal matches ANY selected style
+  // But cap at +4 total for style (prevent stacking)
+  const styleTags = ['pasta','rice','wraps','stir','soup','curry','noodles','mediterranean','pizza','seafood'];
+  const styleMatch = styleTags.some(s => likes.includes(s) && tags.includes(s));
+  if (styleMatch) score += 4;
 
-  // Filter chips
+  // Filter chips — these stack intentionally
   if (likes.includes('quick')   && tags.includes('quick'))   score += 5;
-  if (likes.includes('kids')    && tags.includes('kids'))     score += 4;
+  if (likes.includes('kids')    && tags.includes('kids'))     score += 3;
   if (likes.includes('healthy') && meal.isHealthy)            score += 4;
   if (likes.includes('veggie')  && meal.isVeggie)             score += 6;
 
@@ -1171,16 +1171,16 @@ function scoreMeal(meal, likes, mode) {
 
   // Mode bias
   if (mode === 'tonight') {
-    if (tags.includes('quick'))         score += 3;
-    if (meal.bucket === 'comfort')      score += 2;
+    if (tags.includes('quick'))    score += 3;
+    if (meal.bucket === 'comfort') score += 2;
   }
   if (mode !== 'tonight') {
     if (meal.isHealthy) score += 1;
     if (meal.isVeggie)  score += 1;
   }
 
-  // Small random jitter so ties don't always resolve the same way
-  score += Math.random() * 0.5;
+  // Small random jitter so ties resolve differently each time
+  score += Math.random() * 0.8;
 
   return score;
 }
@@ -1192,7 +1192,7 @@ function breaksVariety(meal, picked, mode) {
   // No duplicates
   if (picked.some(p => p.dish === meal.dish)) return true;
 
-  // No same bucket two in a row (except flex — flex can go anywhere)
+  // No same bucket two in a row (except flex)
   if (meal.bucket !== 'flex' && last.bucket !== 'flex' && last.bucket === meal.bucket) return true;
 
   // Week: max 2 same bucket
@@ -1205,8 +1205,19 @@ function breaksVariety(meal, picked, mode) {
     if (picked.filter(p => p.protein === 'chicken').length >= 2) return true;
   }
 
-  // No same protein twice in a row (except none/veggie)
+  // No same protein twice in a row (except none)
   if (meal.protein && meal.protein !== 'none' && last.protein === meal.protein) return true;
+
+  // ── BASE STYLE CAP: max 2 meals with same dominant style tag ──
+  const styleTags = ['pasta','rice','wraps','noodles','soup','curry','pizza','stir'];
+  for (const style of styleTags) {
+    if (meal.tags.includes(style)) {
+      const already = picked.filter(p => p.tags.includes(style)).length;
+      // Max 1 for short plans, max 2 for week
+      const cap = mode === 'week' ? 2 : 1;
+      if (already >= cap) return true;
+    }
+  }
 
   return false;
 }
@@ -1385,8 +1396,22 @@ function renderMenu(scroll = true) {
       </div>`;
   };
 
-  const cards = allCards.map(({ item, globalIdx, isPinned }) => makeCard(item, globalIdx, isPinned)).join('');
   const selectedCount = shoppingList.size;
+
+  // Pinned = in shopping list (show at top, visually distinct)
+  // New = in currentMenu but not yet selected
+  const pinnedItems = allCards.filter(({ item }) => shoppingList.has(item.dish));
+  const newItems    = allCards.filter(({ item }) => !shoppingList.has(item.dish));
+
+  const pinnedCards = pinnedItems.map(({ item, globalIdx, isPinned }) => makeCard(item, globalIdx, isPinned)).join('');
+  const newCards    = newItems.map(({ item, globalIdx, isPinned }) => makeCard(item, globalIdx, isPinned)).join('');
+
+  const pinnedSection = pinnedItems.length > 0 ? `
+    <div>
+      <div class="sec-label" style="margin-bottom:6px;">Already in your list</div>
+      <div class="menu-cards" style="margin-bottom:12px;position:relative;">${pinnedCards}</div>
+      ${newItems.length > 0 ? `<div class="sec-label" style="margin-bottom:6px;margin-top:4px;">New suggestions</div>` : ''}
+    </div>` : '';
 
   // Build smart personalization subtitle
   const likes = getLikes();
@@ -1403,7 +1428,8 @@ function renderMenu(scroll = true) {
       <div class="result-title">Pick your meals</div>
       <div class="result-sub" id="resultSub">Tap a meal to see ingredients · tap ✓ to add or remove</div>
       <div id="mealsSelectedBadge" style="font-size:13px;font-weight:500;color:var(--green-d);background:var(--green-l);border-radius:999px;padding:4px 14px;width:fit-content;margin-bottom:0.75rem;display:${selectedCount>0?'inline-block':'none'};">${selectedCount} meal${selectedCount!==1?'s':''} selected</div>
-      <div class="menu-cards">${cards}</div>
+      ${pinnedSection}
+      ${newCards ? `<div class="menu-cards">${newCards}</div>` : ''}
       <div class="select-cta-bar" id="selectCtaBar">
         <span class="select-cta-sub" id="selectCtaSub" style="flex:1;">${selectedCount > 0 ? `${selectedCount} meal${selectedCount !== 1 ? 's' : ''} selected` : 'Tap meals above to select'}</span>
         <button class="btn-create-list" id="createListBtn" onclick="show('shoppinglist')" ${selectedCount===0?'disabled':''}>
@@ -1717,9 +1743,7 @@ function renderShoppingList() {
     <div class="sl-filters">${filterTabs}</div>
     ${modeToggle}
     <div id="slBody">${content}</div>
-    <div class="sl-coming-soon" onclick="showNotifyPopup()">
-      📲 Share list with your partner <span class="sl-coming-pill">coming soon</span>
-    </div>`;
+`;
 }
 
 function buildSmartView(entries) {
